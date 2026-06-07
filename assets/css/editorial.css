@@ -10,9 +10,12 @@
   aspect-ratio: 560 / 452;
   margin: 0.2rem clamp(1rem, 3vw, 2rem) 1rem 0;
   border: 1px solid var(--line);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--surface-2), var(--accent-soft) 28%), var(--surface)),
-    url('../media/images/alejandro-pico-profile.svg') center center / contain no-repeat;
+  background-image:
+    url('../media/images/alejandro-pico-profile.svg'),
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-2), var(--accent-soft) 28%), var(--surface));
+  background-position: center center, center center;
+  background-size: contain, cover;
+  background-repeat: no-repeat, no-repeat;
   box-shadow: var(--shadow);
   transition: var(--theme-transition);
 }
