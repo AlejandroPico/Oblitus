@@ -10,16 +10,19 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.4.0**
+Versión actual: **v0.5.0**
 
-Esta versión limpia la portada y reduce la sensación de cajas excesivas. La barra superior queda fija durante el desplazamiento, el buscador pasa a un desplegable con icono de lupa y la zona de artículos muestra directamente las tarjetas sin un gran panel contenedor.
+Esta versión introduce una capa estética temporal: por defecto, la web adapta su paleta cromática a la hora local del visitante mediante una transición continua de 24 horas calculada por franjas de media hora. También reduce los bordes excesivamente redondeados para conseguir una apariencia más sobria, limpia y editorial.
 
 ---
 
 ## Funcionalidades principales
 
 - Portada editorial compacta con acceso inmediato a los artículos.
-- Barra superior fija con navegación, búsqueda desplegable y modo claro/oscuro.
+- Barra superior fija con navegación, búsqueda desplegable y selector de modo visual.
+- Modo visual automático según la hora local del visitante.
+- Modos manuales: automático, día, tarde y noche.
+- Transición suave de colores entre estados horarios.
 - Mosaico de artículos a pantalla ancha.
 - Búsqueda por título, resumen, categoría, formato y etiquetas.
 - Filtros por etiquetas.
@@ -63,7 +66,8 @@ oblitus-est-scientia/
 │   ├── js/
 │   │   ├── app.js
 │   │   ├── article.js
-│   │   └── site.js
+│   │   ├── site.js
+│   │   └── theme.js
 │   └── media/
 │       ├── audio/
 │       └── images/
@@ -99,6 +103,26 @@ articulo.html    Lector interno de artículos generados
 ```
 
 La portada no debe acumular bloques explicativos. Su función principal es presentar el proyecto y llevar al lector a los artículos publicados sin fricción.
+
+---
+
+## Sistema de tema temporal
+
+El tema visual se controla desde:
+
+```txt
+assets/js/theme.js
+```
+
+Por defecto funciona en modo automático. El sistema calcula la hora local del visitante y genera una paleta interpolada a partir de franjas de media hora. El resultado es una transición progresiva durante todo el día: madrugada, amanecer, mañana, mediodía, tarde, atardecer y noche.
+
+El botón de la barra superior alterna entre:
+
+```txt
+◐ Auto → ☀ Día → ◒ Tarde → ☾ Noche
+```
+
+El modo seleccionado se guarda en `localStorage`, por lo que el navegador recuerda la preferencia del visitante.
 
 ---
 
@@ -263,7 +287,11 @@ Variables importantes:
 --max-width: 1680px;
 --reader-width: 920px;
 --page-width: 1180px;
+--radius-lg: 12px;
+--radius-md: 8px;
+--radius-sm: 4px;
 --font-title: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, 'Times New Roman', serif;
+--theme-transition: background 1400ms ease, background-color 1400ms ease, color 1400ms ease, border-color 1400ms ease, box-shadow 1400ms ease;
 --accent: #7c2d12;
 --accent-2: #1f4d4f;
 ```
@@ -277,6 +305,7 @@ Variables importantes:
 - La conversión PDF a artículo es básica.
 - Los `.docx` muy maquetados pueden necesitar ajustes.
 - Las microinterfaces complejas conviene desarrollarlas como HTML específico.
+- El modo automático depende de la hora local del navegador del visitante.
 
 ---
 
@@ -300,6 +329,19 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.5.0
+
+- Añadido `assets/js/theme.js` como sistema común de tema visual.
+- Añadido modo automático basado en la hora local del visitante.
+- Añadida interpolación cromática por franjas de media hora.
+- Añadida actualización activa del tema mientras la página permanece abierta.
+- Añadidos modos manuales: automático, día, tarde y noche.
+- Sustituido el antiguo botón “Modo” por un selector cíclico con iconos textuales.
+- Reducidos los radios visuales globales para una estética más cuadrada.
+- Eliminadas formas excesivamente redondeadas en barra superior, botones, etiquetas y tarjetas.
+- Añadidas transiciones suaves para fondos, textos, bordes y sombras.
+- Aplicado el sistema temporal a portada, páginas internas y lector de artículos.
 
 ### v0.4.0
 
