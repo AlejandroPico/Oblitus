@@ -10,9 +10,9 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.11.0**
+Versión actual: **v0.12.0**
 
-Esta versión añade el retrato de Alejandro Picó a la sección “Sobre la web” y rediseña las fichas de artículos: el título se superpone sobre la imagen de portada, se elimina el formato técnico visible, se centran fecha y tiempo de lectura, y las etiquetas pasan a una franja horizontal desplazable para evitar sobrecargar la interfaz.
+Esta versión corrige la visualización del retrato de Alejandro Picó, sustituye la incrustación anterior por una versión JPEG más compatible, reajusta la maquetación de la sección de autor para evitar saltos extraños en el texto y refuerza el contraste del modo automático durante la transición de tarde a noche.
 
 ---
 
@@ -131,7 +131,7 @@ El botón de la barra superior alterna entre:
 ◐ Auto → ☀ Día → ◒ Tarde → ☾ Noche
 ```
 
-El modo seleccionado se guarda en `localStorage`, por lo que el navegador recuerda la preferencia del visitante.
+La transición de tarde a noche incluye anclajes específicos para mantener un contraste legible durante las horas críticas de atardecer.
 
 ---
 
@@ -257,6 +257,14 @@ Variables importantes:
 ---
 
 ## Historial de versiones
+
+### v0.12.0
+
+- Sustituido el retrato incrustado en WebP por una versión JPEG dentro del SVG para mejorar compatibilidad.
+- Corregida la maquetación de la sección “Alejandro Picó” para evitar saltos extraños de texto.
+- Rehecha la posición del retrato como bloque flotante estable en escritorio y bloque superior en móvil.
+- Reforzado el contraste del modo automático entre las 17:45 y las 19:00.
+- Añadidos anclajes temporales intermedios para evitar estados de transición con bajo contraste.
 
 ### v0.11.0
 
