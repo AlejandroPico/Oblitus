@@ -1,6 +1,6 @@
 # Oblitus est scientia
 
-**Redivulgación de temática científica**
+**Ciencia, tecnología y pensamiento crítico**
 
 Oblitus est scientia es una web editorial estática preparada para GitHub Pages. Su objetivo es funcionar como una alternativa ligera a WordPress para publicar artículos largos, documentos convertidos en publicaciones web, recursos multimedia y pequeñas microinterfaces JavaScript.
 
@@ -10,20 +10,20 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.3.0**
+Versión actual: **v0.4.0**
 
-Esta versión reorganiza la interfaz pública: la portada queda centrada en el título, el subtítulo, la presentación breve y la biblioteca de artículos. Las explicaciones editoriales pasan a páginas internas para que el contenido esté visible con un solo clic desde la entrada.
+Esta versión limpia la portada y reduce la sensación de cajas excesivas. La barra superior queda fija durante el desplazamiento, el buscador pasa a un desplegable con icono de lupa y la zona de artículos muestra directamente las tarjetas sin un gran panel contenedor.
 
 ---
 
 ## Funcionalidades principales
 
-- Portada editorial compacta con acceso inmediato a la biblioteca.
+- Portada editorial compacta con acceso inmediato a los artículos.
+- Barra superior fija con navegación, búsqueda desplegable y modo claro/oscuro.
 - Mosaico de artículos a pantalla ancha.
 - Búsqueda por título, resumen, categoría, formato y etiquetas.
 - Filtros por etiquetas.
 - Ordenación por fecha ascendente, descendente y título.
-- Modo claro/oscuro.
 - Página interna `sobre.html` para línea editorial y sistema de publicación.
 - Página interna `tematicas.html` para mapa de contenidos y criterio de etiquetas.
 - Lector universal de artículos.
@@ -263,6 +263,7 @@ Variables importantes:
 --max-width: 1680px;
 --reader-width: 920px;
 --page-width: 1180px;
+--font-title: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, 'Times New Roman', serif;
 --accent: #7c2d12;
 --accent-2: #1f4d4f;
 ```
@@ -299,6 +300,20 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.4.0
+
+- Reducida la cabecera hero de la portada.
+- Eliminado el rótulo “Archivo editorial independiente” de la portada.
+- Sustituido el subtítulo público por “Ciencia, tecnología y pensamiento crítico”.
+- Centrado el título principal y el subtítulo.
+- Cambiada la fuente del título y subtítulo a una familia serif de tono más académico.
+- Movido el buscador a la barra superior mediante icono de lupa.
+- Añadido panel desplegable de búsqueda y ordenación.
+- Eliminado el gran panel contenedor de la biblioteca.
+- Ocultados visualmente el título “Artículos publicados” y el contador de artículos.
+- Mantenidas las tarjetas individuales de artículos.
+- Fijada la barra superior para que permanezca visible durante el scroll.
 
 ### v0.3.0
 
