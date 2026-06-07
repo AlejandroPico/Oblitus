@@ -1,4 +1,5 @@
 import { initTemporalTheme } from './theme.js';
+import { initMobileMenu } from './mobile-menu.js';
 
 const params = new URLSearchParams(location.search);
 const articleId = params.get('id');
@@ -21,6 +22,7 @@ init();
 
 async function init() {
   initTemporalTheme(els.themeToggle);
+  initMobileMenu();
 
   if (!articleId) {
     renderError('No se ha indicado ningún artículo.', 'Vuelve a la biblioteca y abre una publicación concreta.');
