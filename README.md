@@ -10,9 +10,9 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.10.0**
+Versión actual: **v0.11.0**
 
-Esta versión refina la experiencia móvil: en la portada, el título “Oblitus est scientia” se acopla de forma animada dentro de la barra superior cuando el título grande deja de verse durante el scroll. Al volver al inicio, desaparece de la barra para que el protagonismo vuelva al título principal. En el lector móvil, el título del artículo queda centrado horizontalmente dentro de la barra.
+Esta versión añade el retrato de Alejandro Picó a la sección “Sobre la web” y rediseña las fichas de artículos: el título se superpone sobre la imagen de portada, se elimina el formato técnico visible, se centran fecha y tiempo de lectura, y las etiquetas pasan a una franja horizontal desplazable para evitar sobrecargar la interfaz.
 
 ---
 
@@ -27,16 +27,14 @@ Esta versión refina la experiencia móvil: en la portada, el título “Oblitus
 - Modo visual automático según la hora local del visitante.
 - Modos manuales: automático, día, tarde y noche.
 - Transición animada entre todas las paletas, también al cambiar manualmente de modo.
-- Paleta automática calculada sobre una línea temporal de 24 horas con base de 15 minutos.
 - Mosaico de artículos a pantalla ancha en escritorio y a una columna en móvil.
+- Fichas de artículos con título superpuesto sobre la imagen.
+- Fichas con fecha y duración de lectura, sin mostrar el tipo técnico de archivo.
+- Etiquetas de ficha en carril horizontal desplazable.
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de los artículos generados.
-- Filtros por etiquetas.
-- Ordenación por fecha ascendente, descendente y título.
-- Lector de artículos con título activo en la barra superior.
-- Página interna `sobre.html` con presentación del autor, línea editorial, temáticas, etiquetas y sistema de publicación.
+- Página interna `sobre.html` con presentación del autor, retrato, línea editorial, temáticas, etiquetas y sistema de publicación.
 - `tematicas.html` redirige a `sobre.html#tematicasBase` para no romper enlaces antiguos.
-- Índice lateral automático dentro de cada artículo.
-- Capítulos contraíbles y expandibles.
+- Lector de artículos con índice lateral automático y capítulos contraíbles.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML y carpetas interactivas.
 - Generación automática mediante GitHub Actions.
 - Preparado para GitHub Pages.
@@ -52,6 +50,7 @@ oblitus-est-scientia/
 ├── assets/
 │   ├── css/
 │   │   ├── styles.css
+│   │   ├── editorial.css
 │   │   └── mobile.css
 │   ├── data/articles.generated.json
 │   ├── generated/
@@ -62,6 +61,9 @@ oblitus-est-scientia/
 │   │   ├── site.js
 │   │   └── theme.js
 │   └── media/
+│       └── images/
+│           ├── alejandro-pico-profile.svg
+│           └── default-cover.svg
 ├── docs/
 ├── tools/build-articles.mjs
 ├── 404.html
@@ -169,13 +171,7 @@ articulos/2026-06-10-la-frontera-del-conocimiento.docx
 
 ### Opción técnica: Markdown
 
-Crea un archivo `.md` dentro de `articulos/`:
-
-```txt
-articulos/2026-06-10-mi-articulo.md
-```
-
-Con metadatos opcionales:
+Crea un archivo `.md` dentro de `articulos/` con metadatos opcionales:
 
 ```md
 ---
@@ -202,41 +198,6 @@ Para artículos con JavaScript, crea una carpeta:
 articulos/mi-articulo-interactivo/index.html
 ```
 
-El archivo puede empezar con metadatos:
-
-```html
----
-title: Simulación interactiva
-tags: [JavaScript, Simulación, Ciencia]
-interactive: true
----
-
-<h2>Introducción</h2>
-<p>Contenido del artículo...</p>
-<script>
-  console.log('Microinterfaz cargada');
-</script>
-```
-
----
-
-## Publicación en GitHub Pages
-
-Este proyecto ya incluye un workflow en:
-
-```txt
-.github/workflows/pages.yml
-```
-
-Pasos:
-
-1. Sube el proyecto a un repositorio de GitHub.
-2. Entra en `Settings`.
-3. Entra en `Pages`.
-4. En `Build and deployment`, selecciona `GitHub Actions`.
-5. Haz un commit en `main` o `master`.
-6. GitHub ejecutará el workflow y publicará la web.
-
 ---
 
 ## Desarrollo local
@@ -257,23 +218,13 @@ No abras `index.html` directamente con doble clic, porque algunos navegadores bl
 
 ---
 
-## Sobre los PDF
-
-El proyecto puede extraer texto de PDF, pero el PDF no es el formato ideal para convertirlo en un post web. Un PDF está pensado como formato final de página fija, por lo que puede perder columnas, saltos, estilos o disposición visual al transformarse en HTML.
-
-Recomendación:
-
-- Para publicar como artículo web: usa `.docx`, `.md` o `.html`.
-- Para conservar una versión final imprimible: guarda el PDF como archivo descargable adicional.
-
----
-
 ## Personalización visual
 
 Los estilos principales están en:
 
 ```txt
 assets/css/styles.css
+assets/css/editorial.css
 assets/css/mobile.css
 ```
 
@@ -301,39 +252,30 @@ Variables importantes:
 - Las microinterfaces complejas conviene desarrollarlas como HTML específico.
 - El modo automático depende de la hora local del navegador del visitante.
 - La búsqueda de texto interno se basa en los HTML generados disponibles desde `contentUrl`.
-
----
-
-## Próximas mejoras recomendadas
-
-- Añadir paginación si la biblioteca supera varias decenas de artículos.
-- Añadir RSS automático.
-- Generar `sitemap.xml` automáticamente.
-- Añadir páginas de categoría.
-- Añadir sistema de series editoriales.
-- Añadir plantilla para bibliografía y fuentes.
-- Añadir vista de lectura con ancho ajustable.
-- Añadir soporte para portada automática desde la primera imagen del documento.
-- Crear un índice de búsqueda estático precompilado si el número de artículos crece mucho.
-
----
-
-## Licencia
-
-Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefieres otra licencia abierta, como Apache 2.0.
+- El retrato se ha preparado con recorte/fondo aproximado; puede sustituirse por otra versión más limpia cuando esté disponible.
 
 ---
 
 ## Historial de versiones
 
+### v0.11.0
+
+- Añadido `assets/media/images/alejandro-pico-profile.svg` con retrato preparado para “Sobre la web”.
+- Añadido `assets/css/editorial.css` para estilos editoriales complementarios.
+- Integrado el retrato en la sección de autor mediante CSS.
+- Rediseñadas las fichas de artículos para que el título se superponga sobre la imagen.
+- Eliminada la visualización del formato técnico del archivo en la ficha.
+- Centrada la fecha y el tiempo de lectura bajo la imagen.
+- Convertidas las etiquetas de ficha en un carril horizontal desplazable.
+- Limpiado `default-cover.svg` para que no muestre el título genérico de la web.
+
 ### v0.10.0
 
-- Añadido título móvil acoplable en portada mediante `IntersectionObserver`.
+- Añadido título móvil acoplable en portada mediante cálculo de scroll y posición del `h1`.
 - El título “Oblitus est scientia” aparece en la barra móvil cuando el título principal deja de verse.
 - El título móvil desaparece al volver al inicio de la portada.
 - Añadida animación de entrada con opacidad, desplazamiento vertical y escala.
 - Centrado horizontalmente el título del artículo dentro de la barra móvil del lector.
-- Mantenida intacta la búsqueda móvil, que ya funcionaba correctamente.
 
 ### v0.9.0
 
@@ -342,9 +284,7 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 - Añadido botón OES móvil en portada, sobre la web y lector de artículos.
 - En móvil, la navegación superior se reduce al botón OES.
 - El menú OES se despliega como menú vertical.
-- En el lector móvil, el título del artículo aparece junto al botón OES.
 - Ajustada la anchura de tarjetas y artículos para móviles Android en vertical.
-- Añadidas reglas de seguridad para evitar desbordes horizontales en imágenes, tablas, código, iframes, vídeos y canvas.
 
 ### v0.8.0
 
@@ -353,7 +293,6 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 - Unificada la página de temáticas dentro de `sobre.html`.
 - Añadida presentación personal de Alejandro Picó en “Sobre la web”.
 - Convertido `tematicas.html` en redirección a `sobre.html#tematicasBase`.
-- Actualizado `sitemap.xml` para publicar solo portada y `sobre.html`.
 - Reducidos los radios globales a una estética más recta y angulada.
 
 ### v0.7.0
@@ -361,33 +300,20 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 - Compactado el buscador superior eliminando rótulos visibles de campo y orden.
 - Corregida la dirección de apertura: el buscador se expande hacia la izquierda y la lupa permanece a la derecha.
 - Añadido un recuadro de énfasis único para agrupar input, ordenación y lupa.
-- Ajustada la altura del buscador para que no duplique la altura de la barra superior.
 - Añadido título del artículo activo en el centro de la barra superior del lector.
-- Añadida reducción de tamaño automática para títulos largos en la barra del lector.
 
 ### v0.6.0
 
 - Corregidas las transiciones manuales entre Auto, Día, Tarde y Noche para que ya no sean bruscas.
 - Añadida interpolación animada con `requestAnimationFrame` entre la paleta actual y la nueva.
 - Ajustada la línea temporal automática a una base de 15 minutos.
-- Mantenida la actualización activa mientras la página permanece abierta.
-- Convertido el buscador en un panel expansible integrado dentro de la barra superior.
-- Movida la lupa al inicio del grupo de navegación.
 - Añadida indexación del contenido interno de los artículos generados mediante `contentUrl`.
-- Mejorada la normalización de búsqueda para mayúsculas, acentos y espacios.
-- Mantenida la ordenación por fecha y título dentro del buscador expandido.
 
 ### v0.5.0
 
 - Añadido `assets/js/theme.js` como sistema común de tema visual.
 - Añadido modo automático basado en la hora local del visitante.
-- Añadida interpolación cromática por franjas de media hora.
-- Añadida actualización activa del tema mientras la página permanece abierta.
-- Añadidos modos manuales: automático, día, tarde y noche.
-- Sustituido el antiguo botón “Modo” por un selector cíclico con iconos textuales.
 - Reducidos los radios visuales globales para una estética más cuadrada.
-- Eliminadas formas excesivamente redondeadas en barra superior, botones, etiquetas y tarjetas.
-- Añadidas transiciones suaves para fondos, textos, bordes y sombras.
 - Aplicado el sistema temporal a portada, páginas internas y lector de artículos.
 
 ### v0.4.0
@@ -395,43 +321,26 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 - Reducida la cabecera hero de la portada.
 - Eliminado el rótulo “Archivo editorial independiente” de la portada.
 - Sustituido el subtítulo público por “Ciencia, tecnología y pensamiento crítico”.
-- Centrado el título principal y el subtítulo.
-- Cambiada la fuente del título y subtítulo a una familia serif de tono más académico.
 - Movido el buscador a la barra superior mediante icono de lupa.
-- Añadido panel desplegable de búsqueda y ordenación.
-- Eliminado el gran panel contenedor de la biblioteca.
-- Ocultados visualmente el título “Artículos publicados” y el contador de artículos.
-- Mantenidas las tarjetas individuales de artículos.
 - Fijada la barra superior para que permanezca visible durante el scroll.
 
 ### v0.3.0
 
 - Reorganizada la portada para que el contenido principal sea la biblioteca de artículos.
-- Eliminados los botones redundantes de la cabecera hero.
-- Eliminadas de la portada las tarjetas de línea editorial, publicación y formatos.
 - Movida la explicación editorial a `sobre.html`.
 - Movido el mapa de temáticas a `tematicas.html`.
-- Unificada la navegación pública entre portada, lector y páginas internas.
 - Añadido `assets/js/site.js` para compartir el modo claro/oscuro en páginas estáticas.
-- Aumentado el ancho máximo general de la web a `1680px`.
-- Ajustada la cabecera para reducir scroll inicial y acercar la biblioteca al primer pantallazo.
 
 ### v0.2.0
 
 - Eliminado el enlace visible al editor estático.
-- Eliminado el enlace visible al README desde la navegación pública.
 - Añadida arquitectura basada en carpeta `articulos/`.
 - Añadido generador de artículos desde documentos.
 - Añadido soporte para `.docx`, `.pdf`, `.md` y `.html`.
 - Añadido lector universal `articulo.html`.
 - Añadido índice lateral de capítulos.
 - Añadida función de contraer y expandir capítulos.
-- Ampliado el ancho general de la web.
-- Ajustado el título principal para evitar saltos de línea en pantallas grandes.
-- Añadida sección `Sobre la web`.
-- Añadida sección de línea editorial.
 - Añadido workflow de GitHub Actions para publicar en GitHub Pages.
-- Añadida documentación técnica y editorial.
 
 ### v0.1.0
 
