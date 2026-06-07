@@ -1,0 +1,16 @@
+{
+  "name": "Oblitus est scientia",
+  "short_name": "OES",
+  "description": "Redivulgación de temática científica",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4efe7",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "assets/media/images/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

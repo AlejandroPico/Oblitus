@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor estático · Oblitus est scientia</title>
+  <meta name="description" content="Generador local de entradas para Oblitus est scientia.">
+  <link rel="icon" href="assets/media/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="topbar" aria-label="Navegación principal">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">OES</span><span class="brand-text">Oblitus est scientia</span></a>
+      <div class="nav-actions"><a href="./">Inicio</a><a href="README.md">README</a></div>
+    </nav>
+  </header>
+
+  <main class="editor-layout">
+    <section class="article-header">
+      <p class="eyebrow">Herramienta interna</p>
+      <h1>Editor estático</h1>
+      <p class="subtitle">Genera el bloque JSON y la plantilla HTML de un nuevo artículo.</p>
+      <p class="hero-copy">
+        Esta página no escribe directamente en GitHub. Sirve para preparar la entrada: copias el JSON en
+        <code>assets/data/posts.json</code>, creas la carpeta en <code>articulos/</code> y pegas el HTML generado.
+      </p>
+    </section>
+
+    <div class="editor-grid">
+      <form id="articleForm" class="editor-card form-grid">
+        <h2>Datos del artículo</h2>
+        <label>Título<input id="title" name="title" required placeholder="Título del artículo"></label>
+        <label>Slug / carpeta<input id="slug" name="slug" placeholder="titulo-del-articulo"></label>
+        <label>Subtítulo<input name="subtitle" placeholder="Subtítulo editorial"></label>
+        <label>Fecha<input name="date" type="date" required></label>
+        <label>Categoría<input name="category" placeholder="Física, IA, Editorial…"></label>
+        <label>Etiquetas separadas por coma<input name="tags" placeholder="IA, Ciencia, Historia"></label>
+        <label>Tiempo de lectura<input name="readingTime" placeholder="12 min"></label>
+        <label>Imagen de portada<input name="cover" placeholder="assets/media/images/default-cover.svg"></label>
+        <label>Resumen<textarea name="excerpt" required placeholder="Resumen que aparecerá en la portada"></textarea></label>
+        <label><input name="audio" type="checkbox"> Tiene audio</label>
+        <label><input name="interactive" type="checkbox"> Tiene microinterfaz</label>
+        <button class="primary-button" type="submit">Generar</button>
+      </form>
+
+      <section class="editor-card form-grid">
+        <h2>Salida</h2>
+        <label>Entrada para posts.json<textarea id="jsonOutput" class="copy-area" readonly></textarea></label>
+        <label>Plantilla index.html<textarea id="htmlOutput" class="copy-area" readonly></textarea></label>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/js/editor.js"></script>
+</body>
+</html>

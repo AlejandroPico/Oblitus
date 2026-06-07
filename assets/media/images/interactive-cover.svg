@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Portada de artículo interactivo">
+  <rect width="1200" height="675" fill="#161a22"/>
+  <g fill="none" stroke="#88d1d1" stroke-width="3" opacity=".8">
+    <path d="M170 505C255 275 385 192 560 290s293 87 470-83"/>
+    <path d="M170 420C285 360 405 352 530 398s277 23 498-153" opacity=".55"/>
+  </g>
+  <g fill="#e0a46f">
+    <circle cx="170" cy="505" r="12"/><circle cx="560" cy="290" r="12"/><circle cx="1030" cy="207" r="12"/>
+  </g>
+  <rect x="88" y="82" width="430" height="164" rx="28" fill="rgba(245,239,230,.08)" stroke="rgba(245,239,230,.16)"/>
+  <text x="120" y="153" font-family="Georgia,serif" font-size="52" font-weight="700" fill="#f5efe6">Microinterfaz</text>
+  <text x="122" y="207" font-family="Inter,Arial,sans-serif" font-size="28" fill="#c6b9aa">Artículo con JavaScript integrado</text>
+</svg>

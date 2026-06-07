@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oblitus est scientia · Redivulgación de temática científica</title>
+  <meta name="description" content="Oblitus est scientia: red divulgativa de pensamiento científico, tecnología, historia de la ciencia, IA, geopolítica y cultura crítica.">
+  <meta name="author" content="Alejandro Pico">
+  <meta name="theme-color" content="#111827">
+  <meta property="og:title" content="Oblitus est scientia">
+  <meta property="og:description" content="Redivulgación de temática científica">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/media/images/default-cover.svg">
+  <link rel="icon" href="assets/media/images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <nav class="topbar" aria-label="Navegación principal">
+      <a class="brand" href="./" aria-label="Inicio">
+        <span class="brand-mark" aria-hidden="true">OES</span>
+        <span class="brand-text">Oblitus est scientia</span>
+      </a>
+      <div class="nav-actions">
+        <a href="editor.html">Editor estático</a>
+        <a href="README.md">README</a>
+        <button id="themeToggle" class="ghost-button" type="button" aria-label="Alternar modo claro u oscuro">Modo</button>
+      </div>
+    </nav>
+
+    <section class="hero" aria-labelledby="siteTitle">
+      <p class="eyebrow">Archivo editorial independiente</p>
+      <h1 id="siteTitle">Oblitus est scientia</h1>
+      <p class="subtitle">Redivulgación de temática científica</p>
+      <p class="hero-copy">
+        Un espacio para recuperar ideas, ordenar conocimiento y publicar artículos largos con recursos multimedia,
+        visualizaciones interactivas y criterio editorial propio.
+      </p>
+      <div class="hero-actions">
+        <a class="primary-button" href="#contenido">Explorar artículos</a>
+        <a class="secondary-button" href="articulos/manifiesto-editorial/">Leer manifiesto</a>
+      </div>
+    </section>
+  </header>
+
+  <main id="contenido" class="layout">
+    <section class="content-panel" aria-labelledby="postsTitle">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Biblioteca</p>
+          <h2 id="postsTitle">Artículos publicados</h2>
+        </div>
+        <p id="resultCount" class="result-count" aria-live="polite">Cargando artículos…</p>
+      </div>
+
+      <div class="toolbar" role="search">
+        <label class="search-box">
+          <span>Buscar</span>
+          <input id="searchInput" type="search" placeholder="IA, física, geopolítica, historia…" autocomplete="off">
+        </label>
+        <label class="select-box">
+          <span>Orden</span>
+          <select id="sortSelect">
+            <option value="newest">Más recientes</option>
+            <option value="oldest">Más antiguos</option>
+            <option value="title">Título A-Z</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="tagFilters" class="tag-filters" aria-label="Filtros por etiqueta"></div>
+      <div id="postsGrid" class="posts-grid"></div>
+      <div id="emptyState" class="empty-state" hidden>
+        <h3>No hay resultados para esta búsqueda</h3>
+        <p>Prueba con otra palabra, una etiqueta distinta o limpia los filtros activos.</p>
+      </div>
+    </section>
+
+    <aside class="sidebar" aria-label="Información editorial">
+      <section class="sidebar-card">
+        <h2>Línea editorial</h2>
+        <p>
+          Divulgación pausada, documentación rigurosa y piezas extensas capaces de mezclar texto,
+          audio, imágenes, esquemas y pequeñas interfaces JavaScript.
+        </p>
+      </section>
+      <section class="sidebar-card">
+        <h2>Temáticas base</h2>
+        <ul id="topicList" class="topic-list"></ul>
+      </section>
+      <section class="sidebar-card accent-card">
+        <h2>Cómo publicar</h2>
+        <p>
+          Crea una carpeta dentro de <code>articulos/</code>, añade su <code>index.html</code> y registra
+          la entrada en <code>assets/data/posts.json</code>. La portada se actualiza sola al cargar.
+        </p>
+        <a class="inline-link" href="editor.html">Abrir generador de artículos</a>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="currentYear"></span> Oblitus est scientia · Proyecto estático preparado para GitHub Pages.</p>
+  </footer>
+
+  <script src="assets/js/app.js" type="module"></script>
+</body>
+</html>

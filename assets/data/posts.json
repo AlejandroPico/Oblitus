@@ -1,0 +1,48 @@
+{
+  "site": {
+    "title": "Oblitus est scientia",
+    "subtitle": "Redivulgación de temática científica",
+    "language": "es-ES"
+  },
+  "topics": [
+    "Física y cosmología",
+    "Inteligencia artificial",
+    "Matemáticas",
+    "Historia de la ciencia",
+    "Tecnología y sociedad",
+    "Geopolítica del conocimiento",
+    "Cultura crítica"
+  ],
+  "posts": [
+    {
+      "id": "manifiesto-editorial",
+      "title": "Manifiesto editorial de Oblitus est scientia",
+      "subtitle": "Por qué recuperar conocimiento olvidado también es divulgar ciencia.",
+      "date": "2026-06-07",
+      "category": "Editorial",
+      "tags": ["Editorial", "Ciencia", "Divulgación", "Proyecto"],
+      "excerpt": "Primera declaración de intenciones del proyecto: una web de artículos largos, recursos multimedia e interfaces interactivas sin depender de WordPress.",
+      "cover": "assets/media/images/default-cover.svg",
+      "url": "articulos/manifiesto-editorial/",
+      "readingTime": "5 min",
+      "audio": true,
+      "interactive": false,
+      "status": "borrador-publicable"
+    },
+    {
+      "id": "microinterfaz-demo",
+      "title": "Demostración de artículo con microinterfaz JavaScript",
+      "subtitle": "Ejemplo mínimo de una pieza editorial con control interactivo integrado.",
+      "date": "2026-06-07",
+      "category": "Tecnología",
+      "tags": ["JavaScript", "Interactividad", "Prototipo", "Tecnología"],
+      "excerpt": "Una plantilla de artículo que incluye texto largo, bloque multimedia y un pequeño widget interactivo reutilizable.",
+      "cover": "assets/media/images/interactive-cover.svg",
+      "url": "articulos/microinterfaz-demo/",
+      "readingTime": "4 min",
+      "audio": false,
+      "interactive": true,
+      "status": "demo"
+    }
+  ]
+}
