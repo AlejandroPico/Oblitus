@@ -1,3 +1,5 @@
+import { initTemporalTheme } from './theme.js';
+
 const params = new URLSearchParams(location.search);
 const articleId = params.get('id');
 
@@ -17,8 +19,7 @@ const els = {
 init();
 
 async function init() {
-  initTheme();
-  els.themeToggle?.addEventListener('click', toggleTheme);
+  initTemporalTheme(els.themeToggle);
 
   if (!articleId) {
     renderError('No se ha indicado ningún artículo.', 'Vuelve a la biblioteca y abre una publicación concreta.');
@@ -128,17 +129,6 @@ function renderError(title, message) {
   els.title.textContent = title;
   els.subtitle.textContent = message;
   els.content.innerHTML = `<div class="article-note"><p>${escapeHtml(message)}</p></div>`;
-}
-
-function initTheme() {
-  const saved = localStorage.getItem('oes-theme');
-  if (saved) document.documentElement.dataset.theme = saved;
-}
-
-function toggleTheme() {
-  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next;
-  localStorage.setItem('oes-theme', next);
 }
 
 function formatDate(value) {
