@@ -5,6 +5,7 @@ const articleId = params.get('id');
 
 const els = {
   themeToggle: document.querySelector('#themeToggle'),
+  topTitle: document.querySelector('#readerTopTitle'),
   category: document.querySelector('#articleCategory'),
   title: document.querySelector('#articleTitle'),
   subtitle: document.querySelector('#articleSubtitle'),
@@ -45,9 +46,11 @@ async function init() {
 }
 
 function renderArticle(article, html) {
-  document.title = `${article.title} · Oblitus est scientia`;
+  const title = article.title || 'Artículo sin título';
+  document.title = `${title} · Oblitus est scientia`;
   els.category.textContent = article.category || 'Artículo';
-  els.title.textContent = article.title || 'Artículo sin título';
+  els.title.textContent = title;
+  renderTopbarTitle(title);
   els.subtitle.textContent = article.subtitle || '';
   els.meta.innerHTML = [
     formatDate(article.date),
@@ -62,6 +65,13 @@ function renderArticle(article, html) {
   enhanceHeadings(els.content);
   buildToc(els.content);
   bindChapterTools();
+}
+
+function renderTopbarTitle(title) {
+  if (!els.topTitle) return;
+  els.topTitle.textContent = title;
+  els.topTitle.classList.toggle('is-long-title', title.length > 58);
+  els.topTitle.classList.toggle('is-very-long-title', title.length > 92);
 }
 
 function enhanceHeadings(container) {
@@ -127,6 +137,7 @@ function executeEmbeddedScripts(container) {
 
 function renderError(title, message) {
   els.title.textContent = title;
+  renderTopbarTitle(title);
   els.subtitle.textContent = message;
   els.content.innerHTML = `<div class="article-note"><p>${escapeHtml(message)}</p></div>`;
 }
