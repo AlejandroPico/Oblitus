@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oblitus est scientia · Redivulgación de temática científica</title>
-  <meta name="description" content="Oblitus est scientia: red divulgativa de pensamiento científico, tecnología, historia de la ciencia, IA, geopolítica y cultura crítica.">
+  <meta name="description" content="Oblitus est scientia: archivo editorial independiente de red divulgativa, ciencia, tecnología, pensamiento crítico y cultura del conocimiento.">
   <meta name="author" content="Alejandro Pico">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#121212">
   <meta property="og:title" content="Oblitus est scientia">
   <meta property="og:description" content="Redivulgación de temática científica">
   <meta property="og:type" content="website">
@@ -20,13 +20,14 @@
 
   <header class="site-header">
     <nav class="topbar" aria-label="Navegación principal">
-      <a class="brand" href="./" aria-label="Inicio">
+      <a class="brand" href="./" aria-label="Inicio de Oblitus est scientia">
         <span class="brand-mark" aria-hidden="true">OES</span>
         <span class="brand-text">Oblitus est scientia</span>
       </a>
       <div class="nav-actions">
-        <a href="editor.html">Editor estático</a>
-        <a href="README.md">README</a>
+        <a href="#articulos">Artículos</a>
+        <a href="#sobre-web">Sobre la web</a>
+        <a href="#tematicas">Temáticas</a>
         <button id="themeToggle" class="ghost-button" type="button" aria-label="Alternar modo claro u oscuro">Modo</button>
       </div>
     </nav>
@@ -36,18 +37,54 @@
       <h1 id="siteTitle">Oblitus est scientia</h1>
       <p class="subtitle">Redivulgación de temática científica</p>
       <p class="hero-copy">
-        Un espacio para recuperar ideas, ordenar conocimiento y publicar artículos largos con recursos multimedia,
-        visualizaciones interactivas y criterio editorial propio.
+        Una plataforma estática para publicar investigaciones, ensayos largos, documentos convertidos en artículos,
+        piezas multimedia y microinterfaces JavaScript sin depender de WordPress ni de una base de datos.
       </p>
       <div class="hero-actions">
-        <a class="primary-button" href="#contenido">Explorar artículos</a>
-        <a class="secondary-button" href="articulos/manifiesto-editorial/">Leer manifiesto</a>
+        <a class="primary-button" href="#articulos">Explorar artículos</a>
+        <a class="secondary-button" href="#sobre-web">Ver línea editorial</a>
       </div>
     </section>
   </header>
 
-  <main id="contenido" class="layout">
-    <section class="content-panel" aria-labelledby="postsTitle">
+  <main id="contenido" class="layout-wide">
+    <section id="sobre-web" class="info-grid" aria-label="Información editorial de la web">
+      <article class="info-card wide-card">
+        <p class="eyebrow">Línea editorial</p>
+        <h2>Investigación, divulgación y archivo crítico</h2>
+        <p>
+          La web está pensada como una biblioteca de artículos extensos: ciencia, tecnología, historia,
+          geopolítica del conocimiento, inteligencia artificial y cultura crítica. El objetivo es publicar piezas
+          densas, con estructura documental, pero legibles como una revista digital.
+        </p>
+      </article>
+      <article class="info-card">
+        <p class="eyebrow">Publicación</p>
+        <h2>Carpeta <code>articulos/</code></h2>
+        <p>
+          Los documentos fuente se guardan en <code>articulos/</code>. Al subir cambios a GitHub,
+          una acción genera el índice que alimenta la portada.
+        </p>
+      </article>
+      <article class="info-card">
+        <p class="eyebrow">Formatos</p>
+        <h2>Word, PDF, Markdown y HTML</h2>
+        <p>
+          El flujo recomendado es escribir en Word y publicar como <code>.docx</code>. Para artículos con JavaScript,
+          se usa una carpeta con HTML y recursos propios.
+        </p>
+      </article>
+    </section>
+
+    <section id="tematicas" class="topic-band" aria-labelledby="topicsTitle">
+      <div>
+        <p class="eyebrow">Temáticas base</p>
+        <h2 id="topicsTitle">Mapa inicial de contenidos</h2>
+      </div>
+      <ul id="topicList" class="topic-list-inline"></ul>
+    </section>
+
+    <section id="articulos" class="content-panel" aria-labelledby="postsTitle">
       <div class="section-heading">
         <div>
           <p class="eyebrow">Biblioteca</p>
@@ -59,7 +96,7 @@
       <div class="toolbar" role="search">
         <label class="search-box">
           <span>Buscar</span>
-          <input id="searchInput" type="search" placeholder="IA, física, geopolítica, historia…" autocomplete="off">
+          <input id="searchInput" type="search" placeholder="IA, física, geopolítica, historia, matemáticas…" autocomplete="off">
         </label>
         <label class="select-box">
           <span>Orden</span>
@@ -78,28 +115,6 @@
         <p>Prueba con otra palabra, una etiqueta distinta o limpia los filtros activos.</p>
       </div>
     </section>
-
-    <aside class="sidebar" aria-label="Información editorial">
-      <section class="sidebar-card">
-        <h2>Línea editorial</h2>
-        <p>
-          Divulgación pausada, documentación rigurosa y piezas extensas capaces de mezclar texto,
-          audio, imágenes, esquemas y pequeñas interfaces JavaScript.
-        </p>
-      </section>
-      <section class="sidebar-card">
-        <h2>Temáticas base</h2>
-        <ul id="topicList" class="topic-list"></ul>
-      </section>
-      <section class="sidebar-card accent-card">
-        <h2>Cómo publicar</h2>
-        <p>
-          Crea una carpeta dentro de <code>articulos/</code>, añade su <code>index.html</code> y registra
-          la entrada en <code>assets/data/posts.json</code>. La portada se actualiza sola al cargar.
-        </p>
-        <a class="inline-link" href="editor.html">Abrir generador de artículos</a>
-      </section>
-    </aside>
   </main>
 
   <footer class="site-footer">

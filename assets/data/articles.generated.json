@@ -1,0 +1,53 @@
+{
+  "site": {
+    "title": "Oblitus est scientia",
+    "subtitle": "Redivulgación de temática científica",
+    "language": "es-ES"
+  },
+  "generatedAt": "2026-06-07T00:00:00.000Z",
+  "topics": [
+    "Física y cosmología",
+    "Inteligencia artificial",
+    "Matemáticas",
+    "Historia de la ciencia",
+    "Tecnología y sociedad",
+    "Geopolítica del conocimiento",
+    "Cultura crítica"
+  ],
+  "articles": [
+    {
+      "id": "microinterfaz-demo",
+      "title": "Demostración de artículo con microinterfaz JavaScript",
+      "subtitle": "Ejemplo mínimo de una pieza editorial con control interactivo integrado.",
+      "date": "2026-06-07T02:00:00.000Z",
+      "category": "Tecnología",
+      "tags": ["JavaScript", "Interactividad", "Prototipo", "Tecnología"],
+      "excerpt": "Una plantilla de artículo que incluye texto largo, bloque multimedia y un pequeño widget interactivo reutilizable.",
+      "cover": "assets/media/images/interactive-cover.svg",
+      "url": "articulo.html?id=microinterfaz-demo",
+      "contentUrl": "assets/generated/microinterfaz-demo.html",
+      "readingTime": "4 min",
+      "format": "html",
+      "sourceFile": "articulos/microinterfaz-demo/index.html",
+      "audio": false,
+      "interactive": true
+    },
+    {
+      "id": "manifiesto-editorial",
+      "title": "Manifiesto editorial de Oblitus est scientia",
+      "subtitle": "Por qué recuperar conocimiento olvidado también es divulgar ciencia.",
+      "date": "2026-06-07T01:00:00.000Z",
+      "category": "Editorial",
+      "tags": ["Editorial", "Ciencia", "Divulgación", "Proyecto"],
+      "excerpt": "Primera declaración de intenciones del proyecto: una web de artículos largos, recursos multimedia e interfaces interactivas sin depender de WordPress.",
+      "cover": "assets/media/images/default-cover.svg",
+      "url": "articulo.html?id=manifiesto-editorial",
+      "contentUrl": "assets/generated/manifiesto-editorial.html",
+      "readingTime": "5 min",
+      "format": "md",
+      "sourceFile": "articulos/2026-06-07-manifiesto-editorial.md",
+      "audio": true,
+      "interactive": false
+    }
+  ]
+}

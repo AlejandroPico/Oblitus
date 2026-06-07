@@ -1,13 +1,3 @@
----
-title: Demostración de artículo con microinterfaz JavaScript
-subtitle: Ejemplo mínimo de una pieza editorial con control interactivo integrado.
-category: Tecnología
-tags: [JavaScript, Interactividad, Prototipo, Tecnología]
-excerpt: Una plantilla de artículo que incluye texto largo, bloque multimedia y un pequeño widget interactivo reutilizable.
-cover: assets/media/images/interactive-cover.svg
-interactive: true
----
-
 <p>
   Este artículo demuestra el objetivo técnico del proyecto: que una publicación pueda actuar como texto editorial
   y, a la vez, contener una pequeña interfaz JavaScript integrada dentro del propio contenido.
@@ -15,10 +5,16 @@ interactive: true
 
 <h2>1. Texto y estructura</h2>
 <p>
-  La página conserva una lectura clásica con capítulos, subtítulos y navegación lateral.
+  La página conserva una lectura clásica con capítulos, subtítulos y navegación lateral. Cada capítulo puede contraerse
+  o expandirse desde el lector para facilitar el manejo de documentos largos.
 </p>
 
 <h2>2. Microinterfaz integrada</h2>
+<p>
+  El siguiente bloque no es una imagen: es una pequeña interfaz viva. En artículos futuros podría sustituirse por
+  simuladores, gráficas, visualizaciones científicas, mapas conceptuales o calculadoras temáticas.
+</p>
+
 <div class="demo-widget" id="demoWidget">
   <label for="demoRange"><strong>Intensidad conceptual</strong></label>
   <input id="demoRange" type="range" min="5" max="100" value="40">
@@ -32,6 +28,7 @@ interactive: true
   const meter = document.querySelector('#demoMeter');
   const text = document.querySelector('#demoText');
   if (!range || !meter || !text) return;
+
   const update = () => {
     const value = Number(range.value);
     meter.style.width = `${value}%`;
@@ -41,7 +38,14 @@ interactive: true
         ? 'Nivel moderado: adecuado para una explicación divulgativa con profundidad.'
         : 'Nivel avanzado: apropiado para investigación, modelos y aparato crítico.';
   };
+
   range.addEventListener('input', update);
   update();
 })();
 </script>
+
+<h2>3. Uso previsto</h2>
+<p>
+  El sistema permite empezar con documentos normales y, cuando convenga, pasar a piezas más elaboradas. No obliga
+  a escribir todo en HTML, pero deja abierta la puerta a contenidos interactivos sin perder coherencia visual.
+</p>

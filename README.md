@@ -2,293 +2,308 @@
 
 **Redivulgación de temática científica**
 
-Oblitus est scientia es una web estática de estilo editorial, preparada para funcionar en GitHub Pages como alternativa gratuita a un blog clásico de WordPress. La idea es mantener una portada seria, buscable y etiquetada, donde cada artículo pueda ser una carpeta independiente con texto largo, imágenes, audio, visualizaciones y microinterfaces JavaScript.
+Oblitus est scientia es una web editorial estática preparada para GitHub Pages. Su objetivo es funcionar como una alternativa ligera a WordPress para publicar artículos largos, documentos convertidos en publicaciones web, recursos multimedia y pequeñas microinterfaces JavaScript.
 
-## Objetivo del proyecto
+La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`, y una GitHub Action genera automáticamente el índice de publicaciones que aparece en la portada.
 
-Crear una plataforma personal de publicación que permita:
+---
 
-- publicar artículos largos tipo blog o ensayo;
-- organizar el contenido por etiquetas, categorías y buscador;
-- integrar audio, imágenes, SVG, tablas, gráficos y pequeñas interfaces JavaScript;
-- funcionar sin base de datos, sin servidor propio y sin coste de hosting inicial;
-- conservar control total sobre el diseño, la estructura y la evolución técnica.
+## Estado del proyecto
 
-## Estado actual
+Versión actual: **v0.2.0**
 
-Versión inicial funcional.
+Esta versión elimina el editor visible de la primera maqueta y orienta el proyecto hacia un flujo real de publicación mediante documentos.
 
-Incluye:
+---
 
-- portada editorial con mosaico de artículos;
-- buscador por título, resumen, categoría y etiquetas;
-- filtro dinámico por etiquetas;
-- orden por fecha o título;
-- modo claro/oscuro con persistencia en navegador;
-- dos artículos de ejemplo;
-- plantilla de artículo con bloque de audio;
-- plantilla de artículo con microinterfaz JavaScript;
-- editor estático para generar el bloque JSON y el HTML base de nuevos artículos;
-- estructura preparada para GitHub Pages;
-- favicon, manifest, robots.txt, sitemap.xml, 404.html, licencia MIT y `.nojekyll`.
+## Funcionalidades principales
+
+- Portada editorial con diseño serio y ancho ampliado.
+- Mosaico de artículos a pantalla ancha.
+- Búsqueda por título, resumen, categoría, formato y etiquetas.
+- Filtros por etiquetas.
+- Ordenación por fecha ascendente, descendente y título.
+- Modo claro/oscuro.
+- Sección de línea editorial.
+- Sección de temáticas base.
+- Lector universal de artículos.
+- Índice lateral automático dentro de cada artículo.
+- Capítulos contraíbles y expandibles.
+- Soporte para artículos procedentes de:
+  - Word `.docx`.
+  - PDF `.pdf`.
+  - Markdown `.md`.
+  - HTML `.html`.
+  - Carpetas con `index.html` para piezas interactivas.
+- Generación automática mediante GitHub Actions.
+- Preparado para GitHub Pages.
+
+---
 
 ## Estructura del proyecto
 
-```text
+```txt
 oblitus-est-scientia/
-├── index.html
-├── editor.html
-├── 404.html
-├── README.md
-├── LICENSE
-├── robots.txt
-├── sitemap.xml
-├── manifest.webmanifest
-├── .nojekyll
-├── .gitignore
+├── .github/
+│   └── workflows/
+│       └── pages.yml
+├── articulos/
+│   ├── README.md
+│   ├── 2026-06-07-manifiesto-editorial.md
+│   └── microinterfaz-demo/
+│       └── index.html
 ├── assets/
 │   ├── css/
 │   │   └── styles.css
+│   ├── data/
+│   │   └── articles.generated.json
+│   ├── generated/
+│   │   ├── manifiesto-editorial.html
+│   │   └── microinterfaz-demo.html
 │   ├── js/
 │   │   ├── app.js
-│   │   ├── editor.js
-│   │   └── article-demo.js
-│   ├── data/
-│   │   └── posts.json
+│   │   └── article.js
 │   └── media/
 │       ├── audio/
-│       │   ├── README.md
-│       │   └── silencio-muestra.wav
 │       └── images/
-│           ├── favicon.svg
-│           ├── default-cover.svg
-│           └── interactive-cover.svg
-├── articulos/
-│   ├── manifiesto-editorial/
-│   │   └── index.html
-│   └── microinterfaz-demo/
-│       └── index.html
-└── docs/
-    ├── GUIA_EDITORIAL.md
-    └── PUBLICACION.md
+├── docs/
+│   ├── ARQUITECTURA.md
+│   ├── GUIA_EDITORIAL.md
+│   └── PUBLICACION.md
+├── tools/
+│   └── build-articles.mjs
+├── 404.html
+├── articulo.html
+├── index.html
+├── manifest.webmanifest
+├── package.json
+├── robots.txt
+├── sitemap.xml
+└── README.md
 ```
 
-## Cómo funciona
+---
 
-La portada no lee carpetas automáticamente, porque GitHub Pages sirve HTML, CSS y JavaScript de forma estática. En su lugar, la web utiliza el fichero:
+## Cómo publicar un artículo
 
-```text
-assets/data/posts.json
+### Opción recomendada: Word / DOCX
+
+1. Escribe el artículo en Word o LibreOffice.
+2. Usa estilos reales: `Título 1`, `Título 2`, listas, tablas, etc.
+3. Guarda el archivo como `.docx`.
+4. Copia el archivo dentro de `articulos/`.
+5. Haz commit y push.
+6. GitHub Actions generará la web publicada.
+
+Ejemplo:
+
+```txt
+articulos/2026-06-10-la-frontera-del-conocimiento.docx
 ```
 
-Ese fichero actúa como índice editorial. Cada entrada define:
+### Opción técnica: Markdown
 
-- título;
-- subtítulo;
-- fecha;
-- categoría;
-- etiquetas;
-- resumen;
-- imagen de portada;
-- ruta del artículo;
-- tiempo de lectura;
-- si tiene audio;
-- si tiene bloque interactivo.
+Crea un archivo `.md` dentro de `articulos/`:
 
-La página `index.html` carga ese JSON y genera el mosaico de artículos, filtros, etiquetas y buscador.
-
-## Cómo añadir un nuevo artículo
-
-### 1. Crear carpeta
-
-Dentro de `articulos/`, crea una carpeta con el slug del artículo:
-
-```text
-articulos/nombre-del-articulo/
+```txt
+articulos/2026-06-10-mi-articulo.md
 ```
 
-Dentro de esa carpeta, crea:
+Con metadatos opcionales:
 
-```text
-index.html
+```md
+---
+title: Título del artículo
+subtitle: Subtítulo breve
+category: Física
+tags: [Física, Cosmología, Divulgación]
+excerpt: Resumen que aparecerá en la portada.
+cover: assets/media/images/default-cover.svg
+audio: false
+interactive: false
+---
+
+## Introducción
+
+Texto del artículo...
 ```
 
-### 2. Crear el artículo
+### Opción interactiva: HTML
 
-Puedes partir de uno de los ejemplos:
+Para artículos con JavaScript, crea una carpeta:
 
-```text
-articulos/manifiesto-editorial/index.html
-articulos/microinterfaz-demo/index.html
+```txt
+articulos/mi-articulo-interactivo/index.html
 ```
 
-También puedes abrir:
+El archivo puede empezar con metadatos:
 
-```text
-editor.html
+```html
+---
+title: Simulación interactiva
+tags: [JavaScript, Simulación, Ciencia]
+interactive: true
+---
+
+<h2>Introducción</h2>
+<p>Contenido del artículo...</p>
+<script>
+  console.log('Microinterfaz cargada');
+</script>
 ```
 
-Ese editor genera una plantilla HTML básica y el bloque JSON que deberás añadir a `posts.json`.
+---
 
-### 3. Registrar el artículo en `posts.json`
+## Publicación en GitHub Pages
 
-Añade una nueva entrada dentro del array `posts`:
+Este proyecto ya incluye un workflow en:
 
-```json
-{
-  "id": "nombre-del-articulo",
-  "title": "Título del artículo",
-  "subtitle": "Subtítulo editorial",
-  "date": "2026-06-07",
-  "category": "Física",
-  "tags": ["Ciencia", "Física", "Historia"],
-  "excerpt": "Resumen breve del artículo.",
-  "cover": "assets/media/images/default-cover.svg",
-  "url": "articulos/nombre-del-articulo/",
-  "readingTime": "12 min",
-  "audio": false,
-  "interactive": false,
-  "status": "borrador"
-}
+```txt
+.github/workflows/pages.yml
 ```
 
-## Cómo probar en local
+Pasos:
 
-Por seguridad del navegador, `fetch('assets/data/posts.json')` puede fallar si abres `index.html` directamente con doble clic. Lo correcto es levantar un servidor local.
+1. Sube el proyecto a un repositorio de GitHub.
+2. Entra en `Settings`.
+3. Entra en `Pages`.
+4. En `Build and deployment`, selecciona `GitHub Actions`.
+5. Haz un commit en `main` o `master`.
+6. GitHub ejecutará el workflow y publicará la web.
 
-Con Python:
+---
+
+## Desarrollo local
+
+Para probar la web en tu ordenador:
 
 ```bash
-python -m http.server 8000
+npm install
+npm run build:content
+npm run serve
 ```
 
 Después abre:
 
-```text
+```txt
 http://localhost:8000
 ```
 
-Con VS Code también puedes usar la extensión Live Server.
+No abras `index.html` directamente con doble clic, porque algunos navegadores bloquean la lectura de archivos JSON locales. Usa siempre un servidor local.
 
-## Cómo publicar en GitHub Pages
+---
 
-1. Crea un repositorio en GitHub.
-2. Sube todos los ficheros del proyecto.
-3. Entra en **Settings > Pages**.
-4. En **Build and deployment**, selecciona la rama principal y la carpeta raíz.
-5. Guarda la configuración.
-6. GitHub publicará la web en una URL del tipo:
+## Sobre los PDF
 
-```text
-https://usuario.github.io/nombre-del-repositorio/
-```
+El proyecto puede extraer texto de PDF, pero el PDF no es el formato ideal para convertirlo en un post web. Un PDF está pensado como formato final de página fija, por lo que puede perder columnas, saltos, estilos o disposición visual al transformarse en HTML.
 
-Después de publicar, actualiza `sitemap.xml` con la URL real.
+Recomendación:
 
-## Recomendaciones sobre audios, imágenes y peso
+- Para publicar como artículo web: usa `.docx`, `.md` o `.html`.
+- Para conservar una versión final imprimible: guarda el PDF como archivo descargable adicional.
 
-GitHub Pages funciona bien para una web estática, pero no conviene usar el repositorio como almacén masivo de audios o vídeos.
+---
 
-Recomendación inicial:
+## Sobre los documentos Word
 
-- imágenes en SVG, WebP, JPG o PNG optimizados;
-- audios en MP3 u OGG comprimido;
-- vídeos alojados externamente;
-- podcasts largos alojados en una plataforma externa y enlazados desde la web;
-- repositorio por debajo de 1 GB siempre que sea posible.
+La conversión de Word a HTML funciona mejor si el documento usa estilos semánticos.
 
-## Línea editorial inicial
+Buenas prácticas:
 
-El proyecto está orientado a piezas extensas y serias sobre:
+- Usa `Título 1`, `Título 2`, `Título 3`.
+- Evita usar tamaños de letra manuales como si fueran encabezados.
+- Usa listas reales, no guiones escritos a mano.
+- Inserta tablas reales.
+- Mantén las imágenes comprimidas.
 
-- física;
-- matemáticas;
-- química;
-- cosmología;
-- inteligencia artificial;
-- tecnología;
-- historia de la ciencia;
-- geopolítica del conocimiento;
-- cultura crítica.
+---
 
-## Convenciones recomendadas
+## Sobre audios, vídeos e imágenes
 
-### Carpetas
+Puedes guardar recursos en:
 
-Usar minúsculas, guiones y nombres descriptivos:
-
-```text
-articulos/la-maquina-de-antikythera/
-articulos/por-que-la-ia-no-es-magia/
-articulos/mapa-minimo-de-la-fisica-cuantica/
-```
-
-### Etiquetas
-
-Usar pocas etiquetas, pero consistentes:
-
-```text
-Ciencia, Física, IA, Historia, Matemáticas, Geopolítica, Tecnología
-```
-
-### Portadas
-
-Guardar portadas en:
-
-```text
+```txt
 assets/media/images/
-```
-
-### Audios
-
-Guardar audios en:
-
-```text
 assets/media/audio/
 ```
 
-Para artículos con muchos recursos, se puede crear una subcarpeta propia dentro del artículo:
+Para muchos audios largos o vídeos pesados, es mejor usar alojamiento externo y enlazarlos desde el artículo. GitHub Pages no está pensado como almacén multimedia masivo.
 
-```text
-articulos/nombre-del-articulo/media/
+---
+
+## Personalización visual
+
+Los estilos principales están en:
+
+```txt
+assets/css/styles.css
 ```
 
-## Hoja de ruta
+Variables importantes:
 
-Posibles mejoras futuras:
+```css
+--max-width: 1540px;
+--reader-width: 920px;
+--accent: #7c2d12;
+--accent-2: #1f4d4f;
+```
 
-- lector de artículos con índice lateral automático;
-- sistema de series o colecciones;
-- etiquetas jerárquicas;
-- páginas de categoría;
-- RSS estático;
-- exportación de artículos a PDF;
-- contador estimado de palabras;
-- soporte para Markdown mediante generación previa;
-- migración futura a Astro, Eleventy, Jekyll o Hugo si el volumen crece;
-- buscador avanzado con MiniSearch o Lunr;
-- comentarios externos opcionales con Giscus;
-- integración con YouTube o podcast externo.
+---
+
+## Limitaciones actuales
+
+- No hay panel de administración web.
+- La portada no puede leer carpetas por sí sola; necesita el índice generado.
+- La conversión PDF a artículo es básica.
+- Los `.docx` muy maquetados pueden necesitar ajustes.
+- Las microinterfaces complejas conviene desarrollarlas como HTML específico.
+
+---
+
+## Próximas mejoras recomendadas
+
+- Añadir paginación si la biblioteca supera varias decenas de artículos.
+- Añadir RSS automático.
+- Generar `sitemap.xml` automáticamente.
+- Añadir páginas de categoría.
+- Añadir sistema de series editoriales.
+- Añadir plantilla para bibliografía y fuentes.
+- Añadir vista de lectura con ancho ajustable.
+- Añadir soporte para portada automática desde la primera imagen del documento.
+
+---
 
 ## Licencia
 
-El código se distribuye bajo licencia MIT.
+Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefieres otra licencia abierta, como Apache 2.0.
 
-El contenido editorial —textos, audios, imágenes propias y artículos— puede quedar bajo otra licencia si se desea. Una opción razonable para textos divulgativos sería Creative Commons, pero no se ha aplicado todavía para no mezclar código y obra editorial.
+---
 
 ## Historial de versiones
 
-### v1.0.0 — Primera versión funcional
+### v0.2.0
 
-- Creada portada editorial para **Oblitus est scientia**.
-- Añadido subtítulo **Redivulgación de temática científica**.
-- Implementado mosaico de artículos.
-- Implementado buscador.
-- Implementado filtrado por etiquetas.
-- Implementado orden por fecha y título.
-- Añadido modo claro/oscuro.
-- Añadidos dos artículos de ejemplo.
-- Añadido soporte básico para audio.
-- Añadida demo de microinterfaz JavaScript.
-- Añadido editor estático para generar artículos.
-- Añadidos ficheros propios de publicación web: `404.html`, `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, favicon, `.gitignore`, `.nojekyll` y licencia MIT.
+- Eliminado el enlace visible al editor estático.
+- Eliminado el enlace visible al README desde la navegación pública.
+- Añadida arquitectura basada en carpeta `articulos/`.
+- Añadido generador de artículos desde documentos.
+- Añadido soporte para `.docx`, `.pdf`, `.md` y `.html`.
+- Añadido lector universal `articulo.html`.
+- Añadido índice lateral de capítulos.
+- Añadida función de contraer y expandir capítulos.
+- Ampliado el ancho general de la web.
+- Ajustado el título principal para evitar saltos de línea en pantallas grandes.
+- Añadida sección `Sobre la web`.
+- Añadida sección de línea editorial.
+- Añadido workflow de GitHub Actions para publicar en GitHub Pages.
+- Añadida documentación técnica y editorial.
+
+### v0.1.0
+
+- Primera maqueta estática.
+- Portada editorial.
+- Mosaico de artículos.
+- Buscador.
+- Filtros por etiquetas.
+- Modo claro/oscuro.
+- Dos artículos HTML de ejemplo.

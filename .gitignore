@@ -1,16 +1,10 @@
-# Sistema operativo
+node_modules/
 .DS_Store
 Thumbs.db
-
-# Editores
+*.log
+.env
+.env.*
+dist/
+.cache/
 .vscode/
 .idea/
-
-# Dependencias y builds futuros
-node_modules/
-dist/
-build/
-.cache/
-
-# Logs
-*.log

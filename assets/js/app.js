@@ -20,22 +20,22 @@ const els = {
 init();
 
 async function init() {
-  els.year.textContent = new Date().getFullYear();
+  if (els.year) els.year.textContent = new Date().getFullYear();
   initTheme();
   bindEvents();
 
   try {
-    const response = await fetch('assets/data/posts.json', { cache: 'no-store' });
-    if (!response.ok) throw new Error(`No se ha podido cargar posts.json (${response.status})`);
+    const response = await fetch('assets/data/articles.generated.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`No se ha podido cargar articles.generated.json (${response.status})`);
     const data = await response.json();
-    state.posts = data.posts ?? [];
+    state.posts = normalisePosts(data.articles ?? []);
     renderTopics(data.topics ?? []);
     renderTags();
     renderPosts();
   } catch (error) {
     console.error(error);
     els.count.textContent = 'Error al cargar artículos';
-    els.grid.innerHTML = `<article class="empty-state"><h3>No se pudo leer assets/data/posts.json</h3><p>Abre la web con un servidor local o revisa el fichero de datos.</p></article>`;
+    els.grid.innerHTML = `<article class="empty-state"><h3>No se pudo leer el índice de artículos</h3><p>Ejecuta <code>npm run build:content</code> o revisa <code>assets/data/articles.generated.json</code>.</p></article>`;
   }
 }
 
@@ -48,16 +48,29 @@ function bindEvents() {
     state.sort = event.target.value;
     renderPosts();
   });
-  els.themeToggle?.addEventListener('click', () => {
-    const current = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = current;
-    localStorage.setItem('oes-theme', current);
-  });
+  els.themeToggle?.addEventListener('click', toggleTheme);
 }
 
 function initTheme() {
   const saved = localStorage.getItem('oes-theme');
   if (saved) document.documentElement.dataset.theme = saved;
+}
+
+function toggleTheme() {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('oes-theme', next);
+}
+
+function normalisePosts(posts) {
+  return posts.map(post => ({
+    ...post,
+    tags: Array.isArray(post.tags) ? post.tags : [],
+    cover: post.cover || 'assets/media/images/default-cover.svg',
+    date: post.date || new Date().toISOString(),
+    url: post.url || `articulo.html?id=${encodeURIComponent(post.id)}`,
+    excerpt: post.excerpt || 'Artículo disponible en la biblioteca de Oblitus est scientia.'
+  }));
 }
 
 function renderTopics(topics) {
@@ -102,6 +115,8 @@ function renderPosts() {
       <div class="post-meta">
         <span>${formatDate(post.date)}</span>
         <span>·</span>
+        <span class="format-chip">${escapeHtml((post.format ?? 'html').toUpperCase())}</span>
+        <span>·</span>
         <span>${escapeHtml(post.readingTime ?? 'Lectura variable')}</span>
         ${post.audio ? '<span>· Audio</span>' : ''}
         ${post.interactive ? '<span>· Interactivo</span>' : ''}
@@ -109,7 +124,7 @@ function renderPosts() {
       <h3>${escapeHtml(post.title)}</h3>
       <p>${escapeHtml(post.excerpt)}</p>
       <div class="post-badges">
-        ${(post.tags ?? []).slice(0, 5).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('')}
+        ${(post.tags ?? []).slice(0, 6).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('')}
       </div>
     </a>
   `).join('');
@@ -126,6 +141,7 @@ function matchesQuery(post) {
     post.subtitle,
     post.excerpt,
     post.category,
+    post.format,
     ...(post.tags ?? [])
   ].filter(Boolean).join(' ').toLowerCase();
   return blob.includes(state.query);
@@ -138,7 +154,9 @@ function sortPosts(a, b) {
 }
 
 function formatDate(value) {
-  return new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' }).format(new Date(value));
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Sin fecha';
+  return new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' }).format(date);
 }
 
 function escapeHtml(value = '') {

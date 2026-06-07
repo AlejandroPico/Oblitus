@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artículo · Oblitus est scientia</title>
+  <meta name="description" content="Lector de artículos de Oblitus est scientia.">
+  <meta name="theme-color" content="#121212">
+  <link rel="icon" href="assets/media/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#articleContent">Saltar al artículo</a>
+
+  <header class="reader-top">
+    <nav class="topbar" aria-label="Navegación del artículo">
+      <a class="brand" href="./" aria-label="Volver al inicio">
+        <span class="brand-mark" aria-hidden="true">OES</span>
+        <span class="brand-text">Oblitus est scientia</span>
+      </a>
+      <div class="nav-actions">
+        <a href="./#articulos">Artículos</a>
+        <a href="./#sobre-web">Sobre la web</a>
+        <button id="themeToggle" class="ghost-button" type="button" aria-label="Alternar modo claro u oscuro">Modo</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="article-layout">
+    <aside class="article-tools" aria-label="Herramientas de lectura">
+      <a class="back-link" href="./#articulos">← Volver a la biblioteca</a>
+      <button id="collapseAll" class="tool-button" type="button">Contraer capítulos</button>
+      <button id="expandAll" class="tool-button" type="button">Expandir capítulos</button>
+      <nav class="toc-card" aria-labelledby="tocTitle">
+        <h2 id="tocTitle">Índice</h2>
+        <ol id="tocList"></ol>
+      </nav>
+    </aside>
+
+    <article class="article-shell">
+      <header class="article-header">
+        <p id="articleCategory" class="eyebrow">Artículo</p>
+        <h1 id="articleTitle">Cargando artículo…</h1>
+        <p id="articleSubtitle" class="article-subtitle"></p>
+        <div id="articleMeta" class="article-meta"></div>
+        <div id="articleBadges" class="post-badges"></div>
+      </header>
+      <section id="articleContent" class="article-body" aria-live="polite"></section>
+    </article>
+  </main>
+
+  <script src="assets/js/article.js" type="module"></script>
+</body>
+</html>

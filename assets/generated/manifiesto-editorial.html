@@ -1,0 +1,55 @@
+<p class="article-note">
+  Este artículo procede de un documento fuente situado en <code>articulos/</code>. En una publicación real,
+  el contenido puede venir de Word, Markdown, HTML o PDF y se convierte automáticamente durante el despliegue.
+</p>
+
+<h2>1. Propósito</h2>
+<p>
+  <strong>Oblitus est scientia</strong> nace como un archivo editorial independiente dedicado a recuperar,
+  ordenar y redivulgar conocimiento científico y técnico. La intención no es competir con una noticia breve,
+  sino construir piezas de largo recorrido: investigaciones, ensayos, series documentales y materiales de consulta.
+</p>
+<p>
+  La web busca combinar el tono de una revista seria con la libertad técnica de una página propia: texto extenso,
+  audio, imágenes, esquemas, tablas, visualizaciones y pequeñas interfaces interactivas cuando el contenido lo requiera.
+</p>
+
+<h2>2. Línea editorial</h2>
+<p>
+  La línea editorial prioriza la claridad, la profundidad y la trazabilidad de las ideas. La ciencia no se entiende aquí
+  solo como una colección de datos, sino como una forma de mirar el mundo, contrastar afirmaciones y conectar disciplinas.
+</p>
+<ul>
+  <li>Explicaciones largas cuando el tema lo necesite.</li>
+  <li>Contexto histórico y conceptual antes de la conclusión rápida.</li>
+  <li>Separación clara entre hechos, interpretación y opinión editorial.</li>
+  <li>Uso de recursos multimedia cuando aporten comprensión real.</li>
+</ul>
+
+<h2>3. Formato de publicación</h2>
+<p>
+  La primera versión de la web no necesita base de datos. Los artículos se guardan como documentos en la carpeta
+  <code>articulos/</code> y un proceso automático genera el índice que lee la portada. Así se obtiene una experiencia
+  similar a un blog, pero con coste cero y control completo sobre el diseño.
+</p>
+
+<h3>Documentos largos</h3>
+<p>
+  Para textos densos, el flujo recomendado es escribir en Word o LibreOffice usando estilos semánticos:
+  <em>Título 1</em>, <em>Título 2</em>, listas, tablas y pies de imagen. Después se sube el archivo <code>.docx</code>
+  al repositorio y se deja que la acción de GitHub genere la versión web.
+</p>
+
+<h3>Artículos interactivos</h3>
+<p>
+  Cuando un artículo necesite animaciones, controles o programas JavaScript internos, lo más limpio será crearlo como
+  una carpeta propia dentro de <code>articulos/</code>, con su <code>index.html</code> y sus recursos asociados.
+</p>
+
+<h2>4. Futuro del proyecto</h2>
+<p>
+  Esta base permite empezar sin servidor. Más adelante, si el proyecto crece, se podrá migrar a un CMS real,
+  a un sistema con base de datos o a un generador estático más avanzado sin perder la arquitectura editorial ya creada.
+</p>
+
+<audio controls="controls" src="assets/media/audio/silencio-muestra.wav" style="width:100%"></audio>

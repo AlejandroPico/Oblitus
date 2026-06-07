@@ -4,8 +4,8 @@
   "description": "Redivulgación de temática científica",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f4efe7",
-  "theme_color": "#111827",
+  "background_color": "#f3eee5",
+  "theme_color": "#121212",
   "icons": [
     {
       "src": "assets/media/images/favicon.svg",

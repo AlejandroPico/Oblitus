@@ -1,46 +1,37 @@
-# Guía editorial · Oblitus est scientia
+# Guía editorial de Oblitus est scientia
+
+## Posicionamiento
+
+Oblitus est scientia es una web de red divulgación científica, pensamiento crítico y archivo documental. La publicación puede mezclar ciencia, tecnología, política, geopolítica, historia y cultura, pero siempre con una estructura seria y verificable.
 
 ## Tono
 
-Serio, claro y documentado. La web debe parecer una publicación de archivo, no una red social ni un blog improvisado.
+- Formal, claro y documentado.
+- Profundo sin ser artificialmente oscuro.
+- Capaz de distinguir hechos, hipótesis, opinión y especulación.
+- Preferencia por artículos largos cuando el tema lo requiera.
 
-## Tipo de contenidos
-
-- Ensayos divulgativos extensos.
-- Cronologías científicas.
-- Explicaciones técnicas con ejemplos.
-- Artículos con recursos interactivos.
-- Comentarios de libros, papers, documentales o conferencias.
-- Reflexiones sobre tecnología, ciencia, sociedad y geopolítica.
-
-## Estructura recomendada para cada artículo
+## Estructura recomendada de un artículo
 
 1. Título claro.
-2. Subtítulo con la tesis del artículo.
-3. Resumen breve.
-4. Introducción contextual.
-5. Desarrollo por apartados.
-6. Bloques visuales o interactivos cuando aporten valor.
-7. Cierre con conclusiones.
-8. Referencias o lecturas recomendadas si procede.
+2. Subtítulo explicativo.
+3. Introducción breve.
+4. Índice por capítulos.
+5. Desarrollo por secciones.
+6. Recursos visuales o multimedia si aportan valor.
+7. Conclusión o cierre.
+8. Fuentes, notas o bibliografía cuando sea necesario.
 
-## Etiquetas iniciales
+## Temáticas base
 
-- Ciencia
-- Física
-- Matemáticas
-- Química
-- Inteligencia artificial
-- Tecnología
-- Historia
-- Geopolítica
-- Cultura crítica
-- Editorial
+- Física y cosmología.
+- Inteligencia artificial.
+- Matemáticas.
+- Historia de la ciencia.
+- Tecnología y sociedad.
+- Geopolítica del conocimiento.
+- Cultura crítica.
 
-## Criterio visual
+## Criterio para etiquetas
 
-- Evitar exceso de colores.
-- Priorizar lectura larga.
-- Usar imágenes con función explicativa, no decorativa.
-- Mantener títulos sobrios.
-- Reservar animaciones para explicar, no para distraer.
+Las etiquetas deben ser útiles para buscar y filtrar. Evita etiquetas demasiado vagas como `cosas`, `opinión` o `varios`. Mejor usar etiquetas como `IA`, `Física`, `Nuclear`, `Geopolítica`, `Matemáticas`, `Historia`, `JavaScript`, `Simulación`, etc.
