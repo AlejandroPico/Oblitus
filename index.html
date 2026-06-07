@@ -19,12 +19,15 @@
   <a class="skip-link" href="#articulos">Saltar a los artículos</a>
 
   <header class="site-header compact-header">
-    <nav class="topbar" aria-label="Navegación principal">
+    <nav class="topbar" aria-label="Navegación principal" data-mobile-open="false">
+      <button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="topbarMenu">
+        <span class="brand-mark" aria-hidden="true">OES</span>
+      </button>
       <a class="brand" href="./" aria-label="Inicio de Oblitus est scientia">
         <span class="brand-mark" aria-hidden="true">OES</span>
         <span class="brand-text">Oblitus est scientia</span>
       </a>
-      <div class="nav-actions">
+      <div id="topbarMenu" class="nav-actions">
         <div class="search-shell" data-open="false">
           <div id="topbarSearch" class="topbar-search" role="search" aria-hidden="true">
             <input id="searchInput" type="search" aria-label="Buscar artículos" placeholder="Buscar en artículos…" autocomplete="off">
