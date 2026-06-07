@@ -10,9 +10,9 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.6.0**
+Versión actual: **v0.7.0**
 
-Esta versión corrige la transición visual para que todos los cambios entre Auto, Día, Tarde y Noche sean suaves. También refuerza el buscador: ahora indexa el contenido interno de los artículos generados y se despliega integrado dentro de la barra superior, sin comportarse como una ventana flotante.
+Esta versión refina la barra superior: el buscador recupera una altura compacta, se abre hacia la izquierda manteniendo la lupa a la derecha y aparece como un único bloque enfatizado. Además, el lector de artículos muestra el título del documento activo en el centro de la barra superior.
 
 ---
 
@@ -20,6 +20,7 @@ Esta versión corrige la transición visual para que todos los cambios entre Aut
 
 - Portada editorial compacta con acceso inmediato a los artículos.
 - Barra superior fija con navegación, búsqueda expansible y selector de modo visual.
+- Buscador compacto integrado en la barra: input, ordenación y lupa en un solo bloque.
 - Modo visual automático según la hora local del visitante.
 - Modos manuales: automático, día, tarde y noche.
 - Transición animada entre todas las paletas, también al cambiar manualmente de modo.
@@ -28,9 +29,9 @@ Esta versión corrige la transición visual para que todos los cambios entre Aut
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de los artículos generados.
 - Filtros por etiquetas.
 - Ordenación por fecha ascendente, descendente y título.
+- Lector de artículos con título activo en la barra superior.
 - Página interna `sobre.html` para línea editorial y sistema de publicación.
 - Página interna `tematicas.html` para mapa de contenidos y criterio de etiquetas.
-- Lector universal de artículos.
 - Índice lateral automático dentro de cada artículo.
 - Capítulos contraíbles y expandibles.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML y carpetas interactivas.
@@ -106,7 +107,7 @@ El modo seleccionado se guarda en `localStorage`, por lo que el navegador recuer
 
 ## Buscador
 
-El buscador principal vive en la barra superior y se expande en línea desde el icono de lupa. Busca en:
+El buscador principal vive en la barra superior y se expande desde el extremo derecho hacia la izquierda. Busca en:
 
 - título;
 - subtítulo;
@@ -322,6 +323,15 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.7.0
+
+- Compactado el buscador superior eliminando rótulos visibles de campo y orden.
+- Corregida la dirección de apertura: el buscador se expande hacia la izquierda y la lupa permanece a la derecha.
+- Añadido un recuadro de énfasis único para agrupar input, ordenación y lupa.
+- Ajustada la altura del buscador para que no duplique la altura de la barra superior.
+- Añadido título del artículo activo en el centro de la barra superior del lector.
+- Añadida reducción de tamaño automática para títulos largos en la barra del lector.
 
 ### v0.6.0
 
