@@ -1,3 +1,5 @@
+import { initTemporalTheme } from './theme.js';
+
 const state = {
   posts: [],
   activeTag: 'Todos',
@@ -23,7 +25,7 @@ init();
 
 async function init() {
   if (els.year) els.year.textContent = new Date().getFullYear();
-  initTheme();
+  initTemporalTheme(els.themeToggle);
   bindEvents();
 
   try {
@@ -50,7 +52,6 @@ function bindEvents() {
     state.sort = event.target.value;
     renderPosts();
   });
-  els.themeToggle?.addEventListener('click', toggleTheme);
   els.searchToggle?.addEventListener('click', event => {
     event.stopPropagation();
     toggleSearchPanel();
@@ -60,17 +61,6 @@ function bindEvents() {
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') closeSearchPanel();
   });
-}
-
-function initTheme() {
-  const saved = localStorage.getItem('oes-theme');
-  if (saved) document.documentElement.dataset.theme = saved;
-}
-
-function toggleTheme() {
-  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next;
-  localStorage.setItem('oes-theme', next);
 }
 
 function toggleSearchPanel(forceOpen = null) {
