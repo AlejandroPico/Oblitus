@@ -10,21 +10,22 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.5.0**
+Versión actual: **v0.6.0**
 
-Esta versión introduce una capa estética temporal: por defecto, la web adapta su paleta cromática a la hora local del visitante mediante una transición continua de 24 horas calculada por franjas de media hora. También reduce los bordes excesivamente redondeados para conseguir una apariencia más sobria, limpia y editorial.
+Esta versión corrige la transición visual para que todos los cambios entre Auto, Día, Tarde y Noche sean suaves. También refuerza el buscador: ahora indexa el contenido interno de los artículos generados y se despliega integrado dentro de la barra superior, sin comportarse como una ventana flotante.
 
 ---
 
 ## Funcionalidades principales
 
 - Portada editorial compacta con acceso inmediato a los artículos.
-- Barra superior fija con navegación, búsqueda desplegable y selector de modo visual.
+- Barra superior fija con navegación, búsqueda expansible y selector de modo visual.
 - Modo visual automático según la hora local del visitante.
 - Modos manuales: automático, día, tarde y noche.
-- Transición suave de colores entre estados horarios.
+- Transición animada entre todas las paletas, también al cambiar manualmente de modo.
+- Paleta automática calculada sobre una línea temporal de 24 horas con base de 15 minutos.
 - Mosaico de artículos a pantalla ancha.
-- Búsqueda por título, resumen, categoría, formato y etiquetas.
+- Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de los artículos generados.
 - Filtros por etiquetas.
 - Ordenación por fecha ascendente, descendente y título.
 - Página interna `sobre.html` para línea editorial y sistema de publicación.
@@ -32,12 +33,7 @@ Esta versión introduce una capa estética temporal: por defecto, la web adapta 
 - Lector universal de artículos.
 - Índice lateral automático dentro de cada artículo.
 - Capítulos contraíbles y expandibles.
-- Soporte para artículos procedentes de:
-  - Word `.docx`.
-  - PDF `.pdf`.
-  - Markdown `.md`.
-  - HTML `.html`.
-  - Carpetas con `index.html` para piezas interactivas.
+- Soporte para artículos procedentes de Word, PDF, Markdown, HTML y carpetas interactivas.
 - Generación automática mediante GitHub Actions.
 - Preparado para GitHub Pages.
 
@@ -47,36 +43,20 @@ Esta versión introduce una capa estética temporal: por defecto, la web adapta 
 
 ```txt
 oblitus-est-scientia/
-├── .github/
-│   └── workflows/
-│       └── pages.yml
+├── .github/workflows/pages.yml
 ├── articulos/
-│   ├── README.md
-│   ├── 2026-06-07-manifiesto-editorial.md
-│   └── microinterfaz-demo/
-│       └── index.html
 ├── assets/
-│   ├── css/
-│   │   └── styles.css
-│   ├── data/
-│   │   └── articles.generated.json
+│   ├── css/styles.css
+│   ├── data/articles.generated.json
 │   ├── generated/
-│   │   ├── manifiesto-editorial.html
-│   │   └── microinterfaz-demo.html
 │   ├── js/
 │   │   ├── app.js
 │   │   ├── article.js
 │   │   ├── site.js
 │   │   └── theme.js
 │   └── media/
-│       ├── audio/
-│       └── images/
 ├── docs/
-│   ├── ARQUITECTURA.md
-│   ├── GUIA_EDITORIAL.md
-│   └── PUBLICACION.md
-├── tools/
-│   └── build-articles.mjs
+├── tools/build-articles.mjs
 ├── 404.html
 ├── articulo.html
 ├── index.html
@@ -92,8 +72,6 @@ oblitus-est-scientia/
 ---
 
 ## Arquitectura pública
-
-La interfaz visible queda organizada así:
 
 ```txt
 index.html       Portada + biblioteca de artículos
@@ -114,7 +92,7 @@ El tema visual se controla desde:
 assets/js/theme.js
 ```
 
-Por defecto funciona en modo automático. El sistema calcula la hora local del visitante y genera una paleta interpolada a partir de franjas de media hora. El resultado es una transición progresiva durante todo el día: madrugada, amanecer, mañana, mediodía, tarde, atardecer y noche.
+Por defecto funciona en modo automático. El sistema calcula la hora local del visitante y genera una paleta interpolada para una línea temporal de 24 horas. La base de cálculo trabaja sobre fracciones de 15 minutos y la página vuelve a recalcular el tema mientras permanece abierta.
 
 El botón de la barra superior alterna entre:
 
@@ -123,6 +101,23 @@ El botón de la barra superior alterna entre:
 ```
 
 El modo seleccionado se guarda en `localStorage`, por lo que el navegador recuerda la preferencia del visitante.
+
+---
+
+## Buscador
+
+El buscador principal vive en la barra superior y se expande en línea desde el icono de lupa. Busca en:
+
+- título;
+- subtítulo;
+- resumen;
+- categoría;
+- formato;
+- etiquetas;
+- nombre del archivo fuente;
+- texto interno de los artículos HTML generados.
+
+El contenido interno se indexa en segundo plano cargando los `contentUrl` presentes en `assets/data/articles.generated.json`. La búsqueda normaliza mayúsculas, acentos y espacios para que las coincidencias sean más tolerantes.
 
 ---
 
@@ -217,8 +212,6 @@ Pasos:
 
 ## Desarrollo local
 
-Para probar la web en tu ordenador:
-
 ```bash
 npm install
 npm run build:content
@@ -292,8 +285,6 @@ Variables importantes:
 --radius-sm: 4px;
 --font-title: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, 'Times New Roman', serif;
 --theme-transition: background 1400ms ease, background-color 1400ms ease, color 1400ms ease, border-color 1400ms ease, box-shadow 1400ms ease;
---accent: #7c2d12;
---accent-2: #1f4d4f;
 ```
 
 ---
@@ -306,6 +297,7 @@ Variables importantes:
 - Los `.docx` muy maquetados pueden necesitar ajustes.
 - Las microinterfaces complejas conviene desarrollarlas como HTML específico.
 - El modo automático depende de la hora local del navegador del visitante.
+- La búsqueda de texto interno se basa en los HTML generados disponibles desde `contentUrl`.
 
 ---
 
@@ -319,6 +311,7 @@ Variables importantes:
 - Añadir plantilla para bibliografía y fuentes.
 - Añadir vista de lectura con ancho ajustable.
 - Añadir soporte para portada automática desde la primera imagen del documento.
+- Crear un índice de búsqueda estático precompilado si el número de artículos crece mucho.
 
 ---
 
@@ -329,6 +322,18 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.6.0
+
+- Corregidas las transiciones manuales entre Auto, Día, Tarde y Noche para que ya no sean bruscas.
+- Añadida interpolación animada con `requestAnimationFrame` entre la paleta actual y la nueva.
+- Ajustada la línea temporal automática a una base de 15 minutos.
+- Mantenida la actualización activa mientras la página permanece abierta.
+- Convertido el buscador en un panel expansible integrado dentro de la barra superior.
+- Movida la lupa al inicio del grupo de navegación.
+- Añadida indexación del contenido interno de los artículos generados mediante `contentUrl`.
+- Mejorada la normalización de búsqueda para mayúsculas, acentos y espacios.
+- Mantenida la ordenación por fecha y título dentro del buscador expandido.
 
 ### v0.5.0
 
