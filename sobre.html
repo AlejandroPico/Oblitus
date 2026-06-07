@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sobre la web · Oblitus est scientia</title>
+  <meta name="description" content="Línea editorial, propósito y sistema de publicación de Oblitus est scientia.">
+  <meta name="theme-color" content="#121212">
+  <link rel="icon" href="assets/media/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="reader-top">
+    <nav class="topbar" aria-label="Navegación principal">
+      <a class="brand" href="./" aria-label="Inicio de Oblitus est scientia">
+        <span class="brand-mark" aria-hidden="true">OES</span>
+        <span class="brand-text">Oblitus est scientia</span>
+      </a>
+      <div class="nav-actions">
+        <a href="./#articulos">Artículos</a>
+        <a class="active" href="sobre.html">Sobre la web</a>
+        <a href="tematicas.html">Temáticas</a>
+        <button id="themeToggle" class="ghost-button" type="button" aria-label="Alternar modo claro u oscuro">Modo</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="contenido" class="static-layout">
+    <article class="static-page">
+      <header>
+        <p class="eyebrow">Identidad editorial</p>
+        <h1>Sobre la web</h1>
+        <p class="lead">
+          Oblitus est scientia nace como una biblioteca personal de red divulgativa: artículos largos,
+          investigaciones, ensayos, documentos convertidos en publicaciones web y piezas interactivas.
+        </p>
+      </header>
+
+      <section aria-labelledby="lineaEditorial">
+        <h2 id="lineaEditorial">Línea editorial</h2>
+        <p>
+          La página está pensada para publicar contenido con tono serio, estructura documental y vocación divulgativa.
+          No busca funcionar como una red social ni como un blog rápido de actualidad, sino como un archivo ordenado
+          de textos extensos sobre ciencia, tecnología, pensamiento crítico, historia, geopolítica del conocimiento e
+          inteligencia artificial.
+        </p>
+        <p>
+          La prioridad visual es que el lector entre, localice la biblioteca y pueda abrir un artículo con el menor
+          número posible de pasos. Las páginas explicativas quedan separadas para no cargar la portada con bloques
+          institucionales innecesarios.
+        </p>
+      </section>
+
+      <section aria-labelledby="publicacion">
+        <h2 id="publicacion">Sistema de publicación</h2>
+        <p>
+          Los documentos fuente se guardan en la carpeta <code>articulos/</code>. El proyecto mantiene una estructura
+          estática para GitHub Pages: los documentos se transforman en HTML y el índice generado alimenta la portada.
+        </p>
+        <ol class="process-list">
+          <li>Se escribe o prepara un documento en Word, PDF, Markdown o HTML.</li>
+          <li>El archivo se guarda dentro de <code>articulos/</code>.</li>
+          <li>El generador construye el índice de publicaciones y los HTML internos.</li>
+          <li>La portada muestra los artículos como mosaico ordenado por fecha.</li>
+          <li>El lector interno abre el contenido como una publicación propia de la web.</li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="formatos">
+        <h2 id="formatos">Formatos previstos</h2>
+        <div class="static-grid">
+          <article class="static-card">
+            <h3>Word / DOCX</h3>
+            <p>Formato recomendado para artículos largos. Funciona mejor usando estilos reales: títulos, subtítulos, listas y tablas.</p>
+          </article>
+          <article class="static-card">
+            <h3>PDF</h3>
+            <p>Útil para conservar documentos finales, aunque no siempre respeta la estructura al convertirlo a artículo web.</p>
+          </article>
+          <article class="static-card">
+            <h3>HTML interactivo</h3>
+            <p>Formato indicado para publicaciones con animaciones, simulaciones o pequeñas microinterfaces JavaScript.</p>
+          </article>
+          <article class="static-card">
+            <h3>Markdown</h3>
+            <p>Opción ligera para textos limpios, notas editoriales y documentos que no requieran maquetación compleja.</p>
+          </article>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="currentYear"></span> Oblitus est scientia · Proyecto estático preparado para GitHub Pages.</p>
+  </footer>
+
+  <script src="assets/js/site.js" type="module"></script>
+</body>
+</html>
