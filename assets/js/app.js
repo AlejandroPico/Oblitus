@@ -185,20 +185,20 @@ function renderPosts() {
 
   els.grid.innerHTML = filtered.map(post => `
     <a class="post-card" href="${escapeAttr(post.url)}">
-      <img src="${escapeAttr(post.cover)}" alt="" loading="lazy">
-      <div class="post-meta">
+      <div class="post-cover">
+        <img src="${escapeAttr(post.cover)}" alt="" loading="lazy">
+        <h3 class="post-cover-title">${escapeHtml(post.title)}</h3>
+      </div>
+      <div class="post-meta post-meta-centered">
         <span>${formatDate(post.date)}</span>
-        <span>·</span>
-        <span class="format-chip">${escapeHtml((post.format ?? 'html').toUpperCase())}</span>
         <span>·</span>
         <span>${escapeHtml(post.readingTime ?? 'Lectura variable')}</span>
         ${post.audio ? '<span>· Audio</span>' : ''}
         ${post.interactive ? '<span>· Interactivo</span>' : ''}
       </div>
-      <h3>${escapeHtml(post.title)}</h3>
-      <p>${escapeHtml(post.excerpt)}</p>
-      <div class="post-badges">
-        ${(post.tags ?? []).slice(0, 6).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('')}
+      <p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
+      <div class="post-badges post-badges-scroll" aria-label="Etiquetas del artículo">
+        ${(post.tags ?? []).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('')}
       </div>
     </a>
   `).join('');
