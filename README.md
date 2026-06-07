@@ -10,22 +10,24 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.8.0**
+Versión actual: **v0.9.0**
 
-Esta versión simplifica la navegación pública, unifica “Temáticas” dentro de “Sobre la web”, añade una presentación personal del autor y refuerza la estética recta y angulada reduciendo todavía más los radios visuales.
+Esta versión incorpora una adaptación móvil específica. En pantallas pequeñas la barra superior se reduce al botón OES, que funciona como menú desplegable vertical. En el lector móvil se conserva el botón OES y el título del artículo aparece a su derecha. También se corrige la anchura de artículos, tarjetas, tablas, imágenes y contenido generado para mejorar la lectura en móviles Android en orientación vertical.
 
 ---
 
 ## Funcionalidades principales
 
 - Portada editorial compacta con acceso inmediato a los artículos.
-- Barra superior fija con orden: búsqueda, artículos, sobre la web y modo visual.
+- Barra superior fija en escritorio y móvil.
+- Menú móvil basado en botón OES.
+- En artículos móviles, título del documento visible junto al botón OES.
 - Buscador compacto integrado en la barra: input, ordenación y lupa en un solo bloque.
 - Modo visual automático según la hora local del visitante.
 - Modos manuales: automático, día, tarde y noche.
 - Transición animada entre todas las paletas, también al cambiar manualmente de modo.
 - Paleta automática calculada sobre una línea temporal de 24 horas con base de 15 minutos.
-- Mosaico de artículos a pantalla ancha.
+- Mosaico de artículos a pantalla ancha en escritorio y a una columna en móvil.
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de los artículos generados.
 - Filtros por etiquetas.
 - Ordenación por fecha ascendente, descendente y título.
@@ -47,12 +49,15 @@ oblitus-est-scientia/
 ├── .github/workflows/pages.yml
 ├── articulos/
 ├── assets/
-│   ├── css/styles.css
+│   ├── css/
+│   │   ├── styles.css
+│   │   └── mobile.css
 │   ├── data/articles.generated.json
 │   ├── generated/
 │   ├── js/
 │   │   ├── app.js
 │   │   ├── article.js
+│   │   ├── mobile-menu.js
 │   │   ├── site.js
 │   │   └── theme.js
 │   └── media/
@@ -85,6 +90,27 @@ La portada no debe acumular bloques explicativos. Su función principal es prese
 
 ---
 
+## Adaptación móvil
+
+La adaptación móvil se concentra en:
+
+```txt
+assets/css/mobile.css
+assets/js/mobile-menu.js
+```
+
+En pantallas pequeñas:
+
+- la cabecera se reduce al botón OES;
+- el botón OES abre y cierra el menú vertical;
+- el menú incluye búsqueda, artículos, sobre la web y modo visual;
+- el lector de artículos muestra el título del artículo junto al botón OES;
+- las tarjetas pasan a una sola columna;
+- el artículo se ajusta al ancho disponible sin obligar a hacer pinza;
+- tablas, código, imágenes, vídeos, iframes y canvas quedan limitados al ancho móvil.
+
+---
+
 ## Sistema de tema temporal
 
 El tema visual se controla desde:
@@ -107,7 +133,7 @@ El modo seleccionado se guarda en `localStorage`, por lo que el navegador recuer
 
 ## Buscador
 
-El buscador principal vive en la barra superior y se sitúa antes de “Artículos”. Busca en:
+El buscador principal vive en la barra superior en escritorio y dentro del menú OES en móvil. Busca en:
 
 - título;
 - subtítulo;
@@ -240,39 +266,13 @@ Recomendación:
 
 ---
 
-## Sobre los documentos Word
-
-La conversión de Word a HTML funciona mejor si el documento usa estilos semánticos.
-
-Buenas prácticas:
-
-- Usa `Título 1`, `Título 2`, `Título 3`.
-- Evita usar tamaños de letra manuales como si fueran encabezados.
-- Usa listas reales, no guiones escritos a mano.
-- Inserta tablas reales.
-- Mantén las imágenes comprimidas.
-
----
-
-## Sobre audios, vídeos e imágenes
-
-Puedes guardar recursos en:
-
-```txt
-assets/media/images/
-assets/media/audio/
-```
-
-Para muchos audios largos o vídeos pesados, es mejor usar alojamiento externo y enlazarlos desde el artículo. GitHub Pages no está pensado como almacén multimedia masivo.
-
----
-
 ## Personalización visual
 
 Los estilos principales están en:
 
 ```txt
 assets/css/styles.css
+assets/css/mobile.css
 ```
 
 Variables importantes:
@@ -323,6 +323,17 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.9.0
+
+- Añadido `assets/css/mobile.css` para aislar la adaptación móvil.
+- Añadido `assets/js/mobile-menu.js` como controlador común del menú móvil.
+- Añadido botón OES móvil en portada, sobre la web y lector de artículos.
+- En móvil, la navegación superior se reduce al botón OES.
+- El menú OES se despliega como menú vertical.
+- En el lector móvil, el título del artículo aparece junto al botón OES.
+- Ajustada la anchura de tarjetas y artículos para móviles Android en vertical.
+- Añadidas reglas de seguridad para evitar desbordes horizontales en imágenes, tablas, código, iframes, vídeos y canvas.
 
 ### v0.8.0
 
