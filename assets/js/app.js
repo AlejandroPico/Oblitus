@@ -14,6 +14,8 @@ const els = {
   count: document.querySelector('#resultCount'),
   topics: document.querySelector('#topicList'),
   themeToggle: document.querySelector('#themeToggle'),
+  searchToggle: document.querySelector('#searchToggle'),
+  searchPanel: document.querySelector('#topbarSearch'),
   year: document.querySelector('#currentYear')
 };
 
@@ -34,7 +36,7 @@ async function init() {
     renderPosts();
   } catch (error) {
     console.error(error);
-    els.count.textContent = 'Error al cargar artículos';
+    if (els.count) els.count.textContent = 'Error al cargar artículos';
     els.grid.innerHTML = `<article class="empty-state"><h3>No se pudo leer el índice de artículos</h3><p>Ejecuta <code>npm run build:content</code> o revisa <code>assets/data/articles.generated.json</code>.</p></article>`;
   }
 }
@@ -49,6 +51,15 @@ function bindEvents() {
     renderPosts();
   });
   els.themeToggle?.addEventListener('click', toggleTheme);
+  els.searchToggle?.addEventListener('click', event => {
+    event.stopPropagation();
+    toggleSearchPanel();
+  });
+  els.searchPanel?.addEventListener('click', event => event.stopPropagation());
+  document.addEventListener('click', () => closeSearchPanel());
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeSearchPanel();
+  });
 }
 
 function initTheme() {
@@ -60,6 +71,20 @@ function toggleTheme() {
   const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
   document.documentElement.dataset.theme = next;
   localStorage.setItem('oes-theme', next);
+}
+
+function toggleSearchPanel(forceOpen = null) {
+  if (!els.searchPanel || !els.searchToggle) return;
+  const shouldOpen = forceOpen ?? els.searchPanel.hidden;
+  els.searchPanel.hidden = !shouldOpen;
+  els.searchToggle.setAttribute('aria-expanded', String(shouldOpen));
+  if (shouldOpen) requestAnimationFrame(() => els.search?.focus());
+}
+
+function closeSearchPanel() {
+  if (!els.searchPanel || !els.searchToggle || els.searchPanel.hidden) return;
+  els.searchPanel.hidden = true;
+  els.searchToggle.setAttribute('aria-expanded', 'false');
 }
 
 function normalisePosts(posts) {
@@ -106,7 +131,7 @@ function renderPosts() {
     .filter(matchesQuery)
     .sort(sortPosts);
 
-  els.count.textContent = `${filtered.length} artículo${filtered.length === 1 ? '' : 's'}`;
+  if (els.count) els.count.textContent = `${filtered.length} artículo${filtered.length === 1 ? '' : 's'}`;
   els.empty.hidden = filtered.length !== 0;
 
   els.grid.innerHTML = filtered.map(post => `
