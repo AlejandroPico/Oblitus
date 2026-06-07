@@ -4,15 +4,15 @@
 
 Oblitus est scientia es una web editorial estática preparada para GitHub Pages. Su objetivo es funcionar como una alternativa ligera a WordPress para publicar artículos largos, documentos convertidos en publicaciones web, recursos multimedia y microinterfaces JavaScript.
 
-La idea principal es sencilla: el contenido se guarda en `articulos/`, y una GitHub Action genera automáticamente el índice de publicaciones que aparece en la portada.
+La idea principal es sencilla: el contenido se guarda en `articulos/` o se sincroniza desde fuentes externas configuradas, y una GitHub Action genera automáticamente el índice de publicaciones que aparece en la portada.
 
 ---
 
 ## Estado del proyecto
 
-Versión actual: **v0.13.0**
+Versión actual: **v0.14.0**
 
-Esta versión corrige dos problemas críticos de experiencia visual: el retrato del autor pasa a usarse como JPG directo, sin SVG intermedio ni incrustaciones problemáticas, y se añade un arranque temprano del tema visual para evitar el fogonazo blanco al cambiar de página por la noche.
+Esta versión añade la primera integración con Google Drive mediante GitHub Actions. La carpeta externa `Oblitus` queda registrada en `config/drive-sources.json`; durante la publicación, el workflow ejecuta `npm run sync:drive`, descarga los HTML compatibles a `articulos/_drive/...` y después genera la biblioteca estática normal.
 
 ---
 
@@ -21,20 +21,16 @@ Esta versión corrige dos problemas críticos de experiencia visual: el retrato 
 - Portada editorial compacta con acceso inmediato a los artículos.
 - Barra superior fija en escritorio y móvil.
 - Menú móvil basado en botón OES.
-- Título móvil acoplable en portada cuando el encabezado principal sale de pantalla.
-- En artículos móviles, título del documento centrado en la barra superior.
 - Buscador compacto integrado en la barra en escritorio y dentro del menú OES en móvil.
 - Tema visual automático según la hora local del visitante.
 - Arranque temprano del tema visual antes de cargar los estilos, para evitar flashes claros en modo nocturno.
-- Modos manuales: automático, día, tarde y noche.
-- Transición animada entre todas las paletas.
 - Fichas de artículos con título superpuesto sobre la imagen.
 - Fecha y duración de lectura visibles en ficha, sin mostrar el tipo técnico de archivo.
 - Etiquetas de ficha en carril horizontal desplazable.
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de artículos generados.
-- Página interna `sobre.html` con presentación del autor, retrato, línea editorial, temáticas, etiquetas y sistema de publicación.
 - Lector de artículos con índice lateral automático y capítulos contraíbles.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML y carpetas interactivas.
+- Sincronización de HTML externos desde Google Drive mediante GitHub Actions.
 - Hoja de ruta funcional documentada en `docs/decisiones-editoriales-y-funcionales.md`.
 - Preparado para GitHub Pages.
 
@@ -46,6 +42,8 @@ Esta versión corrige dos problemas críticos de experiencia visual: el retrato 
 oblitus-est-scientia/
 ├── .github/workflows/pages.yml
 ├── articulos/
+├── config/
+│   └── drive-sources.json
 ├── assets/
 │   ├── css/
 │   │   ├── styles.css
@@ -62,11 +60,13 @@ oblitus-est-scientia/
 │   │   └── theme.js
 │   └── media/images/
 │       ├── alejandro-pico-profile.jpg
-│       ├── alejandro-pico-profile.svg
 │       └── default-cover.svg
 ├── docs/
-│   └── decisiones-editoriales-y-funcionales.md
-├── tools/build-articles.mjs
+│   ├── decisiones-editoriales-y-funcionales.md
+│   └── google-drive.md
+├── tools/
+│   ├── build-articles.mjs
+│   └── sync-drive.mjs
 ├── articulo.html
 ├── index.html
 ├── sobre.html
@@ -76,6 +76,24 @@ oblitus-est-scientia/
 ├── sitemap.xml
 └── README.md
 ```
+
+---
+
+## Google Drive
+
+La integración está documentada en:
+
+```txt
+docs/google-drive.md
+```
+
+La carpeta inicial configurada es:
+
+```txt
+https://drive.google.com/drive/folders/1eIjb899Icw7pBA5Na09a_klwL9xvNxBL
+```
+
+El workflow se ejecuta al hacer `push`, manualmente desde GitHub Actions y una vez por hora mediante programación. La web pública no lee Drive directamente; GitHub Actions descarga los HTML antes de generar la web.
 
 ---
 
@@ -105,7 +123,20 @@ El formato que se priorizará a partir de ahora será:
 articulos/mi-articulo/index.html
 ```
 
-Este formato permitirá artículos con metadatos, portada propia, capítulos, citas, notas al margen, glosario, mapas, vídeos, animaciones y microinterfaces JavaScript.
+También se aceptan HTML sincronizados desde Google Drive. Cada HTML puede incluir metadatos al principio mediante frontmatter:
+
+```html
+---
+title: Título del artículo
+tags: [IA, Ciencia, Ensayo]
+excerpt: Resumen para la ficha.
+cover: assets/media/images/default-cover.svg
+interactive: true
+---
+
+<h2>Introducción</h2>
+<p>Contenido del artículo...</p>
+```
 
 ---
 
@@ -113,6 +144,7 @@ Este formato permitirá artículos con metadatos, portada propia, capítulos, ci
 
 ```bash
 npm install
+npm run sync:drive
 npm run build:content
 npm run serve
 ```
@@ -122,8 +154,6 @@ Después abre:
 ```txt
 http://localhost:8000
 ```
-
-No abras `index.html` directamente con doble clic, porque algunos navegadores bloquean la lectura de archivos JSON locales. Usa siempre un servidor local.
 
 ---
 
@@ -140,6 +170,17 @@ Incluye: índice de lectura automático, modo lectura larga, series editoriales,
 ---
 
 ## Historial de versiones
+
+### v0.14.0
+
+- Añadida dependencia `googleapis`.
+- Añadido script `npm run sync:drive`.
+- Añadido `tools/sync-drive.mjs` para listar y descargar artículos HTML desde Google Drive.
+- Añadido `config/drive-sources.json` con la primera carpeta externa `Oblitus`.
+- Modificado el workflow de GitHub Pages para sincronizar Drive antes de `build:content`.
+- Añadida ejecución programada horaria del workflow.
+- Añadido `docs/google-drive.md` con instrucciones de seguridad y configuración.
+- Añadido `articulos/_drive/` al `.gitignore`.
 
 ### v0.13.0
 
