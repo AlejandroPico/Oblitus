@@ -1,5 +1,5 @@
 import { initTemporalTheme } from './theme.js';
-import { initMobileMenu } from './mobile-menu.js';
+import { initMobileMenu, initMobileTitleDocking } from './mobile-menu.js';
 
 const state = {
   posts: [],
@@ -30,6 +30,7 @@ async function init() {
   if (els.year) els.year.textContent = new Date().getFullYear();
   initTemporalTheme(els.themeToggle);
   initMobileMenu();
+  initMobileTitleDocking({ sourceSelector: '#siteTitle' });
   bindEvents();
 
   try {
