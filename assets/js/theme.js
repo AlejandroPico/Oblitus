@@ -28,17 +28,17 @@ const manualPalettes = {
   },
   evening: {
     colorScheme: 'light',
-    bg: '#d8c5aa',
-    bgStrong: '#c2a67e',
-    surface: '#f5e7d1',
-    surface2: '#e8d4b7',
-    text: '#1d1713',
-    muted: '#6b5644',
+    bg: '#dac3a5',
+    bgStrong: '#bd9a72',
+    surface: '#f7e5ca',
+    surface2: '#e7cfad',
+    text: '#17110d',
+    muted: '#4f3e31',
     accent: '#8e3f16',
-    accent2: '#26565a',
-    shadow: 'rgba(45, 29, 16, 0.18)',
-    lineAlpha: 0.2,
-    accentAlpha: 0.16
+    accent2: '#214d52',
+    shadow: 'rgba(45, 29, 16, 0.2)',
+    lineAlpha: 0.24,
+    accentAlpha: 0.17
   },
   night: {
     colorScheme: 'dark',
@@ -68,11 +68,17 @@ const temporalAnchors = [
   { minute: 510, palette: manualPalettes.day },
   { minute: 720, palette: manualPalettes.day },
   { minute: 885, palette: {
-    colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#655445', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.18, accentAlpha: 0.14
+    colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#5f4d3e', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.19, accentAlpha: 0.14
   }},
   { minute: 1020, palette: manualPalettes.evening },
+  { minute: 1065, palette: {
+    colorScheme: 'light', bg: '#c7aa86', bgStrong: '#a77f5b', surface: '#efd7b8', surface2: '#d8bb95', text: '#120d09', muted: '#49372a', accent: '#9b4c1c', accent2: '#1f4e54', shadow: 'rgba(38, 23, 13, 0.24)', lineAlpha: 0.28, accentAlpha: 0.18
+  }},
+  { minute: 1080, palette: {
+    colorScheme: 'dark', bg: '#1d1a22', bgStrong: '#312332', surface: '#25212a', surface2: '#302832', text: '#fbf2e8', muted: '#e2d0bd', accent: '#e08c55', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.33)', lineAlpha: 0.18, accentAlpha: 0.18
+  }},
   { minute: 1140, palette: {
-    colorScheme: 'dark', bg: '#25202a', bgStrong: '#3a2832', surface: '#2c2730', surface2: '#372e36', text: '#f3e9dd', muted: '#ceb9a7', accent: '#d78957', accent2: '#7bbfc0', shadow: 'rgba(0, 0, 0, 0.31)', lineAlpha: 0.14, accentAlpha: 0.16
+    colorScheme: 'dark', bg: '#211d27', bgStrong: '#352633', surface: '#27232c', surface2: '#332b35', text: '#f8eee4', muted: '#ddcbb9', accent: '#d78957', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.32)', lineAlpha: 0.17, accentAlpha: 0.17
   }},
   { minute: 1260, palette: manualPalettes.night },
   { minute: 1440, palette: manualPalettes.night }
