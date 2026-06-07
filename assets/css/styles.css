@@ -11,9 +11,9 @@
   --accent-2: #1f4d4f;
   --accent-soft: rgba(124, 45, 18, 0.12);
   --shadow: 0 20px 50px rgba(34, 25, 14, 0.12);
-  --radius-lg: 12px;
-  --radius-md: 8px;
-  --radius-sm: 4px;
+  --radius-lg: 4px;
+  --radius-md: 2px;
+  --radius-sm: 0px;
   --max-width: 1680px;
   --reader-width: 920px;
   --page-width: 1180px;
@@ -436,6 +436,7 @@ textarea {
 }
 
 .static-layout { width: min(100%, var(--page-width)); margin-inline: auto; padding: 0 1.2rem 4rem; }
+.redirect-layout { padding-top: 7rem; }
 .reader-top + .static-layout,
 .reader-top + .article-layout { margin-top: 5.25rem; }
 .reader-top { padding: 0 1.2rem; }
