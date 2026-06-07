@@ -6,6 +6,10 @@ const MODE_LABELS = {
   evening: '◒ Tarde',
   night: '☾ Noche'
 };
+const QUARTER_MINUTES = 15;
+const AUTO_REFRESH_MS = 60_000;
+const MANUAL_TRANSITION_MS = 1800;
+const AUTO_TRANSITION_MS = 4200;
 
 const manualPalettes = {
   day: {
@@ -53,24 +57,30 @@ const manualPalettes = {
 };
 
 const temporalAnchors = [
-  { slot: 0, palette: manualPalettes.night },
-  { slot: 10, palette: manualPalettes.night },
-  { slot: 13, palette: {
-    colorScheme: 'dark', bg: '#242026', bgStrong: '#3a2b2a', surface: '#2b2830', surface2: '#362f34', text: '#f4ebdf', muted: '#cfbba5', accent: '#d48755', accent2: '#77b8bb', shadow: 'rgba(0, 0, 0, 0.3)', lineAlpha: 0.14, accentAlpha: 0.16
+  { minute: 0, palette: manualPalettes.night },
+  { minute: 300, palette: manualPalettes.night },
+  { minute: 345, palette: {
+    colorScheme: 'dark', bg: '#1b1920', bgStrong: '#2a2023', surface: '#211f27', surface2: '#2d2730', text: '#f4ecdf', muted: '#cebba6', accent: '#cd7d4b', accent2: '#77b4b8', shadow: 'rgba(0, 0, 0, 0.32)', lineAlpha: 0.13, accentAlpha: 0.15
   }},
-  { slot: 16, palette: manualPalettes.day },
-  { slot: 24, palette: manualPalettes.day },
-  { slot: 32, palette: {
+  { minute: 420, palette: {
+    colorScheme: 'light', bg: '#dfcbb0', bgStrong: '#c7a276', surface: '#f7e8d2', surface2: '#ebd7bb', text: '#1a140f', muted: '#675342', accent: '#8c4318', accent2: '#2a565a', shadow: 'rgba(42, 27, 14, 0.17)', lineAlpha: 0.18, accentAlpha: 0.15
+  }},
+  { minute: 510, palette: manualPalettes.day },
+  { minute: 720, palette: manualPalettes.day },
+  { minute: 885, palette: {
     colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#655445', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.18, accentAlpha: 0.14
   }},
-  { slot: 38, palette: manualPalettes.evening },
-  { slot: 42, palette: {
-    colorScheme: 'dark', bg: '#1b1a22', bgStrong: '#2a2430', surface: '#22212a', surface2: '#2c2933', text: '#f2eadf', muted: '#cbb9a8', accent: '#d78c5d', accent2: '#79bdc0', shadow: 'rgba(0, 0, 0, 0.32)', lineAlpha: 0.14, accentAlpha: 0.16
+  { minute: 1020, palette: manualPalettes.evening },
+  { minute: 1140, palette: {
+    colorScheme: 'dark', bg: '#25202a', bgStrong: '#3a2832', surface: '#2c2730', surface2: '#372e36', text: '#f3e9dd', muted: '#ceb9a7', accent: '#d78957', accent2: '#7bbfc0', shadow: 'rgba(0, 0, 0, 0.31)', lineAlpha: 0.14, accentAlpha: 0.16
   }},
-  { slot: 48, palette: manualPalettes.night }
+  { minute: 1260, palette: manualPalettes.night },
+  { minute: 1440, palette: manualPalettes.night }
 ];
 
 let temporalTimer = null;
+let animationFrame = null;
+let currentPalette = null;
 
 export function initTemporalTheme(toggleButton) {
   const safeMode = MODES.includes(localStorage.getItem(STORAGE_KEY))
@@ -78,7 +88,7 @@ export function initTemporalTheme(toggleButton) {
     : 'auto';
 
   document.documentElement.dataset.themeMode = safeMode;
-  applyMode(safeMode);
+  applyMode(safeMode, { animate: false });
   updateButton(toggleButton, safeMode);
 
   toggleButton?.addEventListener('click', () => {
@@ -86,35 +96,90 @@ export function initTemporalTheme(toggleButton) {
     const next = MODES[(MODES.indexOf(current) + 1) % MODES.length];
     localStorage.setItem(STORAGE_KEY, next);
     document.documentElement.dataset.themeMode = next;
-    applyMode(next);
+    applyMode(next, { animate: true });
     updateButton(toggleButton, next);
   });
 }
 
-function applyMode(mode) {
+function applyMode(mode, options = {}) {
   clearTemporalTimer();
+  cancelPaletteAnimation();
 
   if (mode === 'auto') {
-    applyTemporalPalette();
-    temporalTimer = window.setInterval(applyTemporalPalette, 60_000);
+    applyTemporalPalette(options.animate ? MANUAL_TRANSITION_MS : 0);
+    temporalTimer = window.setInterval(() => applyTemporalPalette(AUTO_TRANSITION_MS), AUTO_REFRESH_MS);
     return;
   }
 
-  applyPalette(manualPalettes[mode] ?? manualPalettes.day, mode);
+  const target = manualPalettes[mode] ?? manualPalettes.day;
+  applyOrAnimatePalette(target, mode, options.animate ? MANUAL_TRANSITION_MS : 0);
 }
 
-function applyTemporalPalette() {
-  const now = new Date();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
-  const minuteProgress = minute / 30;
-  const slot = hour * 2 + Math.floor(minute / 30);
-  const current = temporalAnchors.findLast(anchor => anchor.slot <= slot) ?? temporalAnchors[0];
-  const next = temporalAnchors.find(anchor => anchor.slot > slot) ?? temporalAnchors.at(-1);
-  const span = Math.max(1, next.slot - current.slot);
-  const progress = ((slot - current.slot) + minuteProgress) / span;
-  const palette = mixPalettes(current.palette, next.palette, clamp(progress, 0, 1));
-  applyPalette(palette, palette.colorScheme === 'dark' ? 'dark' : 'light');
+function applyTemporalPalette(duration = AUTO_TRANSITION_MS) {
+  const target = getTemporalPalette(new Date());
+  applyOrAnimatePalette(target, target.colorScheme === 'dark' ? 'dark' : 'light', duration);
+}
+
+function getTemporalPalette(date) {
+  const minuteOfDay = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
+  const snappedMinute = Math.floor(minuteOfDay / QUARTER_MINUTES) * QUARTER_MINUTES;
+  const offsetInsideQuarter = minuteOfDay - snappedMinute;
+  const quantisedMinute = snappedMinute + offsetInsideQuarter;
+  const current = findAnchorBefore(quantisedMinute);
+  const next = findAnchorAfter(quantisedMinute);
+  const span = Math.max(1, next.minute - current.minute);
+  const progress = clamp((quantisedMinute - current.minute) / span, 0, 1);
+  return mixPalettes(current.palette, next.palette, smoothstep(progress));
+}
+
+function findAnchorBefore(minute) {
+  for (let index = temporalAnchors.length - 1; index >= 0; index -= 1) {
+    if (temporalAnchors[index].minute <= minute) return temporalAnchors[index];
+  }
+  return temporalAnchors[0];
+}
+
+function findAnchorAfter(minute) {
+  for (const anchor of temporalAnchors) {
+    if (anchor.minute > minute) return anchor;
+  }
+  return temporalAnchors.at(-1);
+}
+
+function applyOrAnimatePalette(target, renderedMode, duration) {
+  if (!currentPalette || duration <= 0) {
+    applyPalette(target, renderedMode);
+    currentPalette = clonePalette(target);
+    return;
+  }
+
+  animatePalette(currentPalette, target, renderedMode, duration);
+}
+
+function animatePalette(from, to, renderedMode, duration) {
+  cancelPaletteAnimation();
+  const startedAt = performance.now();
+  const start = clonePalette(from);
+  const end = clonePalette(to);
+
+  const tick = now => {
+    const progress = clamp((now - startedAt) / duration, 0, 1);
+    const eased = smoothstep(progress);
+    const frame = mixPalettes(start, end, eased);
+    applyPalette(frame, progress < 1 ? frame.colorScheme : renderedMode);
+    currentPalette = clonePalette(frame);
+
+    if (progress < 1) {
+      animationFrame = requestAnimationFrame(tick);
+      return;
+    }
+
+    applyPalette(end, renderedMode);
+    currentPalette = clonePalette(end);
+    animationFrame = null;
+  };
+
+  animationFrame = requestAnimationFrame(tick);
 }
 
 function applyPalette(palette, renderedMode) {
@@ -143,6 +208,12 @@ function clearTemporalTimer() {
   temporalTimer = null;
 }
 
+function cancelPaletteAnimation() {
+  if (!animationFrame) return;
+  cancelAnimationFrame(animationFrame);
+  animationFrame = null;
+}
+
 function updateButton(button, mode) {
   if (!button) return;
   button.textContent = MODE_LABELS[mode] ?? MODE_LABELS.auto;
@@ -152,7 +223,7 @@ function updateButton(button, mode) {
 
 function mixPalettes(a, b, amount) {
   return {
-    colorScheme: amount < 0.58 ? a.colorScheme : b.colorScheme,
+    colorScheme: amount < 0.5 ? a.colorScheme : b.colorScheme,
     bg: mixHex(a.bg, b.bg, amount),
     bgStrong: mixHex(a.bgStrong, b.bgStrong, amount),
     surface: mixHex(a.surface, b.surface, amount),
@@ -165,6 +236,10 @@ function mixPalettes(a, b, amount) {
     lineAlpha: lerp(a.lineAlpha, b.lineAlpha, amount),
     accentAlpha: lerp(a.accentAlpha, b.accentAlpha, amount)
   };
+}
+
+function clonePalette(palette) {
+  return { ...palette };
 }
 
 function mixHex(a, b, amount) {
@@ -209,6 +284,11 @@ function parseRgba(value) {
 
 function lerp(a, b, amount) {
   return a + (b - a) * amount;
+}
+
+function smoothstep(value) {
+  const amount = clamp(value, 0, 1);
+  return amount * amount * (3 - 2 * amount);
 }
 
 function clamp(value, min, max) {
