@@ -1,66 +1,28 @@
-.author-profile,
 .static-page section[aria-labelledby="autor"] {
-  display: grid;
-  grid-template-columns: minmax(240px, 0.7fr) minmax(0, 1.45fr);
-  gap: clamp(1rem, 3vw, 2rem);
-  align-items: center;
+  display: flow-root;
 }
 
 .static-page section[aria-labelledby="autor"]::before {
   content: '';
-  display: block;
-  align-self: start;
-  min-height: 320px;
+  float: left;
+  width: min(38%, 360px);
+  min-width: 260px;
+  aspect-ratio: 560 / 452;
+  margin: 0.2rem clamp(1rem, 3vw, 2rem) 1rem 0;
   border: 1px solid var(--line);
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--surface-2), var(--accent-soft) 28%), var(--surface)),
-    url('../media/images/alejandro-pico-profile.svg') center bottom / contain no-repeat;
+    url('../media/images/alejandro-pico-profile.svg') center center / contain no-repeat;
   box-shadow: var(--shadow);
   transition: var(--theme-transition);
 }
 
-.author-portrait-card {
-  position: relative;
-  align-self: start;
-  overflow: hidden;
-  padding: clamp(0.85rem, 2vw, 1.15rem);
-  border: 1px solid var(--line);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--surface-2), var(--accent-soft) 28%), var(--surface));
-  box-shadow: var(--shadow);
-  transition: var(--theme-transition);
-}
-
-.author-portrait-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--line), transparent 35%) 1px, transparent 1px),
-    linear-gradient(180deg, color-mix(in srgb, var(--line), transparent 35%) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.22;
-  pointer-events: none;
-}
-
-.author-portrait-card img {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.22));
-}
-
-.author-copy {
-  display: grid;
-  gap: 0.8rem;
-}
-
-.author-copy h2,
 .static-page section[aria-labelledby="autor"] h2 {
   margin-top: 0;
+}
+
+.static-page section[aria-labelledby="autor"] p {
+  margin-top: 0.85rem;
 }
 
 .post-card {
@@ -148,15 +110,12 @@
 }
 
 @media (max-width: 860px) {
-  .author-profile,
-  .static-page section[aria-labelledby="autor"] {
-    grid-template-columns: 1fr;
-  }
-
-  .author-portrait-card,
   .static-page section[aria-labelledby="autor"]::before {
+    float: none;
+    display: block;
     width: min(100%, 420px);
-    justify-self: center;
+    min-width: 0;
+    margin: 0 auto 1.2rem;
   }
 }
 
@@ -176,9 +135,5 @@
 
   .post-badges-scroll {
     mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 1.4rem), transparent);
-  }
-
-  .static-page section[aria-labelledby="autor"]::before {
-    min-height: 280px;
   }
 }
