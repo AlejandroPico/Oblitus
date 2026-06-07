@@ -10,16 +10,16 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.7.0**
+Versión actual: **v0.8.0**
 
-Esta versión refina la barra superior: el buscador recupera una altura compacta, se abre hacia la izquierda manteniendo la lupa a la derecha y aparece como un único bloque enfatizado. Además, el lector de artículos muestra el título del documento activo en el centro de la barra superior.
+Esta versión simplifica la navegación pública, unifica “Temáticas” dentro de “Sobre la web”, añade una presentación personal del autor y refuerza la estética recta y angulada reduciendo todavía más los radios visuales.
 
 ---
 
 ## Funcionalidades principales
 
 - Portada editorial compacta con acceso inmediato a los artículos.
-- Barra superior fija con navegación, búsqueda expansible y selector de modo visual.
+- Barra superior fija con orden: búsqueda, artículos, sobre la web y modo visual.
 - Buscador compacto integrado en la barra: input, ordenación y lupa en un solo bloque.
 - Modo visual automático según la hora local del visitante.
 - Modos manuales: automático, día, tarde y noche.
@@ -30,8 +30,8 @@ Esta versión refina la barra superior: el buscador recupera una altura compacta
 - Filtros por etiquetas.
 - Ordenación por fecha ascendente, descendente y título.
 - Lector de artículos con título activo en la barra superior.
-- Página interna `sobre.html` para línea editorial y sistema de publicación.
-- Página interna `tematicas.html` para mapa de contenidos y criterio de etiquetas.
+- Página interna `sobre.html` con presentación del autor, línea editorial, temáticas, etiquetas y sistema de publicación.
+- `tematicas.html` redirige a `sobre.html#tematicasBase` para no romper enlaces antiguos.
 - Índice lateral automático dentro de cada artículo.
 - Capítulos contraíbles y expandibles.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML y carpetas interactivas.
@@ -76,8 +76,8 @@ oblitus-est-scientia/
 
 ```txt
 index.html       Portada + biblioteca de artículos
-sobre.html       Línea editorial, propósito y publicación
-tematicas.html   Mapa de temáticas y criterio de etiquetas
+sobre.html       Presentación, línea editorial, temáticas y publicación
+tematicas.html   Redirección interna a sobre.html#tematicasBase
 articulo.html    Lector interno de artículos generados
 ```
 
@@ -107,7 +107,7 @@ El modo seleccionado se guarda en `localStorage`, por lo que el navegador recuer
 
 ## Buscador
 
-El buscador principal vive en la barra superior y se expande desde el extremo derecho hacia la izquierda. Busca en:
+El buscador principal vive en la barra superior y se sitúa antes de “Artículos”. Busca en:
 
 - título;
 - subtítulo;
@@ -281,9 +281,9 @@ Variables importantes:
 --max-width: 1680px;
 --reader-width: 920px;
 --page-width: 1180px;
---radius-lg: 12px;
---radius-md: 8px;
---radius-sm: 4px;
+--radius-lg: 4px;
+--radius-md: 2px;
+--radius-sm: 0px;
 --font-title: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, 'Times New Roman', serif;
 --theme-transition: background 1400ms ease, background-color 1400ms ease, color 1400ms ease, border-color 1400ms ease, box-shadow 1400ms ease;
 ```
@@ -323,6 +323,16 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.8.0
+
+- Movido el buscador al inicio de la navegación, antes de “Artículos”.
+- Eliminado el enlace público independiente a “Temáticas”.
+- Unificada la página de temáticas dentro de `sobre.html`.
+- Añadida presentación personal de Alejandro Picó en “Sobre la web”.
+- Convertido `tematicas.html` en redirección a `sobre.html#tematicasBase`.
+- Actualizado `sitemap.xml` para publicar solo portada y `sobre.html`.
+- Reducidos los radios globales a una estética más recta y angulada.
 
 ### v0.7.0
 
