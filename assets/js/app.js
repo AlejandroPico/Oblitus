@@ -1,4 +1,5 @@
 import { initTemporalTheme } from './theme.js';
+import { initMobileMenu } from './mobile-menu.js';
 
 const state = {
   posts: [],
@@ -28,6 +29,7 @@ init();
 async function init() {
   if (els.year) els.year.textContent = new Date().getFullYear();
   initTemporalTheme(els.themeToggle);
+  initMobileMenu();
   bindEvents();
 
   try {
