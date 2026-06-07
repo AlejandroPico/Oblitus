@@ -4,7 +4,8 @@ const state = {
   posts: [],
   activeTag: 'Todos',
   query: '',
-  sort: 'newest'
+  sort: 'newest',
+  contentIndexReady: false
 };
 
 const els = {
@@ -18,6 +19,7 @@ const els = {
   themeToggle: document.querySelector('#themeToggle'),
   searchToggle: document.querySelector('#searchToggle'),
   searchPanel: document.querySelector('#topbarSearch'),
+  searchShell: document.querySelector('.search-shell'),
   year: document.querySelector('#currentYear')
 };
 
@@ -36,6 +38,7 @@ async function init() {
     renderTopics(data.topics ?? []);
     renderTags();
     renderPosts();
+    hydrateContentSearchIndex();
   } catch (error) {
     console.error(error);
     if (els.count) els.count.textContent = 'Error al cargar artículos';
@@ -45,7 +48,7 @@ async function init() {
 
 function bindEvents() {
   els.search?.addEventListener('input', event => {
-    state.query = event.target.value.trim().toLowerCase();
+    state.query = normaliseSearchText(event.target.value);
     renderPosts();
   });
   els.sort?.addEventListener('change', event => {
@@ -64,28 +67,78 @@ function bindEvents() {
 }
 
 function toggleSearchPanel(forceOpen = null) {
-  if (!els.searchPanel || !els.searchToggle) return;
-  const shouldOpen = forceOpen ?? els.searchPanel.hidden;
-  els.searchPanel.hidden = !shouldOpen;
+  if (!els.searchPanel || !els.searchToggle || !els.searchShell) return;
+  const isOpen = els.searchShell.dataset.open === 'true';
+  const shouldOpen = forceOpen ?? !isOpen;
+  els.searchShell.dataset.open = String(shouldOpen);
+  els.searchPanel.setAttribute('aria-hidden', String(!shouldOpen));
   els.searchToggle.setAttribute('aria-expanded', String(shouldOpen));
+  els.searchToggle.setAttribute('aria-label', shouldOpen ? 'Cerrar buscador' : 'Abrir buscador');
   if (shouldOpen) requestAnimationFrame(() => els.search?.focus());
 }
 
 function closeSearchPanel() {
-  if (!els.searchPanel || !els.searchToggle || els.searchPanel.hidden) return;
-  els.searchPanel.hidden = true;
-  els.searchToggle.setAttribute('aria-expanded', 'false');
+  if (!els.searchShell || els.searchShell.dataset.open !== 'true') return;
+  els.searchShell.dataset.open = 'false';
+  els.searchPanel?.setAttribute('aria-hidden', 'true');
+  els.searchToggle?.setAttribute('aria-expanded', 'false');
+  els.searchToggle?.setAttribute('aria-label', 'Abrir buscador');
 }
 
 function normalisePosts(posts) {
-  return posts.map(post => ({
-    ...post,
-    tags: Array.isArray(post.tags) ? post.tags : [],
-    cover: post.cover || 'assets/media/images/default-cover.svg',
-    date: post.date || new Date().toISOString(),
-    url: post.url || `articulo.html?id=${encodeURIComponent(post.id)}`,
-    excerpt: post.excerpt || 'Artículo disponible en la biblioteca de Oblitus est scientia.'
-  }));
+  return posts.map(post => {
+    const normalised = {
+      ...post,
+      tags: Array.isArray(post.tags) ? post.tags : [],
+      cover: post.cover || 'assets/media/images/default-cover.svg',
+      date: post.date || new Date().toISOString(),
+      url: post.url || `articulo.html?id=${encodeURIComponent(post.id)}`,
+      excerpt: post.excerpt || 'Artículo disponible en la biblioteca de Oblitus est scientia.'
+    };
+
+    normalised.searchText = buildMetadataSearchText(normalised);
+    normalised.contentText = '';
+    normalised.contentIndexed = false;
+    return normalised;
+  });
+}
+
+async function hydrateContentSearchIndex() {
+  const jobs = state.posts.map(async post => {
+    if (!post.contentUrl) return;
+    try {
+      const response = await fetch(post.contentUrl, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`No se pudo indexar ${post.contentUrl}`);
+      const html = await response.text();
+      post.contentText = extractSearchTextFromHtml(html);
+      post.contentIndexed = true;
+    } catch (error) {
+      console.warn(error);
+    }
+  });
+
+  await Promise.allSettled(jobs);
+  state.contentIndexReady = true;
+  if (state.query) renderPosts();
+}
+
+function buildMetadataSearchText(post) {
+  return normaliseSearchText([
+    post.title,
+    post.subtitle,
+    post.excerpt,
+    post.category,
+    post.format,
+    post.readingTime,
+    post.sourceFile,
+    ...(post.tags ?? [])
+  ].filter(Boolean).join(' '));
+}
+
+function extractSearchTextFromHtml(html) {
+  const documentFragment = new DOMParser().parseFromString(html, 'text/html');
+  documentFragment.querySelectorAll('script, style, noscript, svg').forEach(node => node.remove());
+  return normaliseSearchText(documentFragment.body?.textContent || documentFragment.documentElement?.textContent || '');
 }
 
 function renderTopics(topics) {
@@ -121,7 +174,10 @@ function renderPosts() {
     .filter(matchesQuery)
     .sort(sortPosts);
 
-  if (els.count) els.count.textContent = `${filtered.length} artículo${filtered.length === 1 ? '' : 's'}`;
+  if (els.count) {
+    const suffix = state.contentIndexReady ? '' : ' · indexando contenido interno';
+    els.count.textContent = `${filtered.length} artículo${filtered.length === 1 ? '' : 's'}${suffix}`;
+  }
   els.empty.hidden = filtered.length !== 0;
 
   els.grid.innerHTML = filtered.map(post => `
@@ -151,15 +207,11 @@ function matchesTag(post) {
 
 function matchesQuery(post) {
   if (!state.query) return true;
-  const blob = [
-    post.title,
-    post.subtitle,
-    post.excerpt,
-    post.category,
-    post.format,
-    ...(post.tags ?? [])
-  ].filter(Boolean).join(' ').toLowerCase();
-  return blob.includes(state.query);
+  const haystack = `${post.searchText} ${post.contentText}`;
+  if (haystack.includes(state.query)) return true;
+
+  const terms = state.query.split(' ').filter(term => term.length > 1);
+  return terms.length > 0 && terms.every(term => haystack.includes(term));
 }
 
 function sortPosts(a, b) {
@@ -172,6 +224,16 @@ function formatDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return 'Sin fecha';
   return new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' }).format(date);
+}
+
+function normaliseSearchText(value = '') {
+  return String(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9ñçü\s.-]/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function escapeHtml(value = '') {
