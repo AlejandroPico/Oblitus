@@ -1,0 +1,14 @@
+{
+  "sources": [
+    {
+      "id": "google-drive-oblitus",
+      "name": "Oblitus · Google Drive",
+      "provider": "google-drive",
+      "folderUrl": "https://drive.google.com/drive/folders/1eIjb899Icw7pBA5Na09a_klwL9xvNxBL?usp=drive_link",
+      "folderId": "1eIjb899Icw7pBA5Na09a_klwL9xvNxBL",
+      "enabled": true,
+      "recursive": false,
+      "targetDir": "articulos/_drive/google-drive-oblitus"
+    }
+  ]
+}
