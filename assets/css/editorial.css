@@ -1,8 +1,22 @@
-.author-profile {
+.author-profile,
+.static-page section[aria-labelledby="autor"] {
   display: grid;
   grid-template-columns: minmax(240px, 0.7fr) minmax(0, 1.45fr);
   gap: clamp(1rem, 3vw, 2rem);
   align-items: center;
+}
+
+.static-page section[aria-labelledby="autor"]::before {
+  content: '';
+  display: block;
+  align-self: start;
+  min-height: 320px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-2), var(--accent-soft) 28%), var(--surface)),
+    url('../media/images/alejandro-pico-profile.svg') center bottom / contain no-repeat;
+  box-shadow: var(--shadow);
+  transition: var(--theme-transition);
 }
 
 .author-portrait-card {
@@ -44,7 +58,8 @@
   gap: 0.8rem;
 }
 
-.author-copy h2 {
+.author-copy h2,
+.static-page section[aria-labelledby="autor"] h2 {
   margin-top: 0;
 }
 
@@ -133,11 +148,13 @@
 }
 
 @media (max-width: 860px) {
-  .author-profile {
+  .author-profile,
+  .static-page section[aria-labelledby="autor"] {
     grid-template-columns: 1fr;
   }
 
-  .author-portrait-card {
+  .author-portrait-card,
+  .static-page section[aria-labelledby="autor"]::before {
     width: min(100%, 420px);
     justify-self: center;
   }
@@ -159,5 +176,9 @@
 
   .post-badges-scroll {
     mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 1.4rem), transparent);
+  }
+
+  .static-page section[aria-labelledby="autor"]::before {
+    min-height: 280px;
   }
 }
