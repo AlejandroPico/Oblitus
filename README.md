@@ -10,22 +10,22 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.2.0**
+Versión actual: **v0.3.0**
 
-Esta versión elimina el editor visible de la primera maqueta y orienta el proyecto hacia un flujo real de publicación mediante documentos.
+Esta versión reorganiza la interfaz pública: la portada queda centrada en el título, el subtítulo, la presentación breve y la biblioteca de artículos. Las explicaciones editoriales pasan a páginas internas para que el contenido esté visible con un solo clic desde la entrada.
 
 ---
 
 ## Funcionalidades principales
 
-- Portada editorial con diseño serio y ancho ampliado.
+- Portada editorial compacta con acceso inmediato a la biblioteca.
 - Mosaico de artículos a pantalla ancha.
 - Búsqueda por título, resumen, categoría, formato y etiquetas.
 - Filtros por etiquetas.
 - Ordenación por fecha ascendente, descendente y título.
 - Modo claro/oscuro.
-- Sección de línea editorial.
-- Sección de temáticas base.
+- Página interna `sobre.html` para línea editorial y sistema de publicación.
+- Página interna `tematicas.html` para mapa de contenidos y criterio de etiquetas.
 - Lector universal de artículos.
 - Índice lateral automático dentro de cada artículo.
 - Capítulos contraíbles y expandibles.
@@ -62,7 +62,8 @@ oblitus-est-scientia/
 │   │   └── microinterfaz-demo.html
 │   ├── js/
 │   │   ├── app.js
-│   │   └── article.js
+│   │   ├── article.js
+│   │   └── site.js
 │   └── media/
 │       ├── audio/
 │       └── images/
@@ -75,12 +76,29 @@ oblitus-est-scientia/
 ├── 404.html
 ├── articulo.html
 ├── index.html
+├── sobre.html
+├── tematicas.html
 ├── manifest.webmanifest
 ├── package.json
 ├── robots.txt
 ├── sitemap.xml
 └── README.md
 ```
+
+---
+
+## Arquitectura pública
+
+La interfaz visible queda organizada así:
+
+```txt
+index.html       Portada + biblioteca de artículos
+sobre.html       Línea editorial, propósito y publicación
+tematicas.html   Mapa de temáticas y criterio de etiquetas
+articulo.html    Lector interno de artículos generados
+```
+
+La portada no debe acumular bloques explicativos. Su función principal es presentar el proyecto y llevar al lector a los artículos publicados sin fricción.
 
 ---
 
@@ -242,8 +260,9 @@ assets/css/styles.css
 Variables importantes:
 
 ```css
---max-width: 1540px;
+--max-width: 1680px;
 --reader-width: 920px;
+--page-width: 1180px;
 --accent: #7c2d12;
 --accent-2: #1f4d4f;
 ```
@@ -280,6 +299,18 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.3.0
+
+- Reorganizada la portada para que el contenido principal sea la biblioteca de artículos.
+- Eliminados los botones redundantes de la cabecera hero.
+- Eliminadas de la portada las tarjetas de línea editorial, publicación y formatos.
+- Movida la explicación editorial a `sobre.html`.
+- Movido el mapa de temáticas a `tematicas.html`.
+- Unificada la navegación pública entre portada, lector y páginas internas.
+- Añadido `assets/js/site.js` para compartir el modo claro/oscuro en páginas estáticas.
+- Aumentado el ancho máximo general de la web a `1680px`.
+- Ajustada la cabecera para reducir scroll inicial y acercar la biblioteca al primer pantallazo.
 
 ### v0.2.0
 
