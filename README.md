@@ -10,9 +10,9 @@ La idea principal es sencilla: el contenido se guarda en la carpeta `articulos/`
 
 ## Estado del proyecto
 
-Versión actual: **v0.9.0**
+Versión actual: **v0.10.0**
 
-Esta versión incorpora una adaptación móvil específica. En pantallas pequeñas la barra superior se reduce al botón OES, que funciona como menú desplegable vertical. En el lector móvil se conserva el botón OES y el título del artículo aparece a su derecha. También se corrige la anchura de artículos, tarjetas, tablas, imágenes y contenido generado para mejorar la lectura en móviles Android en orientación vertical.
+Esta versión refina la experiencia móvil: en la portada, el título “Oblitus est scientia” se acopla de forma animada dentro de la barra superior cuando el título grande deja de verse durante el scroll. Al volver al inicio, desaparece de la barra para que el protagonismo vuelva al título principal. En el lector móvil, el título del artículo queda centrado horizontalmente dentro de la barra.
 
 ---
 
@@ -21,8 +21,9 @@ Esta versión incorpora una adaptación móvil específica. En pantallas pequeñ
 - Portada editorial compacta con acceso inmediato a los artículos.
 - Barra superior fija en escritorio y móvil.
 - Menú móvil basado en botón OES.
-- En artículos móviles, título del documento visible junto al botón OES.
-- Buscador compacto integrado en la barra: input, ordenación y lupa en un solo bloque.
+- Título móvil acoplable en portada cuando el encabezado principal sale de pantalla.
+- En artículos móviles, título del documento centrado en la barra superior.
+- Buscador compacto integrado en la barra en escritorio y dentro del menú OES en móvil.
 - Modo visual automático según la hora local del visitante.
 - Modos manuales: automático, día, tarde y noche.
 - Transición animada entre todas las paletas, también al cambiar manualmente de modo.
@@ -104,7 +105,8 @@ En pantallas pequeñas:
 - la cabecera se reduce al botón OES;
 - el botón OES abre y cierra el menú vertical;
 - el menú incluye búsqueda, artículos, sobre la web y modo visual;
-- el lector de artículos muestra el título del artículo junto al botón OES;
+- el título principal de la portada se acopla a la barra cuando deja de verse en pantalla;
+- el lector de artículos muestra el título centrado en la barra superior;
 - las tarjetas pasan a una sola columna;
 - el artículo se ajusta al ancho disponible sin obligar a hacer pinza;
 - tablas, código, imágenes, vídeos, iframes y canvas quedan limitados al ancho móvil.
@@ -323,6 +325,15 @@ Este proyecto incluye una licencia MIT por defecto. Puedes cambiarla si prefiere
 ---
 
 ## Historial de versiones
+
+### v0.10.0
+
+- Añadido título móvil acoplable en portada mediante `IntersectionObserver`.
+- El título “Oblitus est scientia” aparece en la barra móvil cuando el título principal deja de verse.
+- El título móvil desaparece al volver al inicio de la portada.
+- Añadida animación de entrada con opacidad, desplazamiento vertical y escala.
+- Centrado horizontalmente el título del artículo dentro de la barra móvil del lector.
+- Mantenida intacta la búsqueda móvil, que ya funcionaba correctamente.
 
 ### v0.9.0
 
