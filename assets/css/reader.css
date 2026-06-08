@@ -2,15 +2,73 @@
   max-height: calc(100vh - 7rem);
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.article-tools::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .toc-card ol {
+  counter-reset: toc;
+  display: grid;
+  gap: 0.32rem;
   max-height: calc(100vh - 15rem);
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 0.35rem;
-  scrollbar-width: thin;
+  padding: 0 0.2rem 0 0;
+  margin: 0;
+  list-style: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.toc-card ol::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.toc-card li {
+  counter-increment: toc;
+  display: grid;
+  grid-template-columns: 2.55rem minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: start;
+}
+
+.toc-card li::before {
+  content: counter(toc, decimal-leading-zero);
+  min-width: 2.55rem;
+  padding-top: 0.08rem;
+  color: var(--accent);
+  font: 800 0.72rem var(--font-sans);
+  letter-spacing: 0.08em;
+  opacity: 0.86;
+}
+
+.toc-card li.toc-h3 {
+  grid-template-columns: 2.55rem minmax(0, 1fr);
+  padding-left: 0.85rem;
+}
+
+.toc-card a {
+  display: block;
+  min-width: 0;
+  padding: 0.18rem 0.35rem 0.24rem;
+  border-radius: var(--radius-sm);
+  line-height: 1.25;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  transition: var(--theme-transition), background-color 160ms ease;
+}
+
+.toc-card a.is-active {
+  color: var(--text);
+  background: var(--accent-soft);
 }
 
 .article-layout.is-standalone {
@@ -73,48 +131,4 @@
     border-right: 0;
     border-radius: 0;
   }
-}
-
-/* v0.16.0 - soporte editorial para artículos convertidos a fragmentos HTML limpios */
-.article-body .research-lead {
-  font-family: var(--font-title);
-  font-size: clamp(1.18rem, 1.9vw, 1.55rem);
-  color: var(--accent-2);
-  margin-bottom: 1.4rem;
-}
-.article-body .table-wrap {
-  max-width: 100%;
-  overflow-x: auto;
-  margin: 1.2rem 0;
-}
-.article-body .reference-list {
-  font-family: var(--font-sans);
-  font-size: 0.98rem;
-  overflow-wrap: anywhere;
-}
-.article-body .citation {
-  color: var(--accent);
-  font-family: var(--font-sans);
-  font-size: 0.72em;
-}
-.article-body .article-list {
-  padding-left: 1.35rem;
-}
-.article-body iframe {
-  display: block;
-  width: 100%;
-  max-width: 760px;
-  aspect-ratio: 16 / 9;
-  height: auto;
-  margin: 1rem 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: #000;
-}
-.article-body canvas {
-  width: 100%;
-  max-width: 100%;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
 }
