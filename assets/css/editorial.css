@@ -3,21 +3,28 @@
 }
 
 .static-page section[aria-labelledby="autor"]::before {
-  content: '';
+  display: none;
+}
+
+.author-portrait {
   float: left;
-  width: min(38%, 360px);
-  min-width: 260px;
-  aspect-ratio: 2048 / 1362;
+  width: min(42%, 420px);
+  min-width: 280px;
   margin: 0.2rem clamp(1rem, 3vw, 2rem) 1rem 0;
   border: 1px solid var(--line);
-  background-image:
-    url('../media/images/alejandro-pico-profile.jpg'),
-    linear-gradient(135deg, color-mix(in srgb, var(--surface-2), var(--accent-soft) 28%), var(--surface));
-  background-position: center center, center center;
-  background-size: cover, cover;
-  background-repeat: no-repeat, no-repeat;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--surface-2), var(--accent-soft) 28%), var(--surface));
   box-shadow: var(--shadow);
+  overflow: hidden;
   transition: var(--theme-transition);
+}
+
+.author-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2048 / 1362;
+  object-fit: contain;
 }
 
 .static-page section[aria-labelledby="autor"] h2 {
@@ -26,6 +33,28 @@
 
 .static-page section[aria-labelledby="autor"] p {
   margin-top: 0.85rem;
+}
+
+.master-prompt-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.master-prompt-card {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.master-prompt-card h3,
+.master-prompt-card p {
+  margin: 0;
+}
+
+.prompt-download {
+  width: fit-content;
+  margin-top: 0.35rem;
 }
 
 .post-card {
@@ -157,10 +186,10 @@
 }
 
 @media (max-width: 860px) {
-  .static-page section[aria-labelledby="autor"]::before {
+  .author-portrait {
     float: none;
     display: block;
-    width: min(100%, 420px);
+    width: min(100%, 520px);
     min-width: 0;
     margin: 0 auto 1.2rem;
   }
