@@ -7,6 +7,9 @@ const articleId = params.get('id');
 const els = {
   themeToggle: document.querySelector('#themeToggle'),
   topTitle: document.querySelector('#readerTopTitle'),
+  layout: document.querySelector('.article-layout'),
+  tools: document.querySelector('.article-tools'),
+  shell: document.querySelector('.article-shell'),
   category: document.querySelector('#articleCategory'),
   title: document.querySelector('#articleTitle'),
   subtitle: document.querySelector('#articleSubtitle'),
@@ -36,6 +39,11 @@ async function init() {
     const article = (manifest.articles ?? []).find(item => item.id === articleId);
     if (!article) throw new Error(`No existe el artículo ${articleId}`);
 
+    if (article.standalone || article.renderMode === 'standalone') {
+      renderArticle(article, '', { standalone: true });
+      return;
+    }
+
     const contentResponse = await fetch(article.contentUrl, { cache: 'no-store' });
     if (!contentResponse.ok) throw new Error(`No se ha podido cargar el contenido (${contentResponse.status})`);
     const html = await contentResponse.text();
@@ -47,26 +55,84 @@ async function init() {
   }
 }
 
-function renderArticle(article, html) {
+function renderArticle(article, html, options = {}) {
   const title = article.title || 'Artículo sin título';
+  const isStandalone = options.standalone === true;
+
   document.title = `${title} · Oblitus est scientia`;
-  els.category.textContent = article.category || 'Artículo';
+  els.category.textContent = article.category || (isStandalone ? 'Artículo interactivo' : 'Artículo');
   els.title.textContent = title;
   renderTopbarTitle(title);
   els.subtitle.textContent = article.subtitle || '';
   els.meta.innerHTML = [
     formatDate(article.date),
-    article.format ? article.format.toUpperCase() : null,
     article.readingTime,
-    article.sourceFile ? `Fuente: ${article.sourceFile}` : null
+    article.interactive ? 'Interactivo' : null
   ].filter(Boolean).map(item => `<span>${escapeHtml(item)}</span>`).join('<span>·</span>');
   els.badges.innerHTML = (article.tags ?? []).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('');
+
+  if (isStandalone) {
+    renderStandaloneArticle(article, title);
+    return;
+  }
+
+  els.layout?.classList.remove('is-standalone');
+  els.shell?.classList.remove('is-standalone');
+  if (els.tools) els.tools.hidden = false;
   els.content.innerHTML = html;
 
   executeEmbeddedScripts(els.content);
   enhanceHeadings(els.content);
   buildToc(els.content);
   bindChapterTools();
+}
+
+function renderStandaloneArticle(article, title) {
+  els.layout?.classList.add('is-standalone');
+  els.shell?.classList.add('is-standalone');
+  if (els.tools) els.tools.hidden = true;
+  if (els.toc) els.toc.innerHTML = '';
+
+  const url = article.contentUrl;
+  els.content.innerHTML = `
+    <iframe
+      class="embedded-article-frame"
+      src="${escapeAttr(url)}"
+      title="${escapeAttr(title)}"
+      loading="eager"
+      referrerpolicy="no-referrer"
+    ></iframe>
+  `;
+
+  const iframe = els.content.querySelector('iframe');
+  iframe.addEventListener('load', () => fitEmbeddedArticle(iframe));
+}
+
+function fitEmbeddedArticle(iframe) {
+  const resize = () => {
+    try {
+      const doc = iframe.contentDocument;
+      if (!doc) return;
+      const height = Math.max(
+        doc.documentElement?.scrollHeight || 0,
+        doc.body?.scrollHeight || 0,
+        window.innerHeight - 120
+      );
+      iframe.style.height = `${height + 24}px`;
+    } catch {
+      iframe.style.height = 'calc(100vh - 7rem)';
+    }
+  };
+
+  resize();
+  try {
+    const observer = new ResizeObserver(resize);
+    observer.observe(iframe.contentDocument.documentElement);
+    observer.observe(iframe.contentDocument.body);
+    window.addEventListener('resize', resize, { passive: true });
+  } catch {
+    window.addEventListener('resize', resize, { passive: true });
+  }
 }
 
 function renderTopbarTitle(title) {
@@ -77,7 +143,7 @@ function renderTopbarTitle(title) {
 }
 
 function enhanceHeadings(container) {
-  container.querySelectorAll('h2').forEach((heading, index) => {
+  getContentHeadings(container, 'h2').forEach((heading, index) => {
     if (!heading.id) heading.id = `capitulo-${index + 1}`;
     heading.classList.add('chapter-heading');
 
@@ -91,6 +157,7 @@ function enhanceHeadings(container) {
 }
 
 function toggleChapter(heading, button, forceExpanded = null) {
+  if (!heading || !button) return;
   const nodes = getChapterNodes(heading);
   const shouldCollapse = forceExpanded === null
     ? !nodes.every(node => node.classList?.contains('chapter-collapsed'))
@@ -112,20 +179,25 @@ function getChapterNodes(heading) {
 
 function bindChapterTools() {
   els.collapseAll?.addEventListener('click', () => {
-    els.content.querySelectorAll('h2').forEach(heading => toggleChapter(heading, heading.querySelector('.chapter-toggle'), false));
+    getContentHeadings(els.content, 'h2').forEach(heading => toggleChapter(heading, heading.querySelector('.chapter-toggle'), false));
   });
   els.expandAll?.addEventListener('click', () => {
-    els.content.querySelectorAll('h2').forEach(heading => toggleChapter(heading, heading.querySelector('.chapter-toggle'), true));
+    getContentHeadings(els.content, 'h2').forEach(heading => toggleChapter(heading, heading.querySelector('.chapter-toggle'), true));
   });
 }
 
 function buildToc(container) {
-  const headings = [...container.querySelectorAll('h2, h3')];
+  const headings = getContentHeadings(container, 'h2, h3');
   els.toc.innerHTML = headings.map(heading => {
     if (!heading.id) heading.id = slugify(heading.textContent);
     const label = heading.textContent.replace(/Contraer|Expandir/g, '').trim();
     return `<li class="toc-${heading.tagName.toLowerCase()}"><a href="#${escapeAttr(heading.id)}">${escapeHtml(label)}</a></li>`;
   }).join('');
+}
+
+function getContentHeadings(container, selector) {
+  return [...container.querySelectorAll(selector)]
+    .filter(heading => !heading.closest('nav, aside, .toc, .toolbar, .article-tools'));
 }
 
 function executeEmbeddedScripts(container) {
