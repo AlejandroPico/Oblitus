@@ -199,6 +199,8 @@ async function convertArticle(entry) {
 }
 
 async function copyArticleAssets(entry, id) {
+  if (entry.type !== 'html-folder') return false;
+
   const sourceDir = path.dirname(entry.fullPath);
   const destDir = path.join(generatedDir, id);
   const items = await fs.readdir(sourceDir, { withFileTypes: true });
