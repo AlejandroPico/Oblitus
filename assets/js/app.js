@@ -80,7 +80,7 @@ function handleGridClick(event) {
 
   event.preventDefault();
   event.stopPropagation();
-  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true });
+  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true, focusActive: true });
 }
 
 function handleGridKeydown(event) {
@@ -89,17 +89,37 @@ function handleGridKeydown(event) {
   if (!tag) return;
   event.preventDefault();
   event.stopPropagation();
-  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true });
+  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true, focusActive: true });
 }
 
 function setActiveTag(tag, options = {}) {
-  state.activeTag = tag || 'Todos';
+  const resolvedTag = resolveKnownTag(tag) || tag || 'Todos';
+  state.activeTag = resolvedTag;
   renderTags();
   renderPosts();
 
   if (options.scrollToFilters && els.tags) {
     els.tags.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
+
+  if (options.focusActive && els.tags) {
+    requestAnimationFrame(() => {
+      const activeButton = els.tags.querySelector('.tag-button.active');
+      activeButton?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    });
+  }
+}
+
+function resolveKnownTag(tag) {
+  if (!tag) return null;
+  if (tag === 'Todos') return 'Todos';
+  const target = normaliseTag(tag);
+  const knownTags = [...new Set(state.posts.flatMap(post => post.tags ?? []))];
+  return knownTags.find(item => normaliseTag(item) === target) || null;
+}
+
+function normaliseTag(value = '') {
+  return normaliseSearchText(value).replace(/\s+/g, ' ').trim();
 }
 
 function toggleSearchPanel(forceOpen = null) {
@@ -190,7 +210,7 @@ function renderTags() {
   });
 
   els.tags.innerHTML = tags.map(tag => `
-    <button class="tag-button${tag === state.activeTag ? ' active' : ''}" type="button" data-tag="${escapeAttr(tag)}">
+    <button class="tag-button${normaliseTag(tag) === normaliseTag(state.activeTag) ? ' active' : ''}" type="button" data-tag="${escapeAttr(tag)}">
       ${escapeHtml(tag)}
     </button>
   `).join('');
@@ -234,7 +254,20 @@ function renderPosts() {
     </article>
   `).join('');
 
+  bindCardTagButtons();
   initDragScrollRails();
+}
+
+function bindCardTagButtons() {
+  els.grid.querySelectorAll('[data-card-tag]').forEach(button => {
+    button.addEventListener('click', event => {
+      const rail = button.closest('[data-drag-scroll]');
+      if (rail?.dataset.suppressClick === 'true') return;
+      event.preventDefault();
+      event.stopPropagation();
+      setActiveTag(button.dataset.cardTag, { scrollToFilters: true, focusActive: true });
+    });
+  });
 }
 
 function initDragScrollRails() {
@@ -243,6 +276,7 @@ function initDragScrollRails() {
     let startX = 0;
     let startScroll = 0;
     let dragged = false;
+    const dragThreshold = 8;
 
     rail.addEventListener('wheel', event => {
       if (rail.scrollWidth <= rail.clientWidth) return;
@@ -272,7 +306,7 @@ function initDragScrollRails() {
     rail.addEventListener('pointermove', event => {
       if (pointerId !== event.pointerId) return;
       const delta = event.clientX - startX;
-      if (Math.abs(delta) > 2) dragged = true;
+      if (Math.abs(delta) > dragThreshold) dragged = true;
       if (!dragged) return;
       rail.scrollLeft = startScroll - delta;
       event.preventDefault();
@@ -300,7 +334,7 @@ function initDragScrollRails() {
 }
 
 function matchesTag(post) {
-  return state.activeTag === 'Todos' || (post.tags ?? []).includes(state.activeTag);
+  return state.activeTag === 'Todos' || (post.tags ?? []).some(tag => normaliseTag(tag) === normaliseTag(state.activeTag));
 }
 
 function matchesQuery(post) {
