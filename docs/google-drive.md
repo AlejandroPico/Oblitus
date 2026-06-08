@@ -22,17 +22,23 @@ config/drive-sources.json
 
 ---
 
-## Funcionamiento
+## Funcionamiento actual
 
-1. GitHub Actions arranca por `push`, ejecución manual o programación horaria.
-2. Ejecuta `npm run sync:drive`.
-3. `tools/sync-drive.mjs` lee `config/drive-sources.json`.
-4. Se conecta a Google Drive con permisos de solo lectura.
-5. Lista los archivos de la carpeta configurada.
-6. Descarga archivos `.html` o `.htm`.
-7. Los deja temporalmente en `articulos/_drive/...`.
-8. Ejecuta `npm run build:content`.
-9. La web se publica ya con esos HTML como artículos.
+1. Alejandro sube uno o más HTML a la carpeta de Google Drive.
+2. Cuando quiere publicar, entra en GitHub.
+3. Va a `Actions`.
+4. Abre el workflow `Publicar web en GitHub Pages`.
+5. Pulsa `Run workflow`.
+6. GitHub Actions ejecuta `npm run sync:drive`.
+7. `tools/sync-drive.mjs` lee `config/drive-sources.json`.
+8. Se conecta a Google Drive con permisos de solo lectura.
+9. Lista los archivos de la carpeta configurada.
+10. Descarga archivos `.html` o `.htm`.
+11. Los deja temporalmente en `articulos/_drive/...`.
+12. Ejecuta `npm run build:content`.
+13. La web se publica ya con esos HTML como artículos.
+
+En esta fase de pruebas no hay sincronización programada. La actualización se hace manualmente desde GitHub Actions.
 
 ---
 
@@ -91,8 +97,9 @@ GitHub Pages es una web estática. No puede detectar cambios en Drive exactament
 La actualización ocurre cuando GitHub Actions reconstruye la web:
 
 - al hacer `push`;
-- manualmente desde `Actions > Publicar web en GitHub Pages > Run workflow`;
-- automáticamente cada hora por la programación del workflow.
+- manualmente desde `Actions > Publicar web en GitHub Pages > Run workflow`.
+
+La ejecución programada queda desactivada mientras la web esté en pruebas.
 
 ---
 
