@@ -222,7 +222,7 @@ function buildTocEntries(headings) {
     }
 
     lastLevel = level;
-    const number = counters.slice(0, level).map(value => String(value).padStart(2, '0')).join('.');
+    const number = counters.slice(0, level).map(value => String(value)).join('.');
     const rawLabel = cleanTocLabel(heading.textContent);
 
     return {
