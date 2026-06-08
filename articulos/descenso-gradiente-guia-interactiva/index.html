@@ -1,0 +1,30 @@
+---
+title: "Descenso del gradiente: guia visual e interactiva"
+subtitle: "Como aprenden los modelos reduciendo errores: intuicion geometrica, formulas, regresion lineal, variantes y diagnostico."
+category: "Matematicas e inteligencia artificial"
+tags: [Descenso del gradiente, Machine Learning, Matematicas, Optimizacion, IA]
+date: "2026-06-08T02:00:00.000Z"
+excerpt: "Articulo interactivo sobre el descenso del gradiente, con explicacion conceptual, formulas, ejemplos y un laboratorio integrado."
+cover: assets/media/images/covers/cover-gradiente.svg
+audio: false
+interactive: true
+---
+<p class="research-lead">El descenso del gradiente es una de las ideas centrales del aprendizaje automatico moderno: ajustar parametros para reducir una funcion de perdida.</p>
+<h2>1. Idea central</h2>
+<p>Un modelo contiene parametros. Una funcion de perdida mide cuanto se equivoca. El descenso del gradiente actualiza esos parametros en la direccion que reduce la perdida con mayor rapidez local.</p>
+<blockquote><strong>Regla esencial:</strong> parametro siguiente = parametro actual - tasa de aprendizaje por gradiente.</blockquote>
+<p>El parametro representa lo que el modelo puede ajustar. La perdida representa el error. El gradiente indica hacia donde aumenta mas la perdida. Como queremos bajar, avanzamos en la direccion contraria.</p>
+<h2>2. Intuicion geometrica</h2>
+<p>Imagina que estas en una montana con niebla. No ves todo el paisaje, pero puedes sentir la pendiente bajo tus pies. Si das pasos en la direccion de mayor bajada, repites la medicion y reajustas el rumbo, acabaras acercandote a un valle.</p>
+<h3>Gradiente</h3><p>Es un vector de derivadas parciales. Indica como cambia la perdida cuando modificamos cada parametro.</p>
+<h3>Tasa de aprendizaje</h3><p>Controla el tamano del paso. Una tasa muy baja hace que el aprendizaje sea lento; una demasiado alta puede provocar oscilaciones o divergencia.</p>
+<h2>3. Algoritmo paso a paso</h2>
+<ol><li>Inicializar parametros.</li><li>Calcular la prediccion.</li><li>Medir la perdida.</li><li>Calcular el gradiente.</li><li>Actualizar parametros.</li><li>Repetir hasta converger.</li></ol>
+<h2>4. Laboratorio minimo</h2>
+<div class="demo-widget"><label for="learningRate">Tasa de aprendizaje</label><input id="learningRate" type="range" min="1" max="80" value="18"><button id="runGradient" type="button">Simular 20 pasos</button><p id="gradientOutput">Pulsa el boton para ver la trayectoria.</p><canvas id="gradientCanvas" width="760" height="260" aria-label="Simulacion de descenso del gradiente"></canvas></div>
+<h2>5. Regresion lineal</h2><p>En regresion lineal buscamos una recta que aproxime datos. El descenso del gradiente ajusta pendiente e intercepto para minimizar el error cuadratico medio.</p>
+<h2>6. Variantes</h2><ul class="article-list"><li><strong>Batch gradient descent:</strong> usa todos los datos en cada paso.</li><li><strong>Stochastic gradient descent:</strong> usa ejemplos individuales y anade ruido util.</li><li><strong>Mini-batch:</strong> equilibrio entre estabilidad y rendimiento.</li><li><strong>Momentum:</strong> acumula direccion previa para atravesar zonas planas o ruidosas.</li></ul>
+<h2>7. Diagnostico</h2><p>Si la perdida baja lentamente, la tasa puede ser pequena. Si explota o oscila, puede ser demasiado grande. Si se estanca, puede haber mala escala de variables, mesetas o un problema de arquitectura.</p>
+<h2>8. Video recomendado</h2><iframe width="560" height="315" src="https://www.youtube.com/embed/IHZwWFHWa-w" title="Gradient descent" allowfullscreen loading="lazy"></iframe>
+<h2>9. Fuentes</h2><ol class="reference-list"><li><a href="https://en.wikipedia.org/wiki/Gradient_descent" target="_blank" rel="noopener noreferrer">Gradient descent</a></li><li><a href="https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent" target="_blank" rel="noopener noreferrer">Google Machine Learning Crash Course</a></li></ol>
+<script>const btn=document.getElementById('runGradient');if(btn){btn.addEventListener('click',()=>{const c=document.getElementById('gradientCanvas');const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.beginPath();ctx.moveTo(30,220);for(let x=30;x<730;x++){const y=220-150*Math.exp(-Math.pow((x-380)/190,2));ctx.lineTo(x,y)}ctx.stroke();let lr=Number(document.getElementById('learningRate').value)/100;let x=-3;let pts=[];for(let i=0;i<20;i++){let grad=2*x;x=x-lr*grad;pts.push(x)}ctx.fillText('x final = '+x.toFixed(3),20,24);ctx.fillStyle='currentColor';pts.forEach((v)=>{let px=380+v*90;let py=220-150*Math.exp(-Math.pow((px-380)/190,2));ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fill();});document.getElementById('gradientOutput').textContent='Trayectoria generada con tasa = '+lr.toFixed(2)+'.';});}</script>
