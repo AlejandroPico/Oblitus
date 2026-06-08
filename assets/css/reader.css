@@ -74,3 +74,47 @@
     border-radius: 0;
   }
 }
+
+/* v0.16.0 - soporte editorial para artículos convertidos a fragmentos HTML limpios */
+.article-body .research-lead {
+  font-family: var(--font-title);
+  font-size: clamp(1.18rem, 1.9vw, 1.55rem);
+  color: var(--accent-2);
+  margin-bottom: 1.4rem;
+}
+.article-body .table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.2rem 0;
+}
+.article-body .reference-list {
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  overflow-wrap: anywhere;
+}
+.article-body .citation {
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.72em;
+}
+.article-body .article-list {
+  padding-left: 1.35rem;
+}
+.article-body iframe {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  margin: 1rem 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #000;
+}
+.article-body canvas {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
