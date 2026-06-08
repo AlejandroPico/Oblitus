@@ -31,12 +31,6 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Sincronizar artículos desde Google Drive
-        env:
-          GOOGLE_DRIVE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
-          GOOGLE_DRIVE_API_KEY: ${{ secrets.GOOGLE_DRIVE_API_KEY }}
-        run: npm run sync:drive
-
       - name: Generar índice y artículos convertidos
         run: npm run build:content
 
