@@ -1,0 +1,297 @@
+{
+  "meta": {
+    "title": "Evolución agrupada del reparto de escaños en el Congreso de los Diputados",
+    "scope": "Elecciones generales de España al Congreso, 1977-2023",
+    "note": "Datos agrupados por familias políticas para lectura editorial: PP incluye AP/CP cuando procede; izquierda alternativa agrupa PCE/IU/Unidas Podemos/Sumar y fuerzas estatales afines; nacionalistas y regionalistas agrupa partidos territoriales y formaciones de ámbito autonómico. La categoría Otros recoge escaños no encuadrables claramente en las familias anteriores.",
+    "totalSeats": 350,
+    "sources": [
+      "Ministerio del Interior / Infoelectoral: resultados electorales oficiales.",
+      "Anexo:Resultados de las elecciones generales de España, síntesis histórica de resultados al Congreso.",
+      "HistoriaElectoral.com para contraste de los resultados de 1977."
+    ]
+  },
+  "groups": [
+    {
+      "id": "psoe",
+      "label": "PSOE",
+      "color": "#d64242"
+    },
+    {
+      "id": "pp",
+      "label": "AP / PP",
+      "color": "#2f6fb5"
+    },
+    {
+      "id": "ucd",
+      "label": "UCD / CDS",
+      "color": "#62a68a"
+    },
+    {
+      "id": "izq_alt",
+      "label": "PCE / IU / UP / Sumar",
+      "color": "#6f4aa8"
+    },
+    {
+      "id": "cs_centro",
+      "label": "UPyD / Cs",
+      "color": "#e28a2e"
+    },
+    {
+      "id": "vox",
+      "label": "Vox",
+      "color": "#5c9b45"
+    },
+    {
+      "id": "territoriales",
+      "label": "Nacionalistas y regionalistas",
+      "color": "#9b6a3b"
+    },
+    {
+      "id": "otros",
+      "label": "Otros",
+      "color": "#7d7d7d"
+    }
+  ],
+  "elections": [
+    {
+      "year": "1977",
+      "label": "1977",
+      "winner": "UCD",
+      "seats": {
+        "psoe": 118,
+        "pp": 16,
+        "ucd": 165,
+        "izq_alt": 20,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 24,
+        "otros": 7
+      }
+    },
+    {
+      "year": "1979",
+      "label": "1979",
+      "winner": "UCD",
+      "seats": {
+        "psoe": 121,
+        "pp": 10,
+        "ucd": 168,
+        "izq_alt": 23,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 28,
+        "otros": 0
+      }
+    },
+    {
+      "year": "1982",
+      "label": "1982",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 202,
+        "pp": 107,
+        "ucd": 13,
+        "izq_alt": 4,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 24,
+        "otros": 0
+      }
+    },
+    {
+      "year": "1986",
+      "label": "1986",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 184,
+        "pp": 105,
+        "ucd": 19,
+        "izq_alt": 7,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 35,
+        "otros": 0
+      }
+    },
+    {
+      "year": "1989",
+      "label": "1989",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 175,
+        "pp": 107,
+        "ucd": 14,
+        "izq_alt": 17,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 37,
+        "otros": 0
+      }
+    },
+    {
+      "year": "1993",
+      "label": "1993",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 159,
+        "pp": 141,
+        "ucd": 0,
+        "izq_alt": 18,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 32,
+        "otros": 0
+      }
+    },
+    {
+      "year": "1996",
+      "label": "1996",
+      "winner": "PP",
+      "seats": {
+        "psoe": 141,
+        "pp": 156,
+        "ucd": 0,
+        "izq_alt": 21,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 32,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2000",
+      "label": "2000",
+      "winner": "PP",
+      "seats": {
+        "psoe": 125,
+        "pp": 183,
+        "ucd": 0,
+        "izq_alt": 8,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 34,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2004",
+      "label": "2004",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 164,
+        "pp": 148,
+        "ucd": 0,
+        "izq_alt": 5,
+        "cs_centro": 0,
+        "vox": 0,
+        "territoriales": 33,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2008",
+      "label": "2008",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 169,
+        "pp": 154,
+        "ucd": 0,
+        "izq_alt": 2,
+        "cs_centro": 1,
+        "vox": 0,
+        "territoriales": 24,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2011",
+      "label": "2011",
+      "winner": "PP",
+      "seats": {
+        "psoe": 110,
+        "pp": 186,
+        "ucd": 0,
+        "izq_alt": 11,
+        "cs_centro": 5,
+        "vox": 0,
+        "territoriales": 38,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2015",
+      "label": "2015",
+      "winner": "PP",
+      "seats": {
+        "psoe": 90,
+        "pp": 123,
+        "ucd": 0,
+        "izq_alt": 71,
+        "cs_centro": 40,
+        "vox": 0,
+        "territoriales": 26,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2016",
+      "label": "2016",
+      "winner": "PP",
+      "seats": {
+        "psoe": 85,
+        "pp": 137,
+        "ucd": 0,
+        "izq_alt": 71,
+        "cs_centro": 32,
+        "vox": 0,
+        "territoriales": 25,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2019-04",
+      "label": "Abril de 2019",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 123,
+        "pp": 66,
+        "ucd": 0,
+        "izq_alt": 42,
+        "cs_centro": 57,
+        "vox": 24,
+        "territoriales": 38,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2019-11",
+      "label": "Noviembre de 2019",
+      "winner": "PSOE",
+      "seats": {
+        "psoe": 120,
+        "pp": 89,
+        "ucd": 0,
+        "izq_alt": 38,
+        "cs_centro": 10,
+        "vox": 52,
+        "territoriales": 41,
+        "otros": 0
+      }
+    },
+    {
+      "year": "2023",
+      "label": "2023",
+      "winner": "PP",
+      "seats": {
+        "psoe": 121,
+        "pp": 137,
+        "ucd": 0,
+        "izq_alt": 31,
+        "cs_centro": 0,
+        "vox": 33,
+        "territoriales": 28,
+        "otros": 0
+      }
+    }
+  ]
+}

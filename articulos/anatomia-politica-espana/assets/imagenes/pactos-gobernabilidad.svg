@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Pactos de gobernabilidad</title>
+  <desc id="desc">Del consenso transicional a los acuerdos de investidura en una España autonómica</desc>
+  <rect x="0" y="0" width="1200" height="520" fill="#f5f1e8"/>
+  <rect x="42" y="42" width="1116" height="436" fill="#ffffff" stroke="#d6cbb8" stroke-width="3"/>
+  <text x="88" y="118" font-family="Georgia, serif" font-size="46" fill="#1f2933">Pactos de gobernabilidad</text>
+  <text x="88" y="162" font-family="Arial, sans-serif" font-size="23" fill="#56616b">Del consenso transicional a los acuerdos de investidura en una España autonómica</text>
+  <line x1="120" y1="300" x2="1080" y2="300" stroke="#496f4b" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="120.0" cy="300" r="38" fill="#ffffff" stroke="#496f4b" stroke-width="5"/><text x="120.0" y="306" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#1f2933">1977</text><text x="120.0" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#46505a">Moncloa</text><circle cx="440.0" cy="300" r="30" fill="#ffffff" stroke="#496f4b" stroke-width="5"/><text x="440.0" y="306" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#1f2933">1988</text><text x="440.0" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#46505a">Ajuria Enea</text><circle cx="760.0" cy="300" r="30" fill="#ffffff" stroke="#496f4b" stroke-width="5"/><text x="760.0" y="306" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#1f2933">1996</text><text x="760.0" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#46505a">Majestic</text><circle cx="1080.0" cy="300" r="38" fill="#ffffff" stroke="#496f4b" stroke-width="5"/><text x="1080.0" y="306" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#1f2933">2018</text><text x="1080.0" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#46505a">moción</text>
+  <path d="M92 414 C270 374, 430 452, 600 410 C780 366, 942 414, 1108 382" fill="none" stroke="#d9d0c0" stroke-width="4"/>
+</svg>
