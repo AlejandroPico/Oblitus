@@ -1,5 +1,10 @@
 .article-layout {
-  grid-template-columns: 400px minmax(0, 1fr);
+  grid-template-columns: 420px minmax(0, 1fr);
+}
+
+.article-shell {
+  width: min(100%, 1080px);
+  max-width: 1080px;
 }
 
 .article-tools {
@@ -109,6 +114,117 @@
   background: var(--accent-soft);
 }
 
+.article-body {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.article-body p,
+.article-body li,
+.article-body figcaption,
+.article-body td,
+.article-body th {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.article-body a,
+.article-body .source-outline,
+.article-body .source-outline li,
+.article-body .source-outline a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.article-body figure {
+  max-width: 100%;
+  margin-inline: 0;
+}
+
+.article-body img,
+.article-body svg,
+.article-body canvas,
+.article-body video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.article-body .table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.article-body table {
+  max-width: 100%;
+}
+
+.article-body .interactive-block {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-family: var(--font-sans);
+  transition: var(--theme-transition);
+}
+
+.article-body .interactive-block h3 {
+  margin-top: 0;
+}
+
+.article-body .interactive-block svg {
+  width: 100%;
+}
+
+.article-body .interactive-block select,
+.article-body .interactive-block button {
+  min-height: 2.2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.article-body .interactive-block button {
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+}
+
+.article-body .interactive-block label,
+.article-body .compact-line {
+  color: var(--muted);
+}
+
+.article-body .oblitus-politica-escanos-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.article-body .oblitus-politica-escanos-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.article-body .oblitus-politica-escanos-swatch {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  vertical-align: -0.1rem;
+}
+
 .article-layout.is-standalone {
   display: block;
   width: min(100%, var(--max-width));
@@ -149,7 +265,11 @@
 
 @media (max-width: 1320px) {
   .article-layout {
-    grid-template-columns: 360px minmax(0, 1fr);
+    grid-template-columns: 380px minmax(0, 1fr);
+  }
+
+  .article-shell {
+    width: min(100%, 1020px);
   }
 }
 
@@ -167,6 +287,11 @@
 
   .article-tools {
     display: grid;
+  }
+
+  .article-shell {
+    width: 100%;
+    max-width: none;
   }
 }
 
