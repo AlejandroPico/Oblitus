@@ -10,9 +10,9 @@ La idea principal actual es sencilla: el contenido se guarda en `articulos/`, y 
 
 ## Estado del proyecto
 
-Versión actual: **v0.16.1**
+Versión actual: **v0.16.2**
 
-Esta versión ajusta finamente el índice lateral del lector: los números quedan centrados dentro de su propio cajetín y el autodesplazamiento del índice se calcula sobre el elemento completo, no solo sobre el texto del enlace.
+Esta versión corrige el comportamiento interno del índice lateral: el cajetín exterior y la tarjeta del índice permanecen visibles, el desplazamiento ocurre solo dentro del listado interno sin mostrar barra vertical, y la numeración conserva alineación limpia sin cajetín visual alrededor del número.
 
 ---
 
@@ -30,7 +30,8 @@ Esta versión ajusta finamente el índice lateral del lector: los números queda
 - Etiquetas de ficha clicables como filtros de portada.
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de artículos generados.
 - Lector de artículos con índice lateral automático y capítulos contraíbles para documentos convertidos o HTML de fragmento.
-- Índice lateral sin barras visibles, con numeración estable, cajetines centrados y autodesplazamiento por elemento completo.
+- Índice lateral fijo, sin barras visibles, con desplazamiento interno real del listado.
+- Numeración del índice centrada, sin cajetín visual propio.
 - Resaltado automático del capítulo activo en el índice durante el scroll.
 - Modo de lector autónomo para HTML completos con JavaScript propio.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML de fragmento y HTML completo interactivo.
@@ -158,6 +159,14 @@ Incluye: índice de lectura automático, modo lectura larga, series editoriales,
 ---
 
 ## Historial de versiones
+
+### v0.16.2
+
+- Convertido el panel lateral del lector en contenedor fijo con `overflow: hidden`.
+- Convertida la tarjeta del índice en contenedor flexible con listado interno desplazable.
+- Eliminado el cajetín visual del número del índice, manteniendo solo la numeración centrada.
+- Limitado el autodesplazamiento al `ol` interno del índice mediante cálculo de posición, evitando que se desplace toda la página.
+- Mantenidos invisibles los scrollbars del índice.
 
 ### v0.16.1
 
