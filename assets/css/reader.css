@@ -1,23 +1,33 @@
 .article-tools {
   max-height: calc(100vh - 7rem);
-  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
 }
 
-.article-tools::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
+.toc-card {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.toc-card h2 {
+  flex: 0 0 auto;
 }
 
 .toc-card ol {
   counter-reset: toc;
   display: grid;
   gap: 0.38rem;
-  max-height: calc(100vh - 15rem);
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: calc(100vh - 17rem);
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   padding: 0 0.25rem 0.75rem 0;
   margin: 0;
@@ -51,15 +61,12 @@
   min-width: 2.65rem;
   min-height: 100%;
   padding: 0.25rem 0.2rem;
-  border: 1px solid color-mix(in srgb, var(--line), transparent 18%);
-  border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--surface-2), transparent 18%);
   color: var(--accent);
   font: 800 0.72rem var(--font-sans);
   letter-spacing: 0.08em;
   line-height: 1;
   text-align: center;
-  opacity: 0.9;
+  opacity: 0.92;
   transition: var(--theme-transition);
 }
 
@@ -83,8 +90,6 @@
 
 .toc-card li:has(a.is-active)::before {
   color: var(--text);
-  background: var(--accent-soft);
-  border-color: color-mix(in srgb, var(--accent), var(--line) 45%);
 }
 
 .toc-card a.is-active {
@@ -132,9 +137,14 @@
 
 @media (max-width: 1120px) {
   .article-tools,
+  .toc-card,
   .toc-card ol {
     max-height: none;
     overflow: visible;
+  }
+
+  .article-tools {
+    display: grid;
   }
 }
 
