@@ -10,9 +10,9 @@ La idea principal actual es sencilla: el contenido se guarda en `articulos/`, y 
 
 ## Estado del proyecto
 
-Versión actual: **v0.15.0**
+Versión actual: **v0.16.0**
 
-Esta versión pausa la sincronización activa con Google Drive y vuelve a dejar el flujo centrado en la carpeta `articulos/`. También mejora el tratamiento de HTML completos generados externamente: los documentos HTML autónomos se publican dentro del lector mediante un iframe interno para conservar sus estilos, botones, scripts, canvas, cuestionarios, vídeos e interactividad sin contaminar ni romper la maqueta de Oblitus.
+Esta versión pule dos puntos visuales y funcionales del lector: las etiquetas de las fichas ya no muestran barra horizontal visible y pasan a comportarse como filtros interactivos; además, el índice lateral oculta sus barras de scroll, corrige la numeración de dos dígitos y sincroniza el capítulo activo conforme avanza la lectura.
 
 ---
 
@@ -26,11 +26,13 @@ Esta versión pausa la sincronización activa con Google Drive y vuelve a dejar 
 - Arranque temprano del tema visual antes de cargar los estilos, para evitar flashes claros en modo nocturno.
 - Fichas de artículos con título superpuesto sobre la imagen.
 - Fecha y duración de lectura visibles en ficha, sin mostrar el tipo técnico de archivo.
-- Etiquetas de ficha en carril horizontal desplazable.
+- Etiquetas de ficha desplazables con dedo o ratón, sin barra horizontal visible.
+- Etiquetas de ficha clicables como filtros de portada.
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de artículos generados.
 - Lector de artículos con índice lateral automático y capítulos contraíbles para documentos convertidos o HTML de fragmento.
+- Índice lateral sin barras visibles, con numeración estable a partir del punto 10.
+- Resaltado automático del capítulo activo en el índice durante el scroll.
 - Modo de lector autónomo para HTML completos con JavaScript propio.
-- Índice lateral del lector con scroll interno cuando tiene mucho contenido.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML de fragmento y HTML completo interactivo.
 - Hoja de ruta funcional documentada en `docs/decisiones-editoriales-y-funcionales.md`.
 - Preparado para GitHub Pages.
@@ -156,6 +158,17 @@ Incluye: índice de lectura automático, modo lectura larga, series editoriales,
 ---
 
 ## Historial de versiones
+
+### v0.16.0
+
+- Ocultada la barra horizontal visible de las etiquetas de ficha.
+- Añadido desplazamiento táctil y por arrastre de ratón en las etiquetas de ficha.
+- Convertidas las etiquetas de ficha en filtros interactivos equivalentes a las etiquetas superiores.
+- Ocultadas las barras verticales visibles del índice lateral del lector.
+- Corregida la numeración del índice para evitar que 10, 11 y 12 aparezcan como 0, 1 y 2.
+- Añadido contador CSS estable de dos dígitos en el índice.
+- Añadido resaltado automático del capítulo activo y autodesplazamiento interno del índice.
+- Limpiados los rótulos del índice para evitar duplicar numeración escrita en los títulos.
 
 ### v0.15.0
 
