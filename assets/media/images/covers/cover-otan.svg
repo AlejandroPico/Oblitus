@@ -1,1 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="t d"><title id="t">La OTAN</title><desc id="d">Alianza, defensa y seguridad euroatlántica</desc><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#4f8cff"/><stop offset="1" stop-color="#7b61ff"/></linearGradient><filter id="blur"><feGaussianBlur stdDeviation="24"/></filter></defs><rect width="1200" height="630" fill="#10131a"/><g opacity=".42" filter="url(#blur)"><circle cx="180" cy="120" r="150" fill="#4f8cff"/><circle cx="980" cy="130" r="180" fill="#7b61ff"/><circle cx="640" cy="540" r="170" fill="#00d4ff"/></g><g fill="none" stroke="url(#g)" stroke-width="5" opacity=".85"><circle cx="600" cy="300" r="170"/><path d="M600 130 L660 300 L600 470 L540 300 Z"/><path d="M430 300 H770"/></g><rect x="58" y="56" width="1084" height="518" rx="18" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text x="82" y="380" font-family="Georgia,serif" font-size="68" font-weight="700" fill="#fff">La OTAN</text><text x="86" y="430" font-family="Segoe UI,Arial,sans-serif" font-size="28" fill="rgba(255,255,255,.78)">Alianza, defensa y seguridad euroatlántica</text><text x="86" y="96" font-family="Segoe UI,Arial,sans-serif" font-size="22" fill="rgba(255,255,255,.72)">Oblitus est scientia</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="t d">
+  <title id="t">Portada abstracta sobre alianza atlántica y defensa colectiva</title>
+  <desc id="d">Rosa de navegación, red de nodos y órbitas geopolíticas en tonos azules.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#07111f"/><stop offset="0.55" stop-color="#101827"/><stop offset="1" stop-color="#15112a"/></linearGradient>
+    <linearGradient id="a" x1="0" x2="1"><stop stop-color="#5cc8ff"/><stop offset="0.55" stop-color="#4f8cff"/><stop offset="1" stop-color="#8a6dff"/></linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="55%"><stop stop-color="#4f8cff" stop-opacity="0.65"/><stop offset="1" stop-color="#4f8cff" stop-opacity="0"/></radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="30"/></filter>
+    <pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse"><path d="M54 0H0V54" fill="none" stroke="#ffffff" stroke-opacity="0.045"/></pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <g filter="url(#blur)"><circle cx="600" cy="310" r="260" fill="url(#glow)"/><circle cx="1040" cy="120" r="190" fill="#7b61ff" opacity="0.42"/><circle cx="160" cy="520" r="210" fill="#00d4ff" opacity="0.23"/></g>
+  <g transform="translate(600 315)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle r="212" stroke="#ffffff" stroke-opacity="0.13" stroke-width="3"/>
+    <circle r="142" stroke="#ffffff" stroke-opacity="0.16" stroke-width="2"/>
+    <path d="M0 -235L45 -44L235 0L45 44L0 235L-45 44L-235 0L-45 -44Z" stroke="url(#a)" stroke-width="8" opacity="0.92"/>
+    <path d="M0 -166L35 0L0 166L-35 0Z" stroke="#ffffff" stroke-opacity="0.28" stroke-width="3"/>
+    <path d="M-166 0H166" stroke="#ffffff" stroke-opacity="0.22" stroke-width="3"/>
+  </g>
+  <g stroke="#8fc8ff" stroke-opacity="0.45" stroke-width="2" fill="none">
+    <path d="M260 180C365 109 515 120 600 315C688 115 850 100 972 177"/>
+    <path d="M214 412C340 455 469 425 600 315C751 441 884 461 1020 401"/>
+    <path d="M183 300C331 260 464 275 600 315C739 273 885 257 1034 300" stroke-dasharray="8 12"/>
+  </g>
+  <g fill="#d8f3ff"><circle cx="260" cy="180" r="7"/><circle cx="972" cy="177" r="7"/><circle cx="214" cy="412" r="7"/><circle cx="1020" cy="401" r="7"/><circle cx="600" cy="315" r="10"/></g>
+</svg>
