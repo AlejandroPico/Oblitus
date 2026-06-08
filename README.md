@@ -10,9 +10,9 @@ La idea principal actual es sencilla: el contenido se guarda en `articulos/`, y 
 
 ## Estado del proyecto
 
-Versión actual: **v0.16.0**
+Versión actual: **v0.16.1**
 
-Esta versión pule dos puntos visuales y funcionales del lector: las etiquetas de las fichas ya no muestran barra horizontal visible y pasan a comportarse como filtros interactivos; además, el índice lateral oculta sus barras de scroll, corrige la numeración de dos dígitos y sincroniza el capítulo activo conforme avanza la lectura.
+Esta versión ajusta finamente el índice lateral del lector: los números quedan centrados dentro de su propio cajetín y el autodesplazamiento del índice se calcula sobre el elemento completo, no solo sobre el texto del enlace.
 
 ---
 
@@ -30,7 +30,7 @@ Esta versión pule dos puntos visuales y funcionales del lector: las etiquetas d
 - Etiquetas de ficha clicables como filtros de portada.
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de artículos generados.
 - Lector de artículos con índice lateral automático y capítulos contraíbles para documentos convertidos o HTML de fragmento.
-- Índice lateral sin barras visibles, con numeración estable a partir del punto 10.
+- Índice lateral sin barras visibles, con numeración estable, cajetines centrados y autodesplazamiento por elemento completo.
 - Resaltado automático del capítulo activo en el índice durante el scroll.
 - Modo de lector autónomo para HTML completos con JavaScript propio.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML de fragmento y HTML completo interactivo.
@@ -158,6 +158,13 @@ Incluye: índice de lectura automático, modo lectura larga, series editoriales,
 ---
 
 ## Historial de versiones
+
+### v0.16.1
+
+- Centrado vertical y horizontal del número dentro de su cajetín del índice.
+- Ajustado el cajetín numérico para que ocupe la altura completa del elemento del índice.
+- Añadido margen de scroll interno al listado del índice para que el último elemento pueda mostrarse completo.
+- Cambiado el autodesplazamiento del índice activo para desplazar el `li` completo, no solo el enlace textual.
 
 ### v0.16.0
 
