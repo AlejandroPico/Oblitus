@@ -10,9 +10,9 @@ La idea principal actual es sencilla: el contenido se guarda en `articulos/`, y 
 
 ## Estado del proyecto
 
-Versión actual: **v0.16.2**
+Versión actual: **v0.16.3**
 
-Esta versión corrige el comportamiento interno del índice lateral: el cajetín exterior y la tarjeta del índice permanecen visibles, el desplazamiento ocurre solo dentro del listado interno sin mostrar barra vertical, y la numeración conserva alineación limpia sin cajetín visual alrededor del número.
+Esta versión ajusta el espaciado interno del índice lateral: las entradas se separan en función de la altura real del texto, evitando solapamientos entre capítulos con títulos largos, y se añade un margen inferior suave bajo el rótulo “Índice”.
 
 ---
 
@@ -32,6 +32,7 @@ Esta versión corrige el comportamiento interno del índice lateral: el cajetín
 - Lector de artículos con índice lateral automático y capítulos contraíbles para documentos convertidos o HTML de fragmento.
 - Índice lateral fijo, sin barras visibles, con desplazamiento interno real del listado.
 - Numeración del índice centrada, sin cajetín visual propio.
+- Entradas del índice separadas por la altura real del texto para evitar solapamientos.
 - Resaltado automático del capítulo activo en el índice durante el scroll.
 - Modo de lector autónomo para HTML completos con JavaScript propio.
 - Soporte para artículos procedentes de Word, PDF, Markdown, HTML de fragmento y HTML completo interactivo.
@@ -159,6 +160,14 @@ Incluye: índice de lectura automático, modo lectura larga, series editoriales,
 ---
 
 ## Historial de versiones
+
+### v0.16.3
+
+- Añadido margen inferior suave bajo el rótulo “Índice”.
+- Aumentado el espacio vertical entre entradas del índice.
+- Cambiado el enlace del índice de `flex` a bloque normal para que la altura se calcule por el texto real.
+- Ajustado el interlineado de títulos largos para evitar solapamientos entre entradas consecutivas.
+- Conservado intacto el desplazamiento interno del listado del índice sin barras visibles.
 
 ### v0.16.2
 
