@@ -226,7 +226,23 @@ function setActiveTocLink(id, options = {}) {
 
   if (!options.instant) {
     const item = link.closest('li') || link;
-    item.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+    scrollTocItemIntoView(item);
+  }
+}
+
+function scrollTocItemIntoView(item) {
+  const scroller = els.toc;
+  if (!scroller || !item) return;
+
+  const scrollerRect = scroller.getBoundingClientRect();
+  const itemRect = item.getBoundingClientRect();
+  const topOverflow = itemRect.top - scrollerRect.top;
+  const bottomOverflow = itemRect.bottom - scrollerRect.bottom;
+
+  if (topOverflow < 0) {
+    scroller.scrollBy({ top: topOverflow - 8, behavior: 'smooth' });
+  } else if (bottomOverflow > 0) {
+    scroller.scrollBy({ top: bottomOverflow + 8, behavior: 'smooth' });
   }
 }
 
