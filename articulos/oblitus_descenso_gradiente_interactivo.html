@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Oblitus · Descenso del gradiente interactivo</title>
+<style>
+:root{
+  --bg:#080b14;--bg2:#101728;--panel:#121b2e;--panel2:#17243a;--text:#eef4ff;--muted:#aebbd1;--line:#2b3d5f;--accent:#81d4fa;--accent2:#b388ff;--good:#9be7a8;--bad:#ff9e9e;--warn:#ffd166;--shadow:0 18px 50px rgba(0,0,0,.35);--radius:22px;
+}
+body.light{--bg:#f5f7fb;--bg2:#eaf0fb;--panel:#ffffff;--panel2:#eef4ff;--text:#132033;--muted:#536175;--line:#cbd7ea;--accent:#006fbf;--accent2:#6b35cc;--shadow:0 18px 40px rgba(31,66,135,.14)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 20% 0%,rgba(129,212,250,.18),transparent 35%),radial-gradient(circle at 82% 12%,rgba(179,136,255,.22),transparent 28%),linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);line-height:1.68}.progress{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;z-index:50}.wrap{max-width:1180px;margin:auto;padding:22px}.hero{position:relative;overflow:hidden;border:1px solid var(--line);background:linear-gradient(145deg,rgba(129,212,250,.14),rgba(179,136,255,.10)),var(--panel);border-radius:32px;box-shadow:var(--shadow);padding:36px;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}.badge{display:inline-flex;gap:8px;align-items:center;background:rgba(129,212,250,.14);border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--accent);font-weight:700;font-size:.9rem}.hero h1{font-size:clamp(2.1rem,5vw,4.8rem);line-height:1.03;margin:18px 0 14px}.subtitle{font-size:1.15rem;color:var(--muted);max-width:74ch}.cover{width:100%;min-height:290px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}.cover svg{width:100%;height:100%;min-height:290px}.toolbar{position:sticky;top:8px;z-index:20;margin:18px 0;display:flex;gap:10px;flex-wrap:wrap;background:rgba(8,11,20,.62);backdrop-filter:blur(14px);border:1px solid var(--line);padding:10px;border-radius:18px}.light .toolbar{background:rgba(255,255,255,.72)}button,.btn{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));color:var(--text);border-radius:13px;padding:10px 13px;font-weight:700;cursor:pointer;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}button:hover,.btn:hover{transform:translateY(-1px);border-color:var(--accent)}button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06101d;border:0}main{display:grid;grid-template-columns:280px 1fr;gap:22px}.toc{position:sticky;top:88px;align-self:start;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}.toc h2{margin:0 0 12px;font-size:1rem}.toc a{display:block;color:var(--muted);padding:7px 0;text-decoration:none;border-bottom:1px dashed rgba(128,128,128,.18)}.toc a:hover{color:var(--accent)}section.card,details.card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px}details>summary{font-size:1.35rem;font-weight:900;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px}details>summary::-webkit-details-marker{display:none}details>summary:after{content:'+';color:var(--accent);font-size:1.8rem;line-height:1}details[open]>summary:after{content:'−'}h2{font-size:1.7rem;margin:.2rem 0 1rem}h3{margin-top:1.4rem}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.triple{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.mini{border:1px solid var(--line);border-radius:18px;background:var(--panel2);padding:16px}.formula{font-family:Consolas,Menlo,monospace;background:rgba(0,0,0,.23);border:1px solid var(--line);border-radius:14px;padding:12px;overflow:auto}.light .formula{background:#f1f5fb}.note{border-left:4px solid var(--accent);padding:12px 14px;background:rgba(129,212,250,.10);border-radius:12px;color:var(--muted)}.warn{border-left-color:var(--warn);background:rgba(255,209,102,.12)}label{font-weight:800;font-size:.92rem;display:block;margin:8px 0 4px}input[type=range],select,input[type=number]{width:100%;accent-color:var(--accent)}input,select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px}canvas{width:100%;height:auto;border:1px solid var(--line);border-radius:16px;background:#050812}.light canvas{background:#fff}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.95rem}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:var(--panel2)}.pill{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--accent);font-weight:800;font-size:.82rem;margin:3px}.video{position:relative;padding-top:56.25%;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#000;box-shadow:var(--shadow)}.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.quiz .answer{display:none;margin-top:8px;color:var(--good)}.quiz .wrong{color:var(--bad)}footer{margin:34px 0;color:var(--muted);font-size:.95rem}.source-list li{margin-bottom:8px}@media(max-width:980px){.hero,main,.grid,.triple{grid-template-columns:1fr}.toc{position:relative;top:auto}.toolbar{position:relative;top:auto}}@media print{.toolbar,.toc,.video,button{display:none!important}body{background:white;color:black}.hero,section.card,details.card{box-shadow:none;border-color:#bbb}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="wrap">
+<header class="hero">
+  <div>
+    <span class="badge">Oblitus · Matemáticas aplicadas · IA</span>
+    <h1>Descenso del gradiente</h1>
+    <p class="subtitle">Una guía interactiva para entender cómo una máquina “aprende” reduciendo errores: desde la intuición geométrica hasta regresión lineal, tasa de aprendizaje, variantes estocásticas, momentum y diagnóstico visual.</p>
+    <p><span class="pill">Simuladores JS</span><span class="pill">Audio generativo</span><span class="pill">Vídeos incrustados</span><span class="pill">Ejercicios</span></p>
+  </div>
+  <div class="cover" aria-label="Portada generada con SVG sobre descenso del gradiente">
+    <svg viewBox="0 0 800 520" role="img">
+      <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#81d4fa"/><stop offset="1" stop-color="#b388ff"/></linearGradient><filter id="blur"><feGaussianBlur stdDeviation="12"/></filter></defs>
+      <rect width="800" height="520" fill="#07101f"/>
+      <g opacity=".38" filter="url(#blur)"><circle cx="150" cy="90" r="90" fill="#81d4fa"/><circle cx="630" cy="120" r="115" fill="#b388ff"/><circle cx="420" cy="410" r="100" fill="#33ffaa"/></g>
+      <g stroke="#263b65" stroke-width="1"><path d="M0 420 C140 250 210 500 350 280 S590 160 800 330" fill="none"/><path d="M0 470 C180 300 260 510 410 310 S610 210 800 390" fill="none"/><path d="M0 360 C150 210 260 430 430 240 S640 110 800 250" fill="none"/></g>
+      <path d="M90 440 C175 388 240 325 320 286 C410 241 493 220 574 167 C620 136 676 98 720 76" stroke="url(#g)" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <g fill="#fff"><circle cx="90" cy="440" r="13"/><circle cx="174" cy="388" r="10"/><circle cx="320" cy="286" r="9"/><circle cx="574" cy="167" r="9"/><circle cx="720" cy="76" r="14"/></g>
+      <g font-family="Consolas, monospace" fill="#eaf6ff"><text x="60" y="70" font-size="28">θ ← θ − α∇J(θ)</text><text x="60" y="110" font-size="18" fill="#aebbd1">bajar la pérdida, paso a paso</text></g>
+    </svg>
+  </div>
+</header>
+<nav class="toolbar" aria-label="Controles rápidos">
+  <button onclick="toggleTheme()">🌓 Tema</button>
+  <button onclick="speakPage()">🔊 Narrar introducción</button>
+  <button onclick="stopSpeech()">⏹ Detener audio</button>
+  <button onclick="window.print()">🖨 Imprimir / PDF</button>
+  <a class="btn" href="#laboratorio">🧪 Ir al laboratorio</a>
+</nav>
+<main>
+<aside class="toc">
+  <h2>Índice</h2>
+  <a href="#idea">1. Idea central</a><a href="#geometria">2. Geometría</a><a href="#algoritmo">3. Algoritmo</a><a href="#laboratorio">4. Laboratorio 1D</a><a href="#regresion">5. Regresión lineal</a><a href="#variantes">6. Batch, mini-batch y SGD</a><a href="#momentum">7. Momentum</a><a href="#diagnostico">8. Diagnóstico</a><a href="#videos">9. Vídeos</a><a href="#quiz">10. Quiz</a><a href="#fuentes">11. Fuentes</a>
+</aside>
+<div>
+<section id="idea" class="card">
+  <h2>1. Idea central</h2>
+  <p>El descenso del gradiente es un método de optimización iterativa. Parte de una configuración inicial de parámetros y los modifica en la dirección que reduce más rápidamente una función de pérdida. En aprendizaje automático, esa pérdida mide hasta qué punto se equivoca un modelo al predecir.</p>
+  <p class="formula">θ<sub>t+1</sub> = θ<sub>t</sub> − α · ∇J(θ<sub>t</sub>)</p>
+  <p>La expresión tiene cuatro piezas clave: <strong>θ</strong> son los parámetros; <strong>J</strong> es la pérdida; <strong>∇J</strong> es el gradiente, que apunta hacia la subida más pronunciada; y <strong>α</strong>, la tasa de aprendizaje, controla el tamaño del paso. Como queremos bajar, restamos el gradiente.</p>
+  <div class="note">En una función convexa, como la pérdida cuadrática de ciertos modelos lineales, la superficie tiene un único mínimo global. En problemas reales de redes neuronales, el paisaje puede incluir valles, mesetas, sillas de montar y mínimos locales.</div>
+</section>
+<details id="geometria" class="card" open>
+  <summary>2. Intuición geométrica: una pelota bajando por un valle</summary>
+  <p>Imagina una montaña envuelta en niebla. No ves el valle completo, pero puedes notar la pendiente bajo tus pies. Si das un paso en la dirección de mayor bajada, repites la medición y vuelves a bajar, tarde o temprano te aproximas a un punto bajo. El algoritmo hace lo mismo con números.</p>
+  <div class="grid"><div class="mini"><h3>Gradiente</h3><p>Vector de derivadas parciales. Su dirección indica hacia dónde aumenta más la función.</p></div><div class="mini"><h3>Pérdida</h3><p>Valor que queremos minimizar. En regresión puede ser el error cuadrático medio; en clasificación, entropía cruzada.</p></div><div class="mini"><h3>Tasa de aprendizaje</h3><p>Un paso demasiado pequeño tarda mucho; uno demasiado grande puede oscilar o divergir.</p></div><div class="mini"><h3>Convergencia</h3><p>Proceso de acercarse a una zona donde la pérdida deja de mejorar de forma significativa.</p></div></div>
+</details>
+<details id="algoritmo" class="card" open>
+  <summary>3. Algoritmo paso a paso</summary>
+  <ol><li>Inicializa los parámetros, por ejemplo de forma aleatoria.</li><li>Calcula la pérdida con los datos actuales.</li><li>Calcula el gradiente de la pérdida respecto a cada parámetro.</li><li>Actualiza los parámetros restando la tasa de aprendizaje multiplicada por el gradiente.</li><li>Repite hasta converger o alcanzar un número máximo de iteraciones.</li></ol>
+  <p class="formula">repetir: &nbsp; θ = θ − α∇J(θ)</p>
+  <p>El algoritmo no “entiende” el problema de forma humana; simplemente sigue una regla matemática local. Su potencia aparece cuando la pérdida codifica correctamente lo que queremos aprender.</p>
+</details>
+<section id="laboratorio" class="card">
+  <h2>4. Laboratorio interactivo 1D</h2>
+  <p>Elige una función, modifica la tasa de aprendizaje y observa la trayectoria. Prueba valores extremos: verás convergencia lenta, convergencia razonable, oscilación y divergencia.</p>
+  <div class="grid"><div><canvas id="gdCanvas" width="760" height="420"></canvas></div><div class="mini"><label>Función</label><select id="funcSel"><option value="quad">Cuadrática suave</option><option value="quartic">Cuártica con valle ancho</option><option value="rugged">Valle con ondulaciones</option></select><label>Tasa de aprendizaje α: <span id="lrVal"></span></label><input id="lr" type="range" min="0.001" max="0.35" value="0.08" step="0.001"><label>Punto inicial θ₀: <span id="startVal"></span></label><input id="start" type="range" min="-5" max="5" value="4.5" step="0.1"><label>Iteraciones: <span id="stepsVal"></span></label><input id="steps" type="range" min="1" max="100" value="35" step="1"><p><button class="primary" onclick="runGD(true)">▶ Animar</button> <button onclick="runGD(false)">↻ Recalcular</button> <button onclick="sonifyGD()">🎧 Sonificar pérdida</button></p><div id="gdStats" class="note"></div></div></div>
+  <div class="mini"><h3>Primeras iteraciones</h3><div id="gdTable"></div></div>
+</section>
+<section id="regresion" class="card">
+  <h2>5. Miniestudio: regresión lineal con MSE</h2>
+  <p>En esta práctica, el modelo intenta ajustar una recta <span class="formula">ŷ = w·x + b</span> a puntos sintéticos. Puedes mover manualmente los parámetros o dejar que el descenso del gradiente los ajuste.</p>
+  <div class="grid"><canvas id="linCanvas" width="760" height="430"></canvas><div class="mini"><label>Pendiente w: <span id="wVal"></span></label><input id="w" type="range" min="-4" max="6" value="-2" step="0.01"><label>Sesgo b: <span id="bVal"></span></label><input id="b" type="range" min="-4" max="8" value="6" step="0.01"><label>Learning rate: <span id="linLrVal"></span></label><input id="linLr" type="range" min="0.001" max="0.08" value="0.015" step="0.001"><p><button class="primary" onclick="trainLinear()">⚙ Entrenar 80 pasos</button> <button onclick="resetLinear()">Reset</button> <button onclick="newData()">Nuevos datos</button></p><p id="mseBox" class="note"></p></div></div>
+</section>
+<details id="variantes" class="card" open>
+  <summary>6. Batch, mini-batch y descenso estocástico</summary>
+  <p>En <strong>batch gradient descent</strong> se calcula el gradiente usando todo el conjunto de datos. Es estable, pero puede ser caro. En <strong>stochastic gradient descent</strong> se actualiza con ejemplos individuales: es ruidoso, pero barato y capaz de escapar de zonas planas. El <strong>mini-batch</strong> es el compromiso práctico más común.</p>
+  <table><tr><th>Variante</th><th>Gradiente calculado con</th><th>Ventaja</th><th>Riesgo</th></tr><tr><td>Batch</td><td>Todos los datos</td><td>Dirección estable</td><td>Coste alto por iteración</td></tr><tr><td>SGD</td><td>Un ejemplo</td><td>Muy barato y ruidoso</td><td>Oscila alrededor del mínimo</td></tr><tr><td>Mini-batch</td><td>Un subconjunto</td><td>Buen equilibrio para GPU/CPU</td><td>Requiere elegir tamaño de lote</td></tr></table>
+  <div class="grid"><canvas id="noiseCanvas" width="760" height="390"></canvas><div class="mini"><label>Ruido del gradiente: <span id="noiseVal"></span></label><input type="range" id="noise" min="0" max="1.5" value="0.45" step="0.01"><label>Tamaño de lote conceptual: <span id="batchVal"></span></label><input type="range" id="batch" min="1" max="128" value="16" step="1"><p><button onclick="drawNoisePath()">Simular trayectoria ruidosa</button></p><p class="note">Cuanto menor es el lote, mayor suele ser la variabilidad del gradiente. Aquí lo representamos como ruido artificial sobre la trayectoria.</p></div></div>
+</details>
+<details id="momentum" class="card" open>
+  <summary>7. Momentum: recordar hacia dónde veníamos</summary>
+  <p>Momentum añade una velocidad acumulada. Si varias actualizaciones apuntan en una dirección parecida, la velocidad crece; si el gradiente cambia de signo rápidamente, se amortigua la oscilación.</p>
+  <p class="formula">v<sub>t+1</sub> = βv<sub>t</sub> + ∇J(θ<sub>t</sub>)<br>θ<sub>t+1</sub> = θ<sub>t</sub> − αv<sub>t+1</sub></p>
+  <div class="grid"><canvas id="momCanvas" width="760" height="420"></canvas><div class="mini"><label>Momentum β: <span id="betaVal"></span></label><input id="beta" type="range" min="0" max="0.98" value="0.82" step="0.01"><label>Learning rate α: <span id="momLrVal"></span></label><input id="momLr" type="range" min="0.005" max="0.18" value="0.055" step="0.001"><p><button onclick="drawMomentum()">Comparar normal vs momentum</button></p><p class="note">En valles estrechos, el descenso normal zigzaguea. Momentum tiende a suavizar el zigzag y acelerar el avance longitudinal.</p></div></div>
+</details>
+<details id="diagnostico" class="card" open>
+  <summary>8. Diagnóstico visual de entrenamiento</summary>
+  <div class="triple"><div class="mini"><h3>α demasiado baja</h3><p>La pérdida baja, pero avanza con lentitud. Solución: aumentar α o usar scheduling.</p></div><div class="mini"><h3>α razonable</h3><p>La curva baja de forma clara y después se aplana cerca del mínimo.</p></div><div class="mini"><h3>α demasiado alta</h3><p>La pérdida oscila o explota. Solución: bajar α, normalizar datos o usar optimizadores adaptativos.</p></div></div>
+  <p>Señales frecuentes: pérdida que no baja, pérdida que baja y sube, divergencia numérica, gradientes nulos, datos mal escalados o regularización excesiva.</p>
+</details>
+<section id="videos" class="card">
+  <h2>9. Vídeos incrustados</h2>
+  <p>Reproduce los vídeos sin salir de la página. Se han seleccionado como material complementario visual.</p>
+  <div class="grid"><div><h3>3Blue1Brown · Gradient descent</h3><div class="video"><iframe title="Gradient descent, how neural networks learn" src="https://www.youtube-nocookie.com/embed/IHZwWFHWa-w" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></div><div><h3>StatQuest · Gradient Descent Step-by-Step</h3><div class="video"><iframe title="Gradient Descent, Step-by-Step" src="https://www.youtube-nocookie.com/embed/sDv4f4s2SB8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></div></div>
+</section>
+<section id="quiz" class="card quiz">
+  <h2>10. Quiz rápido</h2>
+  <div class="mini"><p><strong>1.</strong> ¿Por qué se resta el gradiente?</p><button onclick="toggleAnswer('a1')">Ver respuesta</button><p id="a1" class="answer">Porque el gradiente apunta hacia el aumento más rápido de la pérdida; restarlo nos mueve hacia la bajada local.</p></div>
+  <div class="mini"><p><strong>2.</strong> ¿Qué pasa si α es demasiado grande?</p><button onclick="toggleAnswer('a2')">Ver respuesta</button><p id="a2" class="answer">El algoritmo puede saltarse el mínimo, oscilar alrededor de él o incluso divergir.</p></div>
+  <div class="mini"><p><strong>3.</strong> ¿Por qué se usan mini-batches?</p><button onclick="toggleAnswer('a3')">Ver respuesta</button><p id="a3" class="answer">Porque equilibran coste y estabilidad: no usan todos los datos en cada paso, pero reducen el ruido extremo del SGD puro.</p></div>
+</section>
+<section id="fuentes" class="card">
+  <h2>11. Fuentes y materiales</h2>
+  <ul class="source-list"><li>Google Machine Learning Crash Course, sección de descenso del gradiente.</li><li>Stanford CS229, notas de regresión lineal y gradient descent.</li><li>3Blue1Brown, “Gradient descent, how neural networks learn”.</li><li>StatQuest, “Gradient Descent, Step-by-Step”.</li></ul>
+</section>
+<footer>Documento HTML autocontenido para Oblitus. Los widgets funcionan con JavaScript local; los vídeos incrustados requieren conexión a Internet.</footer>
+</div></main></div>
+<script>
+const $=id=>document.getElementById(id); let speechUtterance=null;
+function toggleTheme(){document.body.classList.toggle('light'); localStorage.setItem('themeGD',document.body.classList.contains('light')?'light':'dark'); drawAll();}
+if(localStorage.getItem('themeGD')==='light')document.body.classList.add('light');
+window.addEventListener('scroll',()=>{const h=document.documentElement; $('progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+function speak(txt){stopSpeech(); speechUtterance=new SpeechSynthesisUtterance(txt); speechUtterance.lang='es-ES'; speechUtterance.rate=0.98; speechSynthesis.speak(speechUtterance)}
+function speakPage(){speak('Descenso del gradiente. Una guía interactiva para entender cómo un modelo aprende reduciendo una función de pérdida. Modifica la tasa de aprendizaje, observa las trayectorias y escucha la pérdida mediante audio generativo.');}
+function stopSpeech(){if('speechSynthesis' in window) speechSynthesis.cancel();}
+function toggleAnswer(id){const e=$(id); e.style.display=e.style.display==='block'?'none':'block'}
+function themeColors(){return document.body.classList.contains('light')?{fg:'#132033',grid:'#d7e0ee',a:'#006fbf',b:'#6b35cc',good:'#117a35',bad:'#bd2c2c'}:{fg:'#eef4ff',grid:'#263b65',a:'#81d4fa',b:'#b388ff',good:'#9be7a8',bad:'#ff9e9e'}}
+function f(x){let s=$('funcSel').value; if(s==='quad')return 0.36*(x-1.2)*(x-1.2)+.8; if(s==='quartic')return .025*Math.pow(x+1.1,4)+.05*(x-2.4)*(x-2.4)+.7; return .08*(x-1.6)*(x-1.6)+.45*Math.sin(2.4*x)+.95;}
+function df(x){let h=1e-4; return (f(x+h)-f(x-h))/(2*h)}
+function gdPath(){let x=parseFloat($('start').value), lr=parseFloat($('lr').value), steps=parseInt($('steps').value), path=[]; for(let i=0;i<=steps;i++){path.push({i,x,y:f(x),g:df(x)}); x=x-lr*df(x); if(!Number.isFinite(x)||Math.abs(x)>1e5)break;} return path;}
+function mapX(x,w){return (x+5)/10*w} function mapY(y,h,minY,maxY){return h-28-(y-minY)/(maxY-minY)*(h-56)}
+let anim=0;
+function runGD(animated){$('lrVal').textContent=parseFloat($('lr').value).toFixed(3);$('startVal').textContent=$('start').value;$('stepsVal').textContent=$('steps').value; const path=gdPath(); if(animated){anim=0; const tick=()=>{drawGD(path,anim); anim++; if(anim<path.length) requestAnimationFrame(tick);}; tick()} else drawGD(path,path.length-1); let last=path[path.length-1]; $('gdStats').innerHTML='Último θ ≈ <strong>'+last.x.toFixed(4)+'</strong>, pérdida ≈ <strong>'+last.y.toFixed(4)+'</strong>, pasos calculados: '+(path.length-1); let rows=path.slice(0,8).map(p=>'<tr><td>'+p.i+'</td><td>'+p.x.toFixed(4)+'</td><td>'+p.y.toFixed(4)+'</td><td>'+p.g.toFixed(4)+'</td></tr>').join(''); $('gdTable').innerHTML='<table><tr><th>i</th><th>θ</th><th>J(θ)</th><th>gradiente</th></tr>'+rows+'</table>';}
+function drawGD(path,upto){const c=$('gdCanvas'),ctx=c.getContext('2d'),C=themeColors(),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle=C.grid;ctx.lineWidth=1;for(let i=0;i<10;i++){let x=i*w/10;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}let ys=[];for(let i=0;i<=600;i++){let x=-5+10*i/600;ys.push(f(x));}let minY=Math.min(...ys)-.2,maxY=Math.max(...ys)+.2;ctx.strokeStyle=C.a;ctx.lineWidth=3;ctx.beginPath();ys.forEach((y,i)=>{let x=-5+10*i/600;let px=mapX(x,w),py=mapY(y,h,minY,maxY); if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py);});ctx.stroke();ctx.strokeStyle=C.b;ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<=Math.min(upto,path.length-1);i++){let p=path[i],px=mapX(p.x,w),py=mapY(p.y,h,minY,maxY); if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py);}ctx.stroke();for(let i=0;i<=Math.min(upto,path.length-1);i++){let p=path[i],px=mapX(p.x,w),py=mapY(p.y,h,minY,maxY);ctx.fillStyle=i===Math.min(upto,path.length-1)?C.good:C.b;ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);ctx.fill();}ctx.fillStyle=C.fg;ctx.font='16px Consolas';ctx.fillText('J(θ)',18,24);ctx.fillText('θ',w-26,h-12);}
+['funcSel','lr','start','steps'].forEach(id=>$(id).addEventListener('input',()=>runGD(false)));
+function sonifyGD(){const path=gdPath().slice(0,45),ac=new (window.AudioContext||window.webkitAudioContext)();let max=Math.max(...path.map(p=>p.y)),min=Math.min(...path.map(p=>p.y));path.forEach((p,i)=>{let o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=220+600*(p.y-min)/(max-min+.0001);g.gain.value=.045;o.connect(g).connect(ac.destination);o.start(ac.currentTime+i*.075);o.stop(ac.currentTime+i*.075+.055);});}
+let data=[];function newData(){data=[];for(let i=0;i<34;i++){let x=-3+6*i/33;let y=1.65*x+1.15+(Math.random()-.5)*1.25;data.push({x,y});}drawLinear();}function mse(w,b){return data.reduce((s,p)=>s+Math.pow(w*p.x+b-p.y,2),0)/data.length}
+function drawLinear(){$('wVal').textContent=parseFloat($('w').value).toFixed(2);$('bVal').textContent=parseFloat($('b').value).toFixed(2);$('linLrVal').textContent=parseFloat($('linLr').value).toFixed(3);const c=$('linCanvas'),ctx=c.getContext('2d'),C=themeColors(),wpx=c.width,h=c.height;ctx.clearRect(0,0,wpx,h);ctx.strokeStyle=C.grid;for(let i=0;i<10;i++){ctx.beginPath();ctx.moveTo(i*wpx/10,0);ctx.lineTo(i*wpx/10,h);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*h/10);ctx.lineTo(wpx,i*h/10);ctx.stroke();}function px(x){return (x+3.6)/7.2*wpx}function py(y){return h-(y+5)/14*h}ctx.fillStyle=C.a;data.forEach(p=>{ctx.beginPath();ctx.arc(px(p.x),py(p.y),5,0,Math.PI*2);ctx.fill();});let ww=parseFloat($('w').value),bb=parseFloat($('b').value);ctx.strokeStyle=C.b;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(px(-3.5),py(ww*(-3.5)+bb));ctx.lineTo(px(3.5),py(ww*3.5+bb));ctx.stroke();$('mseBox').innerHTML='MSE actual: <strong>'+mse(ww,bb).toFixed(4)+'</strong>';}
+function trainLinear(){let w=parseFloat($('w').value),b=parseFloat($('b').value),lr=parseFloat($('linLr').value);for(let step=0;step<80;step++){let gw=0,gb=0;data.forEach(p=>{let e=w*p.x+b-p.y;gw+=2*e*p.x/data.length;gb+=2*e/data.length;});w-=lr*gw;b-=lr*gb;}$('w').value=w;$('b').value=b;drawLinear();}
+function resetLinear(){$('w').value=-2;$('b').value=6;drawLinear()}['w','b','linLr'].forEach(id=>$(id).addEventListener('input',drawLinear));
+function drawNoisePath(){$('noiseVal').textContent=parseFloat($('noise').value).toFixed(2);$('batchVal').textContent=$('batch').value;const c=$('noiseCanvas'),ctx=c.getContext('2d'),C=themeColors(),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle=C.grid;ctx.beginPath();ctx.moveTo(40,h-40);ctx.quadraticCurveTo(w/2,40,w-40,h-40);ctx.stroke();let x=4.6,noise=parseFloat($('noise').value)/Math.sqrt(parseFloat($('batch').value)/16),path=[];for(let i=0;i<70;i++){let grad=.7*(x-0.4)+(Math.random()-.5)*noise*5;x-=.08*grad;path.push(x);}ctx.strokeStyle=C.a;ctx.lineWidth=2;ctx.beginPath();path.forEach((v,i)=>{let px=40+i*(w-80)/(path.length-1),py=h-70-(Math.exp(-Math.abs(v))*220)+Math.sin(v*2)*20;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)});ctx.stroke();ctx.fillStyle=C.fg;ctx.font='15px Consolas';ctx.fillText('Trayectoria conceptual de mini-batch/SGD',40,30)}
+['noise','batch'].forEach(id=>$(id).addEventListener('input',drawNoisePath));
+function drawMomentum(){$('betaVal').textContent=parseFloat($('beta').value).toFixed(2);$('momLrVal').textContent=parseFloat($('momLr').value).toFixed(3);const c=$('momCanvas'),ctx=c.getContext('2d'),C=themeColors(),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);function valley(x,y){return .06*x*x+1.2*y*y}function grad(x,y){return [0.12*x,2.4*y]}function px(x){return w/2+x*75}function py(y){return h/2-y*75}ctx.strokeStyle=C.grid;for(let r=1;r<6;r++){ctx.beginPath();ctx.ellipse(w/2,h/2,60*r,18*r,0,0,Math.PI*2);ctx.stroke();}let lr=parseFloat($('momLr').value),beta=parseFloat($('beta').value);function path(mom){let x=-4,y=1.7,vx=0,vy=0,arr=[];for(let i=0;i<80;i++){arr.push([x,y]);let g=grad(x,y);if(mom){vx=beta*vx+g[0];vy=beta*vy+g[1];x-=lr*vx;y-=lr*vy}else{x-=lr*g[0];y-=lr*g[1];}}return arr}[[path(false),C.bad||'#ff9e9e'],[path(true),C.a]].forEach(pair=>{ctx.strokeStyle=pair[1];ctx.lineWidth=3;ctx.beginPath();pair[0].forEach((p,i)=>{if(i===0)ctx.moveTo(px(p[0]),py(p[1]));else ctx.lineTo(px(p[0]),py(p[1]));});ctx.stroke();});ctx.fillStyle=C.fg;ctx.fillText('Rojo: normal · Azul: momentum',24,30)}
+['beta','momLr'].forEach(id=>$(id).addEventListener('input',drawMomentum));
+function drawAll(){runGD(false);drawLinear();drawNoisePath();drawMomentum();}newData();drawAll();
+</script>
+</body>
+</html>
