@@ -190,13 +190,56 @@ function bindChapterTools() {
 
 function buildToc(container) {
   disconnectTocObserver();
-  const headings = getContentHeadings(container, 'h2, h3');
-  els.toc.innerHTML = headings.map(heading => {
-    if (!heading.id) heading.id = slugify(heading.textContent);
-    const label = cleanTocLabel(heading.textContent);
-    return `<li class="toc-${heading.tagName.toLowerCase()}"><a href="#${escapeAttr(heading.id)}" data-toc-link="${escapeAttr(heading.id)}">${escapeHtml(label)}</a></li>`;
+  const headings = getContentHeadings(container, 'h2, h3, h4');
+  const entries = buildTocEntries(headings);
+
+  els.toc.innerHTML = entries.map(entry => {
+    if (!entry.heading.id) entry.heading.id = slugify(entry.heading.textContent);
+    return `<li class="toc-${entry.tagName}" data-toc-level="${entry.level}" data-toc-number="${escapeAttr(entry.number)}"><a href="#${escapeAttr(entry.heading.id)}" data-toc-link="${escapeAttr(entry.heading.id)}">${escapeHtml(entry.label)}</a></li>`;
   }).join('');
   bindTocScrollSync(headings);
+}
+
+function buildTocEntries(headings) {
+  const counters = [0, 0, 0];
+  let lastLevel = 1;
+
+  return headings.map(heading => {
+    const level = headingLevel(heading.tagName);
+
+    if (level === 1) {
+      counters[0] += 1;
+      counters[1] = 0;
+      counters[2] = 0;
+    } else if (level === 2) {
+      if (counters[0] === 0) counters[0] = 1;
+      counters[1] += 1;
+      counters[2] = 0;
+    } else {
+      if (counters[0] === 0) counters[0] = 1;
+      if (counters[1] === 0) counters[1] = 1;
+      counters[2] += 1;
+    }
+
+    lastLevel = level;
+    const number = counters.slice(0, level).map(value => String(value).padStart(2, '0')).join('.');
+    const rawLabel = cleanTocLabel(heading.textContent);
+
+    return {
+      heading,
+      tagName: heading.tagName.toLowerCase(),
+      level,
+      number,
+      label: rawLabel
+    };
+  });
+}
+
+function headingLevel(tagName = '') {
+  const tag = tagName.toUpperCase();
+  if (tag === 'H2') return 1;
+  if (tag === 'H3') return 2;
+  return 3;
 }
 
 function bindTocScrollSync(headings) {
