@@ -3,6 +3,7 @@ import { initMobileMenu } from './mobile-menu.js';
 
 const params = new URLSearchParams(location.search);
 const articleId = params.get('id');
+let tocObserver = null;
 
 const els = {
   themeToggle: document.querySelector('#themeToggle'),
@@ -88,6 +89,7 @@ function renderArticle(article, html, options = {}) {
 }
 
 function renderStandaloneArticle(article, title) {
+  disconnectTocObserver();
   els.layout?.classList.add('is-standalone');
   els.shell?.classList.add('is-standalone');
   if (els.tools) els.tools.hidden = true;
@@ -187,12 +189,56 @@ function bindChapterTools() {
 }
 
 function buildToc(container) {
+  disconnectTocObserver();
   const headings = getContentHeadings(container, 'h2, h3');
   els.toc.innerHTML = headings.map(heading => {
     if (!heading.id) heading.id = slugify(heading.textContent);
-    const label = heading.textContent.replace(/Contraer|Expandir/g, '').trim();
-    return `<li class="toc-${heading.tagName.toLowerCase()}"><a href="#${escapeAttr(heading.id)}">${escapeHtml(label)}</a></li>`;
+    const label = cleanTocLabel(heading.textContent);
+    return `<li class="toc-${heading.tagName.toLowerCase()}"><a href="#${escapeAttr(heading.id)}" data-toc-link="${escapeAttr(heading.id)}">${escapeHtml(label)}</a></li>`;
   }).join('');
+  bindTocScrollSync(headings);
+}
+
+function bindTocScrollSync(headings) {
+  if (!headings.length || !('IntersectionObserver' in window)) return;
+
+  tocObserver = new IntersectionObserver(entries => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (!visible) return;
+    setActiveTocLink(visible.target.id);
+  }, {
+    root: null,
+    rootMargin: '-18% 0px -66% 0px',
+    threshold: [0, 0.2, 0.5, 1]
+  });
+
+  headings.forEach(heading => tocObserver.observe(heading));
+  if (headings[0]) setActiveTocLink(headings[0].id, { instant: true });
+}
+
+function setActiveTocLink(id, options = {}) {
+  const link = els.toc?.querySelector(`[data-toc-link="${cssEscape(id)}"]`);
+  if (!link || link.classList.contains('is-active')) return;
+  els.toc.querySelectorAll('.is-active').forEach(item => item.classList.remove('is-active'));
+  link.classList.add('is-active');
+
+  if (!options.instant) {
+    link.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+  }
+}
+
+function disconnectTocObserver() {
+  tocObserver?.disconnect();
+  tocObserver = null;
+}
+
+function cleanTocLabel(value = '') {
+  return String(value)
+    .replace(/Contraer|Expandir/g, '')
+    .replace(/^\s*\d+(?:[.)]|\.\d+)*\s*/g, '')
+    .trim();
 }
 
 function getContentHeadings(container, selector) {
@@ -224,6 +270,11 @@ function formatDate(value) {
 
 function slugify(value = '') {
   return value.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'seccion';
+}
+
+function cssEscape(value = '') {
+  if (window.CSS?.escape) return CSS.escape(value);
+  return String(value).replace(/["\\]/g, '\\$&');
 }
 
 function escapeHtml(value = '') {
