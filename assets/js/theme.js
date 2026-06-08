@@ -6,10 +6,15 @@ const MODE_LABELS = {
   evening: '◒ Tarde',
   night: '☾ Noche'
 };
-const QUARTER_MINUTES = 15;
 const AUTO_REFRESH_MS = 60_000;
 const MANUAL_TRANSITION_MS = 1800;
 const AUTO_TRANSITION_MS = 4200;
+const SOLAR_ZENITH = 90.833;
+const DEFAULT_SOLAR_LOCATION = {
+  latitude: 41.3874,
+  longitude: 2.1686,
+  label: 'Barcelona'
+};
 
 const manualPalettes = {
   day: {
@@ -56,33 +61,26 @@ const manualPalettes = {
   }
 };
 
-const temporalAnchors = [
-  { minute: 0, palette: manualPalettes.night },
-  { minute: 300, palette: manualPalettes.night },
-  { minute: 345, palette: {
-    colorScheme: 'dark', bg: '#1b1920', bgStrong: '#2a2023', surface: '#211f27', surface2: '#2d2730', text: '#f4ecdf', muted: '#cebba6', accent: '#cd7d4b', accent2: '#77b4b8', shadow: 'rgba(0, 0, 0, 0.32)', lineAlpha: 0.13, accentAlpha: 0.15
-  }},
-  { minute: 420, palette: {
-    colorScheme: 'light', bg: '#dfcbb0', bgStrong: '#c7a276', surface: '#f7e8d2', surface2: '#ebd7bb', text: '#1a140f', muted: '#675342', accent: '#8c4318', accent2: '#2a565a', shadow: 'rgba(42, 27, 14, 0.17)', lineAlpha: 0.18, accentAlpha: 0.15
-  }},
-  { minute: 510, palette: manualPalettes.day },
-  { minute: 720, palette: manualPalettes.day },
-  { minute: 885, palette: {
+const solarPalettes = {
+  deepNight: manualPalettes.night,
+  preDawn: {
+    colorScheme: 'dark', bg: '#141821', bgStrong: '#202431', surface: '#1a202a', surface2: '#232b36', text: '#f2ebdf', muted: '#cfc1b0', accent: '#d79563', accent2: '#85c8ce', shadow: 'rgba(0, 0, 0, 0.34)', lineAlpha: 0.13, accentAlpha: 0.14
+  },
+  dawn: {
+    colorScheme: 'light', bg: '#d8bfa3', bgStrong: '#b98f68', surface: '#f3dfc2', surface2: '#dfc49f', text: '#18110d', muted: '#564233', accent: '#9b4718', accent2: '#24545a', shadow: 'rgba(43, 27, 13, 0.21)', lineAlpha: 0.23, accentAlpha: 0.18
+  },
+  day: manualPalettes.day,
+  lateDay: {
     colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#5f4d3e', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.19, accentAlpha: 0.14
-  }},
-  { minute: 1020, palette: manualPalettes.evening },
-  { minute: 1065, palette: {
+  },
+  golden: manualPalettes.evening,
+  dusk: {
     colorScheme: 'light', bg: '#c7aa86', bgStrong: '#a77f5b', surface: '#efd7b8', surface2: '#d8bb95', text: '#120d09', muted: '#49372a', accent: '#9b4c1c', accent2: '#1f4e54', shadow: 'rgba(38, 23, 13, 0.24)', lineAlpha: 0.28, accentAlpha: 0.18
-  }},
-  { minute: 1080, palette: {
-    colorScheme: 'dark', bg: '#1d1a22', bgStrong: '#312332', surface: '#25212a', surface2: '#302832', text: '#fbf2e8', muted: '#e2d0bd', accent: '#e08c55', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.33)', lineAlpha: 0.18, accentAlpha: 0.18
-  }},
-  { minute: 1140, palette: {
+  },
+  blueHour: {
     colorScheme: 'dark', bg: '#211d27', bgStrong: '#352633', surface: '#27232c', surface2: '#332b35', text: '#f8eee4', muted: '#ddcbb9', accent: '#d78957', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.32)', lineAlpha: 0.17, accentAlpha: 0.17
-  }},
-  { minute: 1260, palette: manualPalettes.night },
-  { minute: 1440, palette: manualPalettes.night }
-];
+  }
+};
 
 let temporalTimer = null;
 let animationFrame = null;
@@ -128,28 +126,89 @@ function applyTemporalPalette(duration = AUTO_TRANSITION_MS) {
 
 function getTemporalPalette(date) {
   const minuteOfDay = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
-  const snappedMinute = Math.floor(minuteOfDay / QUARTER_MINUTES) * QUARTER_MINUTES;
-  const offsetInsideQuarter = minuteOfDay - snappedMinute;
-  const quantisedMinute = snappedMinute + offsetInsideQuarter;
-  const current = findAnchorBefore(quantisedMinute);
-  const next = findAnchorAfter(quantisedMinute);
+  const solar = getSolarDay(date, DEFAULT_SOLAR_LOCATION);
+  const anchors = getSolarAnchors(solar);
+  const current = findAnchorBefore(minuteOfDay, anchors);
+  const next = findAnchorAfter(minuteOfDay, anchors);
   const span = Math.max(1, next.minute - current.minute);
-  const progress = clamp((quantisedMinute - current.minute) / span, 0, 1);
+  const progress = clamp((minuteOfDay - current.minute) / span, 0, 1);
   return mixPalettes(current.palette, next.palette, smoothstep(progress));
 }
 
-function findAnchorBefore(minute) {
-  for (let index = temporalAnchors.length - 1; index >= 0; index -= 1) {
-    if (temporalAnchors[index].minute <= minute) return temporalAnchors[index];
-  }
-  return temporalAnchors[0];
+function getSolarAnchors({ sunrise, sunset, solarNoon }) {
+  return [
+    { minute: 0, palette: solarPalettes.deepNight },
+    { minute: clamp(sunrise - 120, 0, 1440), palette: solarPalettes.deepNight },
+    { minute: clamp(sunrise - 60, 0, 1440), palette: solarPalettes.preDawn },
+    { minute: clamp(sunrise + 35, 0, 1440), palette: solarPalettes.dawn },
+    { minute: clamp(sunrise + 95, 0, 1440), palette: solarPalettes.day },
+    { minute: clamp(solarNoon, 0, 1440), palette: solarPalettes.day },
+    { minute: clamp(sunset - 180, 0, 1440), palette: solarPalettes.day },
+    { minute: clamp(sunset - 90, 0, 1440), palette: solarPalettes.lateDay },
+    { minute: clamp(sunset - 15, 0, 1440), palette: solarPalettes.golden },
+    { minute: clamp(sunset + 45, 0, 1440), palette: solarPalettes.dusk },
+    { minute: clamp(sunset + 105, 0, 1440), palette: solarPalettes.blueHour },
+    { minute: clamp(sunset + 150, 0, 1440), palette: solarPalettes.deepNight },
+    { minute: 1440, palette: solarPalettes.deepNight }
+  ].sort((a, b) => a.minute - b.minute || 0.001);
 }
 
-function findAnchorAfter(minute) {
-  for (const anchor of temporalAnchors) {
+function getSolarDay(date, location) {
+  const day = dayOfYear(date);
+  const gamma = (2 * Math.PI / 365) * (day - 1);
+  const equationOfTime = 229.18 * (
+    0.000075
+    + 0.001868 * Math.cos(gamma)
+    - 0.032077 * Math.sin(gamma)
+    - 0.014615 * Math.cos(2 * gamma)
+    - 0.040849 * Math.sin(2 * gamma)
+  );
+  const declination = 0.006918
+    - 0.399912 * Math.cos(gamma)
+    + 0.070257 * Math.sin(gamma)
+    - 0.006758 * Math.cos(2 * gamma)
+    + 0.000907 * Math.sin(2 * gamma)
+    - 0.002697 * Math.cos(3 * gamma)
+    + 0.00148 * Math.sin(3 * gamma);
+
+  const latitude = toRadians(location.latitude);
+  const zenith = toRadians(SOLAR_ZENITH);
+  const hourAngle = Math.acos(clamp(
+    (Math.cos(zenith) / (Math.cos(latitude) * Math.cos(declination))) - Math.tan(latitude) * Math.tan(declination),
+    -1,
+    1
+  ));
+  const hourAngleDegrees = toDegrees(hourAngle);
+  const timezoneOffsetHours = -date.getTimezoneOffset() / 60;
+  const solarNoon = 720 - (4 * location.longitude) - equationOfTime + (timezoneOffsetHours * 60);
+  const sunrise = 720 - (4 * (location.longitude + hourAngleDegrees)) - equationOfTime + (timezoneOffsetHours * 60);
+  const sunset = 720 - (4 * (location.longitude - hourAngleDegrees)) - equationOfTime + (timezoneOffsetHours * 60);
+
+  return {
+    sunrise: clamp(sunrise, 0, 1440),
+    sunset: clamp(sunset, 0, 1440),
+    solarNoon: clamp(solarNoon, 0, 1440)
+  };
+}
+
+function dayOfYear(date) {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff = date - start + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
+  return Math.floor(diff / 86_400_000);
+}
+
+function findAnchorBefore(minute, anchors) {
+  for (let index = anchors.length - 1; index >= 0; index -= 1) {
+    if (anchors[index].minute <= minute) return anchors[index];
+  }
+  return anchors[0];
+}
+
+function findAnchorAfter(minute, anchors) {
+  for (const anchor of anchors) {
     if (anchor.minute > minute) return anchor;
   }
-  return temporalAnchors.at(-1);
+  return anchors.at(-1);
 }
 
 function applyOrAnimatePalette(target, renderedMode, duration) {
@@ -286,6 +345,14 @@ function parseRgba(value) {
     b: Number(match[3]),
     a: Number(match[4] ?? 1)
   };
+}
+
+function toRadians(value) {
+  return value * Math.PI / 180;
+}
+
+function toDegrees(value) {
+  return value * 180 / Math.PI;
 }
 
 function lerp(a, b, amount) {
