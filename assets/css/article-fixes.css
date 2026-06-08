@@ -1,0 +1,36 @@
+.article-body pre.source-outline {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.article-body .source-outline-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+}
+
+.article-body .source-outline-table th,
+.article-body .source-outline-table td {
+  vertical-align: top;
+}
+
+.article-body .editorial-widget details {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.7rem 0.85rem;
+}
+
+.article-body .editorial-widget summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--accent);
+}
