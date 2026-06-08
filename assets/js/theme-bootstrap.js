@@ -1,6 +1,8 @@
 (() => {
   const STORAGE_KEY = 'oes-theme-mode';
   const root = document.documentElement;
+  const SOLAR_ZENITH = 90.833;
+  const LOCATION = { latitude: 41.3874, longitude: 2.1686 };
 
   const palettes = {
     day: {
@@ -8,10 +10,20 @@
       text: '#151412', muted: '#60594e', accent: '#7c2d12', accent2: '#1f4d4f',
       line: 'rgba(21, 20, 18, 0.16)', accentSoft: 'rgba(124, 45, 18, 0.12)', shadow: '0 20px 50px rgba(34, 25, 14, 0.12)'
     },
+    lateDay: {
+      scheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4',
+      text: '#18130f', muted: '#5f4d3e', accent: '#884018', accent2: '#29565a',
+      line: 'rgba(24, 19, 15, 0.19)', accentSoft: 'rgba(136, 64, 24, 0.14)', shadow: '0 20px 50px rgba(43, 27, 13, 0.15)'
+    },
     evening: {
-      scheme: 'light', bg: '#c7aa86', bgStrong: '#a77f5b', surface: '#efd7b8', surface2: '#d8bb95',
-      text: '#120d09', muted: '#49372a', accent: '#9b4c1c', accent2: '#1f4e54',
-      line: 'rgba(18, 13, 9, 0.28)', accentSoft: 'rgba(155, 76, 28, 0.18)', shadow: '0 20px 50px rgba(38, 23, 13, 0.24)'
+      scheme: 'light', bg: '#dac3a5', bgStrong: '#bd9a72', surface: '#f7e5ca', surface2: '#e7cfad',
+      text: '#17110d', muted: '#4f3e31', accent: '#8e3f16', accent2: '#214d52',
+      line: 'rgba(23, 17, 13, 0.24)', accentSoft: 'rgba(142, 63, 22, 0.17)', shadow: '0 20px 50px rgba(45, 29, 16, 0.2)'
+    },
+    blueHour: {
+      scheme: 'dark', bg: '#211d27', bgStrong: '#352633', surface: '#27232c', surface2: '#332b35',
+      text: '#f8eee4', muted: '#ddcbb9', accent: '#d78957', accent2: '#8bd3d2',
+      line: 'rgba(248, 238, 228, 0.17)', accentSoft: 'rgba(215, 137, 87, 0.17)', shadow: '0 20px 50px rgba(0, 0, 0, 0.32)'
     },
     night: {
       scheme: 'dark', bg: '#0f1115', bgStrong: '#171a21', surface: '#161a22', surface2: '#1d232c',
@@ -41,9 +53,39 @@
 
   function getAutoPalette() {
     const now = new Date();
-    const hour = now.getHours() + now.getMinutes() / 60;
-    if (hour >= 18 || hour < 6) return palettes.night;
-    if (hour >= 16.5) return palettes.evening;
-    return palettes.day;
+    const minute = now.getHours() * 60 + now.getMinutes();
+    const solar = getSolarDay(now);
+
+    if (minute < solar.sunrise - 60 || minute >= solar.sunset + 150) return palettes.night;
+    if (minute < solar.sunrise + 60) return palettes.lateDay;
+    if (minute < solar.sunset - 135) return palettes.day;
+    if (minute < solar.sunset - 45) return palettes.lateDay;
+    if (minute < solar.sunset + 75) return palettes.evening;
+    return palettes.blueHour;
+  }
+
+  function getSolarDay(date) {
+    const day = dayOfYear(date);
+    const gamma = (2 * Math.PI / 365) * (day - 1);
+    const eqTime = 229.18 * (0.000075 + 0.001868 * Math.cos(gamma) - 0.032077 * Math.sin(gamma) - 0.014615 * Math.cos(2 * gamma) - 0.040849 * Math.sin(2 * gamma));
+    const decl = 0.006918 - 0.399912 * Math.cos(gamma) + 0.070257 * Math.sin(gamma) - 0.006758 * Math.cos(2 * gamma) + 0.000907 * Math.sin(2 * gamma) - 0.002697 * Math.cos(3 * gamma) + 0.00148 * Math.sin(3 * gamma);
+    const lat = LOCATION.latitude * Math.PI / 180;
+    const zenith = SOLAR_ZENITH * Math.PI / 180;
+    const hourAngle = Math.acos(clamp((Math.cos(zenith) / (Math.cos(lat) * Math.cos(decl))) - Math.tan(lat) * Math.tan(decl), -1, 1)) * 180 / Math.PI;
+    const offset = -date.getTimezoneOffset() / 60;
+    return {
+      sunrise: clamp(720 - (4 * (LOCATION.longitude + hourAngle)) - eqTime + (offset * 60), 0, 1440),
+      sunset: clamp(720 - (4 * (LOCATION.longitude - hourAngle)) - eqTime + (offset * 60), 0, 1440)
+    };
+  }
+
+  function dayOfYear(date) {
+    const start = new Date(date.getFullYear(), 0, 0);
+    const diff = date - start + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
+    return Math.floor(diff / 86400000);
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
   }
 })();
