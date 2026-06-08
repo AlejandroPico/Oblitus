@@ -63,10 +63,39 @@ function bindEvents() {
     toggleSearchPanel();
   });
   els.searchPanel?.addEventListener('click', event => event.stopPropagation());
+  els.grid?.addEventListener('click', handleGridClick);
+  els.grid?.addEventListener('keydown', handleGridKeydown);
   document.addEventListener('click', () => closeSearchPanel());
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') closeSearchPanel();
   });
+}
+
+function handleGridClick(event) {
+  const tag = event.target.closest('[data-card-tag]');
+  if (!tag) return;
+  event.preventDefault();
+  event.stopPropagation();
+  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true });
+}
+
+function handleGridKeydown(event) {
+  if (!['Enter', ' '].includes(event.key)) return;
+  const tag = event.target.closest('[data-card-tag]');
+  if (!tag) return;
+  event.preventDefault();
+  event.stopPropagation();
+  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true });
+}
+
+function setActiveTag(tag, options = {}) {
+  state.activeTag = tag || 'Todos';
+  renderTags();
+  renderPosts();
+
+  if (options.scrollToFilters && els.tags) {
+    els.tags.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 function toggleSearchPanel(forceOpen = null) {
@@ -163,11 +192,7 @@ function renderTags() {
   `).join('');
 
   els.tags.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', () => {
-      state.activeTag = button.dataset.tag;
-      renderTags();
-      renderPosts();
-    });
+    button.addEventListener('click', () => setActiveTag(button.dataset.tag));
   });
 }
 
@@ -197,11 +222,60 @@ function renderPosts() {
         ${post.interactive ? '<span>· Interactivo</span>' : ''}
       </div>
       <p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
-      <div class="post-badges post-badges-scroll" aria-label="Etiquetas del artículo">
-        ${(post.tags ?? []).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('')}
+      <div class="post-badges post-badges-scroll" aria-label="Etiquetas del artículo" data-drag-scroll="true">
+        ${(post.tags ?? []).map(tag => `<span class="badge tag-inline-filter" role="button" tabindex="0" data-card-tag="${escapeAttr(tag)}" title="Filtrar por ${escapeAttr(tag)}">${escapeHtml(tag)}</span>`).join('')}
       </div>
     </a>
   `).join('');
+
+  initDragScrollRails();
+}
+
+function initDragScrollRails() {
+  els.grid.querySelectorAll('[data-drag-scroll="true"]').forEach(rail => {
+    let pointerId = null;
+    let startX = 0;
+    let startScroll = 0;
+    let dragged = false;
+
+    rail.addEventListener('pointerdown', event => {
+      if (event.button !== undefined && event.button !== 0) return;
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startScroll = rail.scrollLeft;
+      dragged = false;
+      rail.classList.add('is-dragging');
+      rail.setPointerCapture?.(pointerId);
+    });
+
+    rail.addEventListener('pointermove', event => {
+      if (pointerId !== event.pointerId) return;
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 4) dragged = true;
+      if (!dragged) return;
+      rail.scrollLeft = startScroll - delta;
+      event.preventDefault();
+    });
+
+    const finish = event => {
+      if (pointerId !== event.pointerId) return;
+      rail.releasePointerCapture?.(pointerId);
+      rail.classList.remove('is-dragging');
+      pointerId = null;
+      if (dragged) {
+        rail.dataset.suppressClick = 'true';
+        window.setTimeout(() => delete rail.dataset.suppressClick, 80);
+      }
+    };
+
+    rail.addEventListener('pointerup', finish);
+    rail.addEventListener('pointercancel', finish);
+    rail.addEventListener('click', event => {
+      if (rail.dataset.suppressClick !== 'true') return;
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
+  });
 }
 
 function matchesTag(post) {
