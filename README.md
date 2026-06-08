@@ -4,15 +4,15 @@
 
 Oblitus est scientia es una web editorial estática preparada para GitHub Pages. Su objetivo es funcionar como una alternativa ligera a WordPress para publicar artículos largos, documentos convertidos en publicaciones web, recursos multimedia y microinterfaces JavaScript.
 
-La idea principal es sencilla: el contenido se guarda en `articulos/` o se sincroniza desde fuentes externas configuradas, y una GitHub Action genera automáticamente el índice de publicaciones que aparece en la portada.
+La idea principal actual es sencilla: el contenido se guarda en `articulos/`, y una GitHub Action genera automáticamente el índice de publicaciones que aparece en la portada.
 
 ---
 
 ## Estado del proyecto
 
-Versión actual: **v0.14.0**
+Versión actual: **v0.15.0**
 
-Esta versión añade la primera integración con Google Drive mediante GitHub Actions. La carpeta externa `Oblitus` queda registrada en `config/drive-sources.json`; durante la publicación, el workflow ejecuta `npm run sync:drive`, descarga los HTML compatibles a `articulos/_drive/...` y después genera la biblioteca estática normal.
+Esta versión pausa la sincronización activa con Google Drive y vuelve a dejar el flujo centrado en la carpeta `articulos/`. También mejora el tratamiento de HTML completos generados externamente: los documentos HTML autónomos se publican dentro del lector mediante un iframe interno para conservar sus estilos, botones, scripts, canvas, cuestionarios, vídeos e interactividad sin contaminar ni romper la maqueta de Oblitus.
 
 ---
 
@@ -28,9 +28,10 @@ Esta versión añade la primera integración con Google Drive mediante GitHub Ac
 - Fecha y duración de lectura visibles en ficha, sin mostrar el tipo técnico de archivo.
 - Etiquetas de ficha en carril horizontal desplazable.
 - Búsqueda por título, resumen, categoría, formato, etiquetas y texto interno de artículos generados.
-- Lector de artículos con índice lateral automático y capítulos contraíbles.
-- Soporte para artículos procedentes de Word, PDF, Markdown, HTML y carpetas interactivas.
-- Sincronización de HTML externos desde Google Drive mediante GitHub Actions.
+- Lector de artículos con índice lateral automático y capítulos contraíbles para documentos convertidos o HTML de fragmento.
+- Modo de lector autónomo para HTML completos con JavaScript propio.
+- Índice lateral del lector con scroll interno cuando tiene mucho contenido.
+- Soporte para artículos procedentes de Word, PDF, Markdown, HTML de fragmento y HTML completo interactivo.
 - Hoja de ruta funcional documentada en `docs/decisiones-editoriales-y-funcionales.md`.
 - Preparado para GitHub Pages.
 
@@ -42,12 +43,11 @@ Esta versión añade la primera integración con Google Drive mediante GitHub Ac
 oblitus-est-scientia/
 ├── .github/workflows/pages.yml
 ├── articulos/
-├── config/
-│   └── drive-sources.json
 ├── assets/
 │   ├── css/
 │   │   ├── styles.css
 │   │   ├── editorial.css
+│   │   ├── reader.css
 │   │   └── mobile.css
 │   ├── data/articles.generated.json
 │   ├── generated/
@@ -81,19 +81,13 @@ oblitus-est-scientia/
 
 ## Google Drive
 
-La integración está documentada en:
+La integración con Google Drive queda **pausada**. El código y la documentación se conservan para retomarlo más adelante, pero el workflow de publicación ya no ejecuta `npm run sync:drive` y `package.json` ya no instala `googleapis`.
+
+El flujo activo vuelve a ser:
 
 ```txt
-docs/google-drive.md
+subir artículos a articulos/ → ejecutar Actions o hacer push → publicar GitHub Pages
 ```
-
-La carpeta inicial configurada es:
-
-```txt
-https://drive.google.com/drive/folders/1eIjb899Icw7pBA5Na09a_klwL9xvNxBL
-```
-
-El workflow se ejecuta al hacer `push`, manualmente desde GitHub Actions y una vez por hora mediante programación. La web pública no lee Drive directamente; GitHub Actions descarga los HTML antes de generar la web.
 
 ---
 
@@ -123,20 +117,13 @@ El formato que se priorizará a partir de ahora será:
 articulos/mi-articulo/index.html
 ```
 
-También se aceptan HTML sincronizados desde Google Drive. Cada HTML puede incluir metadatos al principio mediante frontmatter:
+También se aceptan ficheros HTML completos directamente dentro de `articulos/`:
 
-```html
----
-title: Título del artículo
-tags: [IA, Ciencia, Ensayo]
-excerpt: Resumen para la ficha.
-cover: assets/media/images/default-cover.svg
-interactive: true
----
-
-<h2>Introducción</h2>
-<p>Contenido del artículo...</p>
+```txt
+articulos/mi-articulo-interactivo.html
 ```
+
+Si el generador detecta un documento HTML completo con `<!doctype html>` o `<html>`, lo tratará como artículo autónomo y lo abrirá dentro de un iframe interno. Esto evita que su CSS global, su índice propio, sus botones o sus scripts entren en conflicto con la página principal de Oblitus.
 
 ---
 
@@ -144,7 +131,6 @@ interactive: true
 
 ```bash
 npm install
-npm run sync:drive
 npm run build:content
 npm run serve
 ```
@@ -171,16 +157,24 @@ Incluye: índice de lectura automático, modo lectura larga, series editoriales,
 
 ## Historial de versiones
 
+### v0.15.0
+
+- Pausada la sincronización activa con Google Drive.
+- Eliminado `npm run sync:drive` del workflow de publicación.
+- Eliminada la dependencia activa `googleapis` de `package.json`.
+- Añadida detección de documentos HTML completos en `tools/build-articles.mjs`.
+- Los HTML completos se marcan con `standalone: true` y `renderMode: standalone`.
+- El lector abre artículos autónomos mediante iframe interno para conservar CSS, scripts, botones, canvas, vídeos y cuestionarios.
+- Añadido `assets/css/reader.css` para estilos específicos del lector.
+- Corregido el scroll interno del índice lateral cuando hay muchos capítulos.
+- El índice automático de Oblitus ignora encabezados dentro de `nav`, `aside`, `.toc` y `.toolbar`.
+
 ### v0.14.0
 
-- Añadida dependencia `googleapis`.
-- Añadido script `npm run sync:drive`.
-- Añadido `tools/sync-drive.mjs` para listar y descargar artículos HTML desde Google Drive.
-- Añadido `config/drive-sources.json` con la primera carpeta externa `Oblitus`.
-- Modificado el workflow de GitHub Pages para sincronizar Drive antes de `build:content`.
-- Añadida ejecución programada horaria del workflow.
-- Añadido `docs/google-drive.md` con instrucciones de seguridad y configuración.
-- Añadido `articulos/_drive/` al `.gitignore`.
+- Añadida primera integración experimental con Google Drive.
+- Añadido `tools/sync-drive.mjs`.
+- Añadido `config/drive-sources.json`.
+- Añadido `docs/google-drive.md`.
 
 ### v0.13.0
 
