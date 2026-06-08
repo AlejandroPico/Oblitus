@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="t d"><title id="t">QSharp desde cero</title><desc id="d">Programacion cuantica practica</desc><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7f5af0"/><stop offset="1" stop-color="#2cb67d"/></linearGradient><filter id="blur"><feGaussianBlur stdDeviation="24"/></filter></defs><rect width="1200" height="630" fill="#10131a"/><g opacity=".42" filter="url(#blur)"><circle cx="180" cy="120" r="150" fill="#7f5af0"/><circle cx="980" cy="130" r="180" fill="#2cb67d"/><circle cx="640" cy="540" r="170" fill="#00d4ff"/></g><path d="M720 170 C880 80 990 220 900 340 S620 430 720 170" fill="none" stroke="url(#g)" stroke-width="9" opacity=".9"/><circle cx="830" cy="260" r="95" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="5"/><circle cx="830" cy="260" r="32" fill="rgba(255,255,255,.72)"/><rect x="58" y="56" width="1084" height="518" rx="18" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text x="82" y="380" font-family="Georgia,serif" font-size="68" font-weight="700" fill="#fff">Q# desde cero</text><text x="86" y="430" font-family="Segoe UI,Arial,sans-serif" font-size="28" fill="rgba(255,255,255,.78)">Programación cuántica práctica</text><text x="86" y="96" font-family="Segoe UI,Arial,sans-serif" font-size="22" fill="rgba(255,255,255,.72)">Oblitus est scientia</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Portada abstracta de computación cuántica">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b0b1d"/><stop offset=".52" stop-color="#161832"/><stop offset="1" stop-color="#10251f"/></linearGradient>
+    <linearGradient id="q" x1="0" x2="1"><stop stop-color="#8a6dff"/><stop offset=".55" stop-color="#5cc8ff"/><stop offset="1" stop-color="#2cb67d"/></linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop stop-color="#7f5af0" stop-opacity=".7"/><stop offset="1" stop-color="#7f5af0" stop-opacity="0"/></radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="34"/></filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g filter="url(#blur)"><circle cx="230" cy="145" r="210" fill="url(#glow)"/><circle cx="930" cy="505" r="260" fill="#2cb67d" opacity=".28"/><circle cx="650" cy="300" r="220" fill="#00d4ff" opacity=".17"/></g>
+  <g transform="translate(610 315)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle r="166" stroke="#ffffff" stroke-opacity=".22" stroke-width="4"/>
+    <ellipse rx="260" ry="72" stroke="url(#q)" stroke-width="7" opacity=".92" transform="rotate(18)"/>
+    <ellipse rx="252" ry="82" stroke="#ffffff" stroke-opacity=".32" stroke-width="4" transform="rotate(76)"/>
+    <ellipse rx="246" ry="76" stroke="#5cc8ff" stroke-opacity=".42" stroke-width="4" transform="rotate(-42)"/>
+    <path d="M0 -166V166M-166 0H166" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
+    <circle cx="0" cy="0" r="30" fill="#ffffff" fill-opacity=".76" stroke="#c9f7ff" stroke-opacity=".9" stroke-width="4"/>
+    <circle cx="196" cy="66" r="11" fill="#2cb67d"/><circle cx="-145" cy="-122" r="10" fill="#8a6dff"/><circle cx="94" cy="-213" r="9" fill="#5cc8ff"/>
+  </g>
+  <g stroke="#ffffff" stroke-opacity=".12" stroke-width="2" fill="none"><path d="M160 505C300 390 414 420 525 345C688 236 808 236 1040 126"/><path d="M185 190C340 244 466 180 610 315C760 452 908 410 1054 466" stroke-dasharray="10 16"/></g>
+</svg>
