@@ -15,15 +15,16 @@
 .toc-card ol {
   counter-reset: toc;
   display: grid;
-  gap: 0.32rem;
+  gap: 0.38rem;
   max-height: calc(100vh - 15rem);
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 0 0.2rem 0 0;
+  padding: 0 0.25rem 0.75rem 0;
   margin: 0;
   list-style: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-padding-block: 0.45rem 0.95rem;
 }
 
 .toc-card ol::-webkit-scrollbar {
@@ -35,35 +36,55 @@
 .toc-card li {
   counter-increment: toc;
   display: grid;
-  grid-template-columns: 2.55rem minmax(0, 1fr);
-  gap: 0.45rem;
-  align-items: start;
+  grid-template-columns: 2.65rem minmax(0, 1fr);
+  gap: 0.48rem;
+  align-items: stretch;
+  min-height: 2.35rem;
+  scroll-margin-block: 0.45rem 0.95rem;
 }
 
 .toc-card li::before {
   content: counter(toc, decimal-leading-zero);
-  min-width: 2.55rem;
-  padding-top: 0.08rem;
+  display: grid;
+  place-items: center;
+  width: 2.65rem;
+  min-width: 2.65rem;
+  min-height: 100%;
+  padding: 0.25rem 0.2rem;
+  border: 1px solid color-mix(in srgb, var(--line), transparent 18%);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface-2), transparent 18%);
   color: var(--accent);
   font: 800 0.72rem var(--font-sans);
   letter-spacing: 0.08em;
-  opacity: 0.86;
+  line-height: 1;
+  text-align: center;
+  opacity: 0.9;
+  transition: var(--theme-transition);
 }
 
 .toc-card li.toc-h3 {
-  grid-template-columns: 2.55rem minmax(0, 1fr);
+  grid-template-columns: 2.65rem minmax(0, 1fr);
   padding-left: 0.85rem;
 }
 
 .toc-card a {
-  display: block;
+  display: flex;
+  align-items: center;
   min-width: 0;
-  padding: 0.18rem 0.35rem 0.24rem;
+  min-height: 100%;
+  padding: 0.3rem 0.42rem;
   border-radius: var(--radius-sm);
   line-height: 1.25;
   word-break: normal;
   overflow-wrap: anywhere;
   transition: var(--theme-transition), background-color 160ms ease;
+}
+
+.toc-card li:has(a.is-active)::before {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent), var(--line) 45%);
 }
 
 .toc-card a.is-active {
