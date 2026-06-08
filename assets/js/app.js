@@ -74,6 +74,10 @@ function bindEvents() {
 function handleGridClick(event) {
   const tag = event.target.closest('[data-card-tag]');
   if (!tag) return;
+
+  const rail = tag.closest('[data-drag-scroll]');
+  if (rail?.dataset.suppressClick === 'true') return;
+
   event.preventDefault();
   event.stopPropagation();
   setActiveTag(tag.dataset.cardTag, { scrollToFilters: true });
@@ -209,23 +213,25 @@ function renderPosts() {
   els.empty.hidden = filtered.length !== 0;
 
   els.grid.innerHTML = filtered.map(post => `
-    <a class="post-card" href="${escapeAttr(post.url)}">
-      <div class="post-cover">
-        <img src="${escapeAttr(post.cover)}" alt="" loading="lazy">
-        <h3 class="post-cover-title">${escapeHtml(post.title)}</h3>
-      </div>
-      <div class="post-meta post-meta-centered">
-        <span>${formatDate(post.date)}</span>
-        <span>·</span>
-        <span>${escapeHtml(post.readingTime ?? 'Lectura variable')}</span>
-        ${post.audio ? '<span>· Audio</span>' : ''}
-        ${post.interactive ? '<span>· Interactivo</span>' : ''}
-      </div>
-      <p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
+    <article class="post-card">
+      <a class="post-card-main" href="${escapeAttr(post.url)}" aria-label="Leer ${escapeAttr(post.title)}">
+        <div class="post-cover">
+          <img src="${escapeAttr(post.cover)}" alt="" loading="lazy">
+          <h3 class="post-cover-title">${escapeHtml(post.title)}</h3>
+        </div>
+        <div class="post-meta post-meta-centered">
+          <span>${formatDate(post.date)}</span>
+          <span>·</span>
+          <span>${escapeHtml(post.readingTime ?? 'Lectura variable')}</span>
+          ${post.audio ? '<span>· Audio</span>' : ''}
+          ${post.interactive ? '<span>· Interactivo</span>' : ''}
+        </div>
+        <p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
+      </a>
       <div class="post-badges post-badges-scroll" aria-label="Etiquetas del artículo" data-drag-scroll="true">
-        ${(post.tags ?? []).map(tag => `<span class="badge tag-inline-filter" role="button" tabindex="0" data-card-tag="${escapeAttr(tag)}" title="Filtrar por ${escapeAttr(tag)}">${escapeHtml(tag)}</span>`).join('')}
+        ${(post.tags ?? []).map(tag => `<button class="badge tag-inline-filter" type="button" data-card-tag="${escapeAttr(tag)}" aria-label="Filtrar por ${escapeAttr(tag)}" title="Filtrar por ${escapeAttr(tag)}">${escapeHtml(tag)}</button>`).join('')}
       </div>
-    </a>
+    </article>
   `).join('');
 
   initDragScrollRails();
@@ -237,6 +243,21 @@ function initDragScrollRails() {
     let startX = 0;
     let startScroll = 0;
     let dragged = false;
+
+    rail.addEventListener('wheel', event => {
+      if (rail.scrollWidth <= rail.clientWidth) return;
+
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      if (!delta) return;
+
+      const maxScroll = rail.scrollWidth - rail.clientWidth;
+      const atStart = rail.scrollLeft <= 0;
+      const atEnd = rail.scrollLeft >= maxScroll - 1;
+      if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
+
+      rail.scrollLeft += delta;
+      event.preventDefault();
+    }, { passive: false });
 
     rail.addEventListener('pointerdown', event => {
       if (event.button !== undefined && event.button !== 0) return;
@@ -251,7 +272,7 @@ function initDragScrollRails() {
     rail.addEventListener('pointermove', event => {
       if (pointerId !== event.pointerId) return;
       const delta = event.clientX - startX;
-      if (Math.abs(delta) > 4) dragged = true;
+      if (Math.abs(delta) > 2) dragged = true;
       if (!dragged) return;
       rail.scrollLeft = startScroll - delta;
       event.preventDefault();
@@ -264,7 +285,7 @@ function initDragScrollRails() {
       pointerId = null;
       if (dragged) {
         rail.dataset.suppressClick = 'true';
-        window.setTimeout(() => delete rail.dataset.suppressClick, 80);
+        window.setTimeout(() => delete rail.dataset.suppressClick, 120);
       }
     };
 
