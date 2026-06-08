@@ -225,7 +225,8 @@ function setActiveTocLink(id, options = {}) {
   link.classList.add('is-active');
 
   if (!options.instant) {
-    link.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+    const item = link.closest('li') || link;
+    item.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
   }
 }
 
