@@ -22,17 +22,14 @@
 
 .toc-card ol {
   counter-reset: toc;
-  display: grid;
-  grid-auto-rows: auto;
-  align-content: start;
-  gap: 0.52rem;
+  display: block;
   flex: 1 1 auto;
   min-height: 0;
   max-height: calc(100vh - 17rem);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-  padding: 0 0.25rem 0.75rem 0;
+  padding: 0 0.25rem 0.95rem 0;
   margin: 0;
   list-style: none;
   scrollbar-width: none;
@@ -48,22 +45,26 @@
 
 .toc-card li {
   counter-increment: toc;
-  display: grid;
-  grid-template-columns: 2.65rem minmax(0, 1fr);
-  gap: 0.52rem;
+  display: flex;
   align-items: stretch;
-  min-height: 2.35rem;
+  gap: 0.54rem;
+  min-height: 0;
+  height: auto;
+  margin: 0 0 0.62rem;
   scroll-margin-block: 0.45rem 0.95rem;
+}
+
+.toc-card li:last-child {
+  margin-bottom: 0;
 }
 
 .toc-card li::before {
   content: counter(toc, decimal-leading-zero);
   display: grid;
   place-items: center;
-  align-self: stretch;
+  flex: 0 0 2.65rem;
   width: 2.65rem;
-  min-width: 2.65rem;
-  padding: 0.25rem 0.2rem;
+  padding: 0.36rem 0.2rem;
   color: var(--accent);
   font: 800 0.72rem var(--font-sans);
   letter-spacing: 0.08em;
@@ -74,17 +75,21 @@
 }
 
 .toc-card li.toc-h3 {
-  grid-template-columns: 2.65rem minmax(0, 1fr);
   padding-left: 0.85rem;
 }
 
 .toc-card a {
   display: block;
+  flex: 1 1 auto;
   min-width: 0;
+  height: auto;
+  min-height: 0;
   padding: 0.36rem 0.42rem;
   border-radius: var(--radius-sm);
-  line-height: 1.36;
+  line-height: 1.42;
+  white-space: normal;
   word-break: normal;
+  overflow: visible;
   overflow-wrap: anywhere;
   transition: var(--theme-transition), background-color 160ms ease;
 }
