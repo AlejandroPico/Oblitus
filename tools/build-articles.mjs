@@ -25,7 +25,9 @@ const siteTopics = [
 ];
 
 const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
-  'img', 'audio', 'video', 'source', 'figure', 'figcaption', 'details', 'summary', 'iframe', 'script', 'style', 'input', 'label', 'canvas', 'button', 'select', 'option'
+  'img', 'audio', 'video', 'source', 'figure', 'figcaption', 'details', 'summary', 'iframe',
+  'script', 'style', 'input', 'label', 'canvas', 'button', 'select', 'option', 'svg', 'path',
+  'rect', 'circle', 'line', 'polyline', 'polygon', 'text', 'g', 'defs', 'title'
 ]);
 const allowedAttributes = {
   ...sanitizeHtml.defaults.allowedAttributes,
@@ -36,12 +38,22 @@ const allowedAttributes = {
   video: ['src', 'controls', 'preload', 'poster', 'class', 'style'],
   source: ['src', 'type'],
   iframe: ['src', 'title', 'loading', 'allow', 'allowfullscreen', 'class', 'style'],
-  script: ['src', 'type'],
+  script: ['src', 'type', 'defer', 'async'],
   input: ['id', 'class', 'type', 'min', 'max', 'value', 'step', 'name'],
   label: ['for', 'class'],
-  button: ['id', 'class', 'type', 'data-*'],
+  button: ['id', 'class', 'type', 'data-*', 'aria-*'],
   select: ['id', 'class', 'name'],
-  option: ['value', 'selected']
+  option: ['value', 'selected'],
+  svg: ['viewBox', 'width', 'height', 'role', 'aria-label', 'class', 'style', 'xmlns'],
+  path: ['d', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
+  rect: ['x', 'y', 'width', 'height', 'rx', 'ry', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
+  circle: ['cx', 'cy', 'r', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
+  line: ['x1', 'y1', 'x2', 'y2', 'stroke', 'stroke-width', 'stroke-dasharray', 'class', 'style'],
+  polyline: ['points', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
+  polygon: ['points', 'fill', 'stroke', 'stroke-width', 'class', 'style'],
+  text: ['x', 'y', 'dx', 'dy', 'text-anchor', 'font-size', 'font-family', 'fill', 'class', 'style'],
+  g: ['fill', 'stroke', 'class', 'style'],
+  title: []
 };
 
 await fs.mkdir(generatedDir, { recursive: true });
@@ -132,6 +144,18 @@ async function convertArticle(entry) {
     standalone = isFullHtmlDocument(html);
   }
 
+  const parentName = path.basename(path.dirname(entry.fullPath));
+  const baseId = frontmatter.id || (parentName === 'articulos'
+    ? path.basename(entry.fullPath, ext)
+    : parentName);
+  const id = slugify(baseId);
+
+  const copiedAssets = await copyArticleAssets(entry, id);
+  if (copiedAssets) {
+    const articleAssetBase = standalone ? id : `assets/generated/${id}`;
+    html = rewriteLocalAssetUrls(html, articleAssetBase);
+  }
+
   if (!standalone) {
     html = sanitizeHtml(html, {
       allowedTags,
@@ -141,18 +165,14 @@ async function convertArticle(entry) {
     });
   }
 
-  const parentName = path.basename(path.dirname(entry.fullPath));
-  const baseId = frontmatter.id || (parentName === 'articulos'
-    ? path.basename(entry.fullPath, ext)
-    : parentName);
-  const id = slugify(baseId);
   const title = frontmatter.title || extractDocumentTitle(html) || extractFirstHeading(html) || titleFromFilename(id);
   const subtitle = frontmatter.subtitle || extractMetaContent(html, 'subtitle') || '';
   const category = frontmatter.category || inferCategory(frontmatter.tags);
   const tags = normaliseTags(frontmatter.tags);
   const excerpt = frontmatter.excerpt || extractMetaContent(html, 'description') || makeExcerpt(html);
   const date = frontmatter.date || await lastCommitDate(entry.relativePath) || (await fs.stat(entry.fullPath)).mtime.toISOString();
-  const cover = frontmatter.cover || extractCover(html) || (frontmatter.interactive || standalone ? 'assets/media/images/interactive-cover.svg' : 'assets/media/images/default-cover.svg');
+  const rawCover = frontmatter.cover || extractCover(html) || (frontmatter.interactive || standalone ? 'assets/media/images/interactive-cover.svg' : 'assets/media/images/default-cover.svg');
+  const cover = copiedAssets ? rewriteLocalAssetUrl(rawCover, `assets/generated/${id}`) : rawCover;
   const generatedFile = path.join(generatedDir, `${id}.html`);
 
   await fs.writeFile(generatedFile, html, 'utf8');
@@ -172,10 +192,77 @@ async function convertArticle(entry) {
     format,
     sourceFile: entry.relativePath,
     audio: toBoolean(frontmatter.audio),
-    interactive: toBoolean(frontmatter.interactive) || standalone || html.includes('<script') || html.includes('demo-widget'),
+    interactive: toBoolean(frontmatter.interactive) || standalone || html.includes('<script') || html.includes('demo-widget') || html.includes('interactive-block'),
     standalone,
     renderMode: standalone ? 'standalone' : 'article'
   };
+}
+
+async function copyArticleAssets(entry, id) {
+  const sourceDir = path.dirname(entry.fullPath);
+  const destDir = path.join(generatedDir, id);
+  const items = await fs.readdir(sourceDir, { withFileTypes: true });
+  const copyableItems = items.filter(item => {
+    const name = item.name.toLowerCase();
+    return item.name !== '.' &&
+      item.name !== '..' &&
+      name !== 'index.html' &&
+      name !== 'readme.md' &&
+      !name.startsWith('.');
+  });
+
+  if (!copyableItems.length) return false;
+
+  await fs.rm(destDir, { recursive: true, force: true });
+  await fs.mkdir(destDir, { recursive: true });
+
+  for (const item of copyableItems) {
+    const from = path.join(sourceDir, item.name);
+    const to = path.join(destDir, item.name);
+    await fs.cp(from, to, { recursive: true });
+  }
+
+  return true;
+}
+
+function rewriteLocalAssetUrls(html, assetBase) {
+  return String(html)
+    .replace(/\b(src|href|poster)=["']([^"']+)["']/gi, (match, attr, value) => {
+      const rewritten = rewriteLocalAssetUrl(value, assetBase);
+      return rewritten === value ? match : `${attr}="${escapeAttribute(rewritten)}"`;
+    })
+    .replace(/\bxlink:href=["']([^"']+)["']/gi, (match, value) => {
+      const rewritten = rewriteLocalAssetUrl(value, assetBase);
+      return rewritten === value ? match : match.replace(value, escapeAttribute(rewritten));
+    })
+    .replace(/url\((["']?)([^'")]+)\1\)/gi, (match, quote, value) => {
+      const rewritten = rewriteLocalAssetUrl(value, assetBase);
+      return rewritten === value ? match : `url(${quote}${rewritten}${quote})`;
+    });
+}
+
+function rewriteLocalAssetUrl(value = '', assetBase = '') {
+  const original = String(value).trim();
+  if (!original || !assetBase || !isRewriteableLocalAsset(original)) return value;
+
+  const [pathPart, suffix = ''] = splitUrlSuffix(original.replace(/^\.\//, ''));
+  const normalisedPath = pathPart.replace(/^\/+/, '');
+  return `${assetBase}/${normalisedPath}${suffix}`;
+}
+
+function splitUrlSuffix(value) {
+  const index = value.search(/[?#]/);
+  if (index === -1) return [value, ''];
+  return [value.slice(0, index), value.slice(index)];
+}
+
+function isRewriteableLocalAsset(value = '') {
+  const trimmed = String(value).trim();
+  if (!trimmed || trimmed.startsWith('#')) return false;
+  if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(trimmed)) return false;
+  if (trimmed.startsWith('/')) return false;
+  if (/^(?:data|mailto|tel|javascript):/i.test(trimmed)) return false;
+  return true;
 }
 
 function parseFrontmatter(text) {
@@ -296,5 +383,11 @@ function toBoolean(value) {
 function escapeHtml(value = '') {
   return String(value).replace(/[&<>'"]/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[char]));
+}
+
+function escapeAttribute(value = '') {
+  return String(value).replace(/[&"]/g, char => ({
+    '&': '&amp;', '"': '&quot;'
   }[char]));
 }
