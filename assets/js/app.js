@@ -1,6 +1,9 @@
 import { initTemporalTheme } from './theme.js';
 import { initMobileMenu, initMobileTitleDocking } from './mobile-menu.js';
 
+const CARD_TAG_TAP_THRESHOLD = 10;
+let cardTagPress = null;
+
 const state = {
   posts: [],
   activeTag: 'Todos',
@@ -63,12 +66,46 @@ function bindEvents() {
     toggleSearchPanel();
   });
   els.searchPanel?.addEventListener('click', event => event.stopPropagation());
+  els.grid?.addEventListener('pointerdown', handleCardTagPointerDown, true);
+  els.grid?.addEventListener('pointerup', handleCardTagPointerUp, true);
+  els.grid?.addEventListener('pointercancel', clearCardTagPress, true);
   els.grid?.addEventListener('click', handleGridClick);
   els.grid?.addEventListener('keydown', handleGridKeydown);
   document.addEventListener('click', () => closeSearchPanel());
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') closeSearchPanel();
   });
+}
+
+function handleCardTagPointerDown(event) {
+  const tag = event.target.closest?.('[data-card-tag]');
+  if (!tag) return;
+
+  cardTagPress = {
+    pointerId: event.pointerId,
+    tag: tag.dataset.cardTag,
+    startX: event.clientX,
+    startY: event.clientY
+  };
+}
+
+function handleCardTagPointerUp(event) {
+  if (!cardTagPress || cardTagPress.pointerId !== event.pointerId) return;
+
+  const press = cardTagPress;
+  cardTagPress = null;
+
+  const distance = Math.hypot(event.clientX - press.startX, event.clientY - press.startY);
+  if (distance > CARD_TAG_TAP_THRESHOLD) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation?.();
+  setActiveTag(press.tag, { scrollToFilters: true, focusActive: true });
+}
+
+function clearCardTagPress() {
+  cardTagPress = null;
 }
 
 function handleGridClick(event) {
@@ -276,7 +313,7 @@ function initDragScrollRails() {
     let startX = 0;
     let startScroll = 0;
     let dragged = false;
-    const dragThreshold = 8;
+    const dragThreshold = 10;
 
     rail.addEventListener('wheel', event => {
       if (rail.scrollWidth <= rail.clientWidth) return;
