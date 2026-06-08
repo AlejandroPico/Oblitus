@@ -25,7 +25,7 @@ const siteTopics = [
 ];
 
 const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
-  'img', 'audio', 'video', 'source', 'figure', 'figcaption', 'details', 'summary', 'iframe', 'script', 'style', 'input', 'label'
+  'img', 'audio', 'video', 'source', 'figure', 'figcaption', 'details', 'summary', 'iframe', 'script', 'style', 'input', 'label', 'canvas', 'button', 'select', 'option'
 ]);
 const allowedAttributes = {
   ...sanitizeHtml.defaults.allowedAttributes,
@@ -38,7 +38,10 @@ const allowedAttributes = {
   iframe: ['src', 'title', 'loading', 'allow', 'allowfullscreen', 'class', 'style'],
   script: ['src', 'type'],
   input: ['id', 'class', 'type', 'min', 'max', 'value', 'step', 'name'],
-  label: ['for', 'class']
+  label: ['for', 'class'],
+  button: ['id', 'class', 'type', 'data-*'],
+  select: ['id', 'class', 'name'],
+  option: ['value', 'selected']
 };
 
 await fs.mkdir(generatedDir, { recursive: true });
@@ -77,7 +80,6 @@ async function discoverArticleSources(dir) {
   for (const item of items) {
     if (item.name.startsWith('.') || item.name.startsWith('_') || item.name.toLowerCase() === 'readme.md') continue;
     const fullPath = path.join(dir, item.name);
-    const relativePath = path.relative(root, fullPath).replaceAll(path.sep, '/');
 
     if (item.isDirectory()) {
       const indexPath = path.join(fullPath, 'index.html');
@@ -93,7 +95,7 @@ async function discoverArticleSources(dir) {
 
     const ext = path.extname(item.name).toLowerCase();
     if (['.docx', '.pdf', '.md', '.markdown', '.html', '.htm'].includes(ext)) {
-      results.push({ fullPath, relativePath, type: ext.slice(1) });
+      results.push({ fullPath, relativePath: path.relative(root, fullPath).replaceAll(path.sep, '/'), type: ext.slice(1) });
     }
   }
 
@@ -102,11 +104,12 @@ async function discoverArticleSources(dir) {
 
 async function convertArticle(entry) {
   const raw = await fs.readFile(entry.fullPath);
-  const text = raw.toString('utf8');
-  const { frontmatter, body } = parseFrontmatter(text);
   const ext = path.extname(entry.fullPath).toLowerCase();
+  const rawText = raw.toString('utf8');
+  const { frontmatter, body } = parseFrontmatter(rawText);
   let html = '';
   let format = entry.type;
+  let standalone = false;
 
   if (ext === '.docx') {
     const result = await mammoth.convertToHtml({ path: entry.fullPath }, {
@@ -126,27 +129,30 @@ async function convertArticle(entry) {
   } else if (ext === '.html' || ext === '.htm') {
     html = body;
     format = 'html';
+    standalone = isFullHtmlDocument(html);
   }
 
-  html = sanitizeHtml(html, {
-    allowedTags,
-    allowedAttributes,
-    allowedSchemes: ['http', 'https', 'mailto', 'data'],
-    allowVulnerableTags: true
-  });
+  if (!standalone) {
+    html = sanitizeHtml(html, {
+      allowedTags,
+      allowedAttributes,
+      allowedSchemes: ['http', 'https', 'mailto', 'data'],
+      allowVulnerableTags: true
+    });
+  }
 
   const parentName = path.basename(path.dirname(entry.fullPath));
   const baseId = frontmatter.id || (parentName === 'articulos'
     ? path.basename(entry.fullPath, ext)
     : parentName);
   const id = slugify(baseId);
-  const title = frontmatter.title || extractFirstHeading(html) || titleFromFilename(id);
-  const subtitle = frontmatter.subtitle || '';
+  const title = frontmatter.title || extractDocumentTitle(html) || extractFirstHeading(html) || titleFromFilename(id);
+  const subtitle = frontmatter.subtitle || extractMetaContent(html, 'subtitle') || '';
   const category = frontmatter.category || inferCategory(frontmatter.tags);
   const tags = normaliseTags(frontmatter.tags);
-  const excerpt = frontmatter.excerpt || makeExcerpt(html);
+  const excerpt = frontmatter.excerpt || extractMetaContent(html, 'description') || makeExcerpt(html);
   const date = frontmatter.date || await lastCommitDate(entry.relativePath) || (await fs.stat(entry.fullPath)).mtime.toISOString();
-  const cover = frontmatter.cover || (frontmatter.interactive ? 'assets/media/images/interactive-cover.svg' : 'assets/media/images/default-cover.svg');
+  const cover = frontmatter.cover || extractCover(html) || (frontmatter.interactive || standalone ? 'assets/media/images/interactive-cover.svg' : 'assets/media/images/default-cover.svg');
   const generatedFile = path.join(generatedDir, `${id}.html`);
 
   await fs.writeFile(generatedFile, html, 'utf8');
@@ -166,7 +172,9 @@ async function convertArticle(entry) {
     format,
     sourceFile: entry.relativePath,
     audio: toBoolean(frontmatter.audio),
-    interactive: toBoolean(frontmatter.interactive) || html.includes('<script') || html.includes('demo-widget')
+    interactive: toBoolean(frontmatter.interactive) || standalone || html.includes('<script') || html.includes('demo-widget'),
+    standalone,
+    renderMode: standalone ? 'standalone' : 'article'
   };
 }
 
@@ -194,7 +202,7 @@ function parseMetaValue(value) {
   }
   if (value === 'true') return true;
   if (value === 'false') return false;
-  return value.replace(/^['"]|['"]$/g, '');
+  return value.replace(/^["']|["']$/g, '');
 }
 
 function normaliseTags(tags) {
@@ -206,6 +214,28 @@ function normaliseTags(tags) {
 function inferCategory(tags) {
   const list = normaliseTags(tags);
   return list[0] || 'Artículo';
+}
+
+function isFullHtmlDocument(html = '') {
+  return /^\s*(<!doctype\s+html[^>]*>)?\s*<html[\s>]/i.test(html) || /<head[\s>][\s\S]*<body[\s>]/i.test(html);
+}
+
+function extractDocumentTitle(html) {
+  const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1];
+  return title ? cleanTitle(stripHtml(title)) : '';
+}
+
+function cleanTitle(value = '') {
+  return value.replace(/^Oblitus\s*[·|-]\s*/i, '').replace(/\s*[·|-]\s*Oblitus.*$/i, '').trim();
+}
+
+function extractMetaContent(html, name) {
+  const pattern = new RegExp(`<meta[^>]+(?:name|property)=["'](?:${name}|og:${name})["'][^>]+content=["']([^"']+)["'][^>]*>`, 'i');
+  return stripHtml(pattern.exec(html)?.[1] || '').trim();
+}
+
+function extractCover(html) {
+  return extractMetaContent(html, 'image');
 }
 
 function extractFirstHeading(html) {
@@ -241,7 +271,14 @@ async function lastCommitDate(relativePath) {
 }
 
 function stripHtml(html) {
-  return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ');
+  return String(html)
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
 }
 
 function titleFromFilename(value) {
