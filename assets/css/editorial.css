@@ -104,12 +104,39 @@
   padding: 0 0 0.2rem;
   overflow-x: auto;
   overflow-y: hidden;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  touch-action: pan-x;
+  user-select: none;
   mask-image: linear-gradient(90deg, transparent, #000 0.75rem, #000 calc(100% - 0.75rem), transparent);
+}
+
+.post-badges-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.post-badges-scroll.is-dragging {
+  cursor: grabbing;
 }
 
 .post-badges-scroll .badge {
   flex: 0 0 auto;
+}
+
+.tag-inline-filter {
+  cursor: pointer;
+  transition: var(--theme-transition), transform 160ms ease;
+}
+
+.tag-inline-filter:hover,
+.tag-inline-filter:focus-visible {
+  color: var(--text);
+  background: var(--accent-soft);
+  outline: none;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 860px) {
