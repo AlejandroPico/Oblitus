@@ -1,16 +1,14 @@
 {
   "name": "oblitus-est-scientia",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "private": true,
-  "description": "Web editorial estática para GitHub Pages con generación automática de artículos desde documentos y Google Drive.",
+  "description": "Web editorial estática para GitHub Pages con generación automática de artículos desde documentos.",
   "type": "module",
   "scripts": {
-    "sync:drive": "node tools/sync-drive.mjs",
     "build:content": "node tools/build-articles.mjs",
     "serve": "python -m http.server 8000"
   },
   "dependencies": {
-    "googleapis": "^144.0.0",
     "mammoth": "^1.8.0",
     "marked": "^13.0.3",
     "pdf-parse": "^1.1.1",
