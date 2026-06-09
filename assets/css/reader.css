@@ -1,5 +1,5 @@
 .article-layout {
-  grid-template-columns: 420px minmax(0, 1fr);
+  grid-template-columns: 400px minmax(0, 1fr);
 }
 
 .article-shell {
@@ -54,11 +54,14 @@
 .toc-card li {
   display: flex;
   align-items: stretch;
-  gap: 0.54rem;
+  gap: 0.44rem;
   min-height: 0;
   height: auto;
   margin: 0 0 0.62rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
   scroll-margin-block: 0.45rem 0.95rem;
+  transition: var(--theme-transition), background-color 160ms ease, border-color 160ms ease;
 }
 
 .toc-card li:last-child {
@@ -69,12 +72,12 @@
   content: attr(data-toc-number);
   display: grid;
   place-items: center;
-  flex: 0 0 4.85rem;
-  width: 4.85rem;
-  padding: 0.36rem 0.2rem;
+  flex: 0 0 3.2rem;
+  width: 3.2rem;
+  padding: 0.36rem 0.16rem;
   color: var(--accent);
-  font: 800 0.68rem var(--font-sans);
-  letter-spacing: 0.045em;
+  font: 800 0.66rem var(--font-sans);
+  letter-spacing: 0.025em;
   line-height: 1;
   text-align: center;
   opacity: 0.92;
@@ -82,11 +85,11 @@
 }
 
 .toc-card li[data-toc-level="2"] {
-  padding-left: 0.55rem;
+  padding-left: 0.45rem;
 }
 
 .toc-card li[data-toc-level="3"] {
-  padding-left: 1.1rem;
+  padding-left: 0.9rem;
 }
 
 .toc-card a {
@@ -95,14 +98,19 @@
   min-width: 0;
   height: auto;
   min-height: 0;
-  padding: 0.36rem 0.42rem;
-  border-radius: var(--radius-sm);
+  padding: 0.36rem 0.42rem 0.36rem 0;
+  border-radius: 0;
   line-height: 1.42;
   white-space: normal;
   word-break: normal;
   overflow: visible;
   overflow-wrap: anywhere;
-  transition: var(--theme-transition), background-color 160ms ease;
+  transition: var(--theme-transition), color 160ms ease;
+}
+
+.toc-card li:has(a.is-active) {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent), var(--line) 48%);
 }
 
 .toc-card li:has(a.is-active)::before {
@@ -111,7 +119,7 @@
 
 .toc-card a.is-active {
   color: var(--text);
-  background: var(--accent-soft);
+  background: transparent;
 }
 
 .article-body {
@@ -265,7 +273,7 @@
 
 @media (max-width: 1320px) {
   .article-layout {
-    grid-template-columns: 380px minmax(0, 1fr);
+    grid-template-columns: 360px minmax(0, 1fr);
   }
 
   .article-shell {
@@ -305,8 +313,8 @@
   }
 
   .toc-card li::before {
-    flex-basis: 4.2rem;
-    width: 4.2rem;
+    flex-basis: 3.1rem;
+    width: 3.1rem;
     font-size: 0.62rem;
   }
 
