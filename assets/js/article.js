@@ -82,6 +82,7 @@ function renderArticle(article, html, options = {}) {
   if (els.tools) els.tools.hidden = false;
   els.content.innerHTML = html;
 
+  normaliseConvertedArticle(els.content);
   executeEmbeddedScripts(els.content);
   enhanceHeadings(els.content);
   buildToc(els.content);
@@ -135,6 +136,173 @@ function fitEmbeddedArticle(iframe) {
   } catch {
     window.addEventListener('resize', resize, { passive: true });
   }
+}
+
+function normaliseConvertedArticle(container) {
+  convertSourceOutlines(container);
+  normaliseParagraphBreaks(container);
+  insertEditorialVisual(container);
+}
+
+function normaliseParagraphBreaks(container) {
+  container.querySelectorAll('p').forEach(paragraph => {
+    const text = paragraph.textContent.replace(/\s+/g, ' ').trim();
+    if (!text || /^(?:\d+\s*){1,8}$/.test(text)) {
+      paragraph.remove();
+      return;
+    }
+
+    paragraph.innerHTML = paragraph.innerHTML
+      .replace(/-\s*<br\s*\/?\s*>\s*/gi, '-')
+      .replace(/<br\s*\/?\s*>/gi, ' ')
+      .replace(/\s+([.,;:!?])/g, '$1')
+      .replace(/([¿¡(])\s+/g, '$1')
+      .replace(/\s+([)])/g, '$1')
+      .trim();
+  });
+
+  let changed = true;
+  let passes = 0;
+  while (changed && passes < 8) {
+    changed = false;
+    passes += 1;
+    const paragraphs = [...container.querySelectorAll('p')];
+    for (const paragraph of paragraphs) {
+      const next = paragraph.nextElementSibling;
+      if (!next || next.tagName !== 'P') continue;
+      const currentText = paragraph.textContent.trim();
+      const nextText = next.textContent.trim();
+      if (!currentText || !nextText) continue;
+      if (!/[.!?;:»)”]$/.test(currentText) && /^[a-záéíóúñü]/i.test(nextText)) {
+        paragraph.innerHTML = `${paragraph.innerHTML.trim()} ${next.innerHTML.trim()}`;
+        next.remove();
+        changed = true;
+        break;
+      }
+    }
+  }
+}
+
+function convertSourceOutlines(container) {
+  container.querySelectorAll('pre.source-outline').forEach(pre => {
+    const rows = parseOutlineRows(pre.textContent);
+    if (rows.length < 2) {
+      pre.classList.add('source-outline-normalised');
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-wrap source-outline-wrap';
+
+    const table = document.createElement('table');
+    table.className = 'source-outline-table';
+    table.innerHTML = '<thead><tr><th>Sección</th><th>Contenido</th></tr></thead><tbody></tbody>';
+    const tbody = table.querySelector('tbody');
+
+    rows.forEach(([section, content]) => {
+      const tr = document.createElement('tr');
+      const th = document.createElement('th');
+      const td = document.createElement('td');
+      th.scope = 'row';
+      th.textContent = section;
+      td.textContent = content;
+      tr.append(th, td);
+      tbody.append(tr);
+    });
+
+    wrapper.append(table);
+    pre.replaceWith(wrapper);
+
+    if (rows.length >= 4) {
+      wrapper.insertAdjacentElement('afterend', buildOutlineWidget(rows));
+    }
+  });
+}
+
+function parseOutlineRows(text = '') {
+  const blocks = String(text)
+    .replace(/\r/g, '')
+    .split(/\n\s*\n/g)
+    .map(block => block.split('\n').map(line => line.trim()).filter(Boolean))
+    .map(lines => lines.filter(line => !isOutlineNoise(line)).join(' '))
+    .map(block => block.replace(/\s+([.,;:!?])/g, '$1').trim())
+    .filter(Boolean);
+
+  const rows = [];
+  let pendingTitle = '';
+
+  for (const block of blocks) {
+    if (!pendingTitle && looksLikeOutlineTitle(block)) {
+      pendingTitle = block;
+      continue;
+    }
+
+    if (pendingTitle) {
+      rows.push([pendingTitle, block]);
+      pendingTitle = '';
+      continue;
+    }
+
+    const split = splitOutlineBlock(block);
+    if (split) rows.push(split);
+  }
+
+  return rows.slice(0, 40);
+}
+
+function splitOutlineBlock(block = '') {
+  const match = block.match(/^((?:\d+(?:\.\d+)?\.?\s+)?[^.]{4,100}?)(?:\s{2,}|:)(.{35,})$/);
+  return match ? [match[1].trim(), match[2].trim()] : null;
+}
+
+function isOutlineNoise(line = '') {
+  return /^(sección|contenido|apartado|resumen del contenido|tabla de contenidos y resumen de apartados|tabla de contenidos y resumen de secciones)$/i.test(line.trim()) || /^\d+$/.test(line.trim());
+}
+
+function looksLikeOutlineTitle(value = '') {
+  const words = value.split(/\s+/).length;
+  if (/^\d+(?:\.\d+)?\.?\s/.test(value) && words <= 18) return true;
+  return words <= 11 && !/[.;:]$/.test(value);
+}
+
+function buildOutlineWidget(rows) {
+  const section = document.createElement('section');
+  section.className = 'interactive-block editorial-widget reader-generated';
+  section.setAttribute('aria-label', 'Recorrido interactivo del artículo');
+  section.innerHTML = `
+    <h3>Recorrido interactivo del artículo</h3>
+    <p class="compact-line">Resumen desplegable generado desde la tabla inicial.</p>
+    ${rows.slice(0, 14).map(([title, content], index) => `
+      <details ${index === 0 ? 'open' : ''}>
+        <summary>${escapeHtml(title)}</summary>
+        <p>${escapeHtml(content)}</p>
+      </details>
+    `).join('')}
+  `;
+  return section;
+}
+
+function insertEditorialVisual(container) {
+  if (container.querySelector('.auto-editorial-visual')) return;
+  const firstBodyHeading = [...container.querySelectorAll('h2')].find(heading => !/tabla de contenidos/i.test(heading.textContent));
+  if (!firstBodyHeading) return;
+
+  const figure = document.createElement('figure');
+  figure.className = 'article-visual strategic-map-card auto-editorial-visual reader-generated';
+  figure.innerHTML = `
+    <svg viewBox="0 0 900 240" role="img" aria-label="Esquema editorial de actores y tensiones">
+      <rect width="900" height="240" rx="18" fill="var(--surface-2)"></rect>
+      <circle cx="450" cy="120" r="74" fill="var(--accent-soft)"></circle>
+      <rect x="80" y="74" width="220" height="92" rx="14" fill="none" stroke="var(--accent-2)" stroke-width="3"></rect>
+      <rect x="600" y="74" width="220" height="92" rx="14" fill="none" stroke="var(--accent)" stroke-width="3"></rect>
+      <path d="M300 120 C360 108 390 108 410 120" stroke="var(--accent-2)" stroke-width="5" fill="none" stroke-linecap="round"></path>
+      <path d="M600 120 C540 108 510 108 490 120" stroke="var(--accent)" stroke-width="5" fill="none" stroke-linecap="round"></path>
+      <text x="450" y="116" text-anchor="middle" font-size="26" font-family="Inter, Arial, sans-serif" font-weight="900" fill="currentColor">Eje estratégico</text>
+      <text x="450" y="148" text-anchor="middle" font-size="15" font-family="Inter, Arial, sans-serif" fill="currentColor">actores · tensiones · decisiones</text>
+    </svg>
+    <figcaption>Esquema visual añadido para reducir la densidad de lectura y separar los bloques analíticos.</figcaption>
+  `;
+  firstBodyHeading.insertAdjacentElement('afterend', figure);
 }
 
 function renderTopbarTitle(title) {
@@ -202,7 +370,6 @@ function buildToc(container) {
 
 function buildTocEntries(headings) {
   const counters = [0, 0, 0];
-  let lastLevel = 1;
 
   return headings.map(heading => {
     const level = headingLevel(heading.tagName);
@@ -221,7 +388,6 @@ function buildTocEntries(headings) {
       counters[2] += 1;
     }
 
-    lastLevel = level;
     const number = counters.slice(0, level).map(value => String(value)).join('.');
     const rawLabel = cleanTocLabel(heading.textContent);
 
@@ -303,7 +469,7 @@ function cleanTocLabel(value = '') {
 
 function getContentHeadings(container, selector) {
   return [...container.querySelectorAll(selector)]
-    .filter(heading => !heading.closest('nav, aside, .toc, .toolbar, .article-tools'));
+    .filter(heading => !heading.closest('nav, aside, .toc, .toolbar, .article-tools, .reader-generated'));
 }
 
 function executeEmbeddedScripts(container) {
