@@ -1,3 +1,18 @@
+:root {
+  --reader-anchor-offset: 7.35rem;
+}
+
+html {
+  scroll-padding-top: var(--reader-anchor-offset);
+}
+
+.article-body h2[id],
+.article-body h3[id],
+.article-body h4[id],
+.article-body .chapter-heading[id] {
+  scroll-margin-top: var(--reader-anchor-offset);
+}
+
 .article-body pre.source-outline {
   max-width: 100%;
   overflow-x: auto;
@@ -33,4 +48,10 @@
   cursor: pointer;
   font-weight: 800;
   color: var(--accent);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --reader-anchor-offset: 6.5rem;
+  }
 }
