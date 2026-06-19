@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="assets/css/editorial.css">
   <link rel="stylesheet" href="assets/css/reader.css">
   <link rel="stylesheet" href="assets/css/share.css">
+  <link rel="stylesheet" href="assets/css/article-tools.css">
   <link rel="stylesheet" href="assets/css/article-fixes.css">
   <link rel="stylesheet" href="assets/css/mobile.css">
   <link rel="stylesheet" href="assets/css/article-mobile-tools.css">
@@ -39,9 +40,21 @@
 
   <main class="article-layout">
     <aside class="article-tools" aria-label="Herramientas de lectura">
-      <a class="back-link" href="./#articulos">← Volver a la biblioteca</a>
-      <button id="collapseAll" class="tool-button" type="button">Contraer capítulos</button>
-      <button id="expandAll" class="tool-button" type="button">Expandir capítulos</button>
+      <div class="article-tool-head">
+        <a class="back-link" href="./#articulos">← Biblioteca</a>
+        <div class="chapter-actions" role="group" aria-label="Controles de capítulos">
+          <button id="collapseAll" class="chapter-action-button" type="button" aria-label="Contraer capítulos" title="Contraer capítulos">
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path d="M5 8.5 12 15.5 19 8.5"></path>
+            </svg>
+          </button>
+          <button id="expandAll" class="chapter-action-button" type="button" aria-label="Expandir capítulos" title="Expandir capítulos">
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path d="M5 15.5 12 8.5 19 15.5"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
       <nav class="toc-card" aria-labelledby="tocTitle">
         <h2 id="tocTitle">Índice</h2>
         <ol id="tocList"></ol>
@@ -63,6 +76,7 @@
   <script src="assets/js/article.js" type="module"></script>
   <script src="assets/js/article-share.js" type="module"></script>
   <script src="assets/js/article-mobile-tools.js" type="module"></script>
+  <script src="assets/js/article-toc-expand.js" type="module"></script>
   <script src="assets/js/toc-anchor-fix.js" type="module"></script>
 </body>
 </html>
