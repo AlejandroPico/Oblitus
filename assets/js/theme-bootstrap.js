@@ -4,6 +4,8 @@
   const SOLAR_ZENITH = 90.833;
   const LOCATION = { latitude: 41.3874, longitude: 2.1686 };
 
+  installAnchorOffsetStyles();
+
   const palettes = {
     day: {
       scheme: 'light', bg: '#f3eee5', bgStrong: '#e6dac8', surface: '#fffaf1', surface2: '#f8f0e2',
@@ -50,6 +52,28 @@
   root.style.setProperty('--line', selected.line);
   root.style.setProperty('--accent-soft', selected.accentSoft);
   root.style.setProperty('--shadow', selected.shadow);
+
+  function installAnchorOffsetStyles() {
+    if (document.getElementById('oes-anchor-offset-style')) return;
+
+    const style = document.createElement('style');
+    style.id = 'oes-anchor-offset-style';
+    style.textContent = `
+      :root { --oes-anchor-offset: 6.7rem; }
+      html { scroll-padding-top: var(--oes-anchor-offset); }
+      #articulos,
+      #contenido,
+      .article-body :is(h2, h3, h4)[id],
+      .static-page :is(h2, h3, h4)[id],
+      .article-body [id] {
+        scroll-margin-top: var(--oes-anchor-offset);
+      }
+      @media (max-width: 760px) {
+        :root { --oes-anchor-offset: 5.85rem; }
+      }
+    `;
+    document.head.append(style);
+  }
 
   function getAutoPalette() {
     const now = new Date();
