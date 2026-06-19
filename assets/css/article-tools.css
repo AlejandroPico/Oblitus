@@ -1,0 +1,86 @@
+.article-tool-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.article-tool-head .back-link {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.chapter-actions {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(2.25rem, 1fr));
+  gap: 0.34rem;
+  flex: 0 0 auto;
+  padding: 0.22rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface-2), transparent 4%);
+  transition: var(--theme-transition);
+}
+
+.chapter-action-button {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  min-width: 2.25rem;
+  height: 2.05rem;
+  min-height: 2.05rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+  color: var(--muted);
+  font: 900 1.05rem/1 var(--font-sans);
+  cursor: pointer;
+  transition: var(--theme-transition), background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.chapter-action-button svg {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chapter-action-button:hover,
+.chapter-action-button:focus-visible {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent), var(--line) 52%);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 760px) {
+  .reader-topbar .nav-actions .article-tools.is-mobile-docked .article-tool-head {
+    gap: 0.45rem;
+  }
+
+  .reader-topbar .nav-actions .article-tools.is-mobile-docked .article-tool-head .back-link {
+    min-height: 2.28rem;
+    padding: 0.48rem 0.62rem;
+  }
+
+  .reader-topbar .nav-actions .article-tools.is-mobile-docked .chapter-actions {
+    grid-template-columns: repeat(2, 2.05rem);
+    padding: 0.18rem;
+  }
+
+  .reader-topbar .nav-actions .article-tools.is-mobile-docked .chapter-action-button {
+    width: 2.05rem;
+    min-width: 2.05rem;
+    height: 2rem;
+    min-height: 2rem;
+  }
+}
