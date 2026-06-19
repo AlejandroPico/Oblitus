@@ -40,6 +40,14 @@
               <option value="oldest">Más antiguos</option>
               <option value="title">Título A-Z</option>
             </select>
+            <button id="tagPanelToggle" class="tag-panel-toggle" type="button" aria-expanded="false" aria-controls="tagPanel">
+              Etiquetas
+            </button>
+            <div id="tagPanel" class="tag-panel" hidden>
+              <label class="tag-panel-label" for="tagSearchInput">Buscar etiqueta</label>
+              <input id="tagSearchInput" class="tag-panel-search" type="search" placeholder="Filtrar etiquetas…" autocomplete="off">
+              <div id="tagList" class="tag-list" role="listbox" aria-label="Listado de etiquetas"></div>
+            </div>
           </div>
           <button id="searchToggle" class="icon-button" type="button" aria-label="Abrir buscador" aria-controls="topbarSearch" aria-expanded="false">
             <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
@@ -62,7 +70,7 @@
   <main id="contenido" class="layout-wide home-layout">
     <section id="articulos" class="library-stream" aria-label="Artículos publicados">
       <p id="resultCount" class="visually-hidden" aria-live="polite">Cargando artículos…</p>
-      <div id="tagFilters" class="tag-filters tag-filters-minimal" aria-label="Filtros por etiqueta"></div>
+      <div id="tagFilters" class="tag-filters tag-filters-minimal active-tag-filter" aria-label="Filtro activo por etiqueta" hidden></div>
       <div id="postsGrid" class="posts-grid"></div>
       <div id="emptyState" class="empty-state" hidden>
         <h3>No hay resultados para esta búsqueda</h3>
