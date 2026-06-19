@@ -33,15 +33,15 @@ const manualPalettes = {
   },
   evening: {
     colorScheme: 'light',
-    bg: '#dac3a5',
-    bgStrong: '#bd9a72',
-    surface: '#f7e5ca',
-    surface2: '#e7cfad',
-    text: '#17110d',
-    muted: '#4f3e31',
-    accent: '#8e3f16',
-    accent2: '#214d52',
-    shadow: 'rgba(45, 29, 16, 0.2)',
+    bg: '#e4c8a6',
+    bgStrong: '#c79e72',
+    surface: '#fff0d6',
+    surface2: '#edd4ad',
+    text: '#100b08',
+    muted: '#463426',
+    accent: '#934113',
+    accent2: '#1f5156',
+    shadow: 'rgba(43, 27, 13, 0.2)',
     lineAlpha: 0.24,
     accentAlpha: 0.17
   },
@@ -51,12 +51,12 @@ const manualPalettes = {
     bgStrong: '#171a21',
     surface: '#161a22',
     surface2: '#1d232c',
-    text: '#f5efe6',
-    muted: '#c6b9aa',
+    text: '#f8f0e8',
+    muted: '#d7c9ba',
     accent: '#e0a46f',
     accent2: '#88d1d1',
     shadow: 'rgba(0, 0, 0, 0.34)',
-    lineAlpha: 0.12,
+    lineAlpha: 0.14,
     accentAlpha: 0.14
   }
 };
@@ -64,21 +64,21 @@ const manualPalettes = {
 const solarPalettes = {
   deepNight: manualPalettes.night,
   preDawn: {
-    colorScheme: 'dark', bg: '#141821', bgStrong: '#202431', surface: '#1a202a', surface2: '#232b36', text: '#f2ebdf', muted: '#cfc1b0', accent: '#d79563', accent2: '#85c8ce', shadow: 'rgba(0, 0, 0, 0.34)', lineAlpha: 0.13, accentAlpha: 0.14
+    colorScheme: 'dark', bg: '#141821', bgStrong: '#202431', surface: '#1a202a', surface2: '#232b36', text: '#f4ecdf', muted: '#d7c8b8', accent: '#d79563', accent2: '#85c8ce', shadow: 'rgba(0, 0, 0, 0.34)', lineAlpha: 0.14, accentAlpha: 0.14
   },
   dawn: {
-    colorScheme: 'light', bg: '#d8bfa3', bgStrong: '#b98f68', surface: '#f3dfc2', surface2: '#dfc49f', text: '#18110d', muted: '#564233', accent: '#9b4718', accent2: '#24545a', shadow: 'rgba(43, 27, 13, 0.21)', lineAlpha: 0.23, accentAlpha: 0.18
+    colorScheme: 'light', bg: '#d8bfa3', bgStrong: '#b98f68', surface: '#f3dfc2', surface2: '#dfc49f', text: '#18110d', muted: '#4d392b', accent: '#9b4718', accent2: '#24545a', shadow: 'rgba(43, 27, 13, 0.21)', lineAlpha: 0.24, accentAlpha: 0.18
   },
   day: manualPalettes.day,
   lateDay: {
-    colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#5f4d3e', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.19, accentAlpha: 0.14
+    colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#554233', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.2, accentAlpha: 0.14
   },
   golden: manualPalettes.evening,
   dusk: {
-    colorScheme: 'light', bg: '#c7aa86', bgStrong: '#a77f5b', surface: '#efd7b8', surface2: '#d8bb95', text: '#120d09', muted: '#49372a', accent: '#9b4c1c', accent2: '#1f4e54', shadow: 'rgba(38, 23, 13, 0.24)', lineAlpha: 0.28, accentAlpha: 0.18
+    colorScheme: 'light', bg: '#dcc09c', bgStrong: '#b98a5e', surface: '#ffe9c9', surface2: '#e8c99f', text: '#0f0a07', muted: '#3f2e21', accent: '#9b4c1c', accent2: '#1f4e54', shadow: 'rgba(38, 23, 13, 0.24)', lineAlpha: 0.3, accentAlpha: 0.18
   },
   blueHour: {
-    colorScheme: 'dark', bg: '#211d27', bgStrong: '#352633', surface: '#27232c', surface2: '#332b35', text: '#f8eee4', muted: '#ddcbb9', accent: '#d78957', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.32)', lineAlpha: 0.17, accentAlpha: 0.17
+    colorScheme: 'dark', bg: '#151922', bgStrong: '#202634', surface: '#1b212b', surface2: '#242c38', text: '#fff6ed', muted: '#e7d8c8', accent: '#e0a066', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.36)', lineAlpha: 0.17, accentAlpha: 0.18
   }
 };
 
@@ -146,9 +146,10 @@ function getSolarAnchors({ sunrise, sunset, solarNoon }) {
     { minute: clamp(sunset - 180, 0, 1440), palette: solarPalettes.day },
     { minute: clamp(sunset - 90, 0, 1440), palette: solarPalettes.lateDay },
     { minute: clamp(sunset - 15, 0, 1440), palette: solarPalettes.golden },
-    { minute: clamp(sunset + 45, 0, 1440), palette: solarPalettes.dusk },
-    { minute: clamp(sunset + 105, 0, 1440), palette: solarPalettes.blueHour },
-    { minute: clamp(sunset + 150, 0, 1440), palette: solarPalettes.deepNight },
+    { minute: clamp(sunset + 25, 0, 1440), palette: solarPalettes.dusk },
+    { minute: clamp(sunset + 38, 0, 1440), palette: solarPalettes.blueHour },
+    { minute: clamp(sunset + 115, 0, 1440), palette: solarPalettes.blueHour },
+    { minute: clamp(sunset + 145, 0, 1440), palette: solarPalettes.deepNight },
     { minute: 1440, palette: solarPalettes.deepNight }
   ].sort((a, b) => a.minute - b.minute || 0.001);
 }
