@@ -4,7 +4,8 @@
   }
 
   .reader-topbar .nav-actions.is-mobile-open {
-    max-height: calc(100vh - 5.6rem);
+    max-height: calc(100dvh - 5.35rem);
+    padding-bottom: 0.8rem;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: none;
@@ -21,7 +22,7 @@
     display: grid;
     gap: 0.45rem;
     width: 100%;
-    max-height: none;
+    max-height: calc(100dvh - 11.9rem);
     margin: 0.15rem 0 0;
     padding: 0.58rem;
     border: 1px solid var(--line);
@@ -58,7 +59,7 @@
   .reader-topbar .nav-actions .article-tools.is-mobile-docked .toc-card {
     display: flex;
     min-height: 0;
-    max-height: min(48vh, 390px);
+    max-height: min(42dvh, 330px);
     margin: 0.15rem 0 0;
     padding: 0.62rem;
     overflow: hidden;
@@ -76,13 +77,14 @@
   .reader-topbar .nav-actions .article-tools.is-mobile-docked .toc-card ol {
     flex: 1 1 auto;
     min-height: 0;
-    max-height: min(38vh, 310px);
+    max-height: min(31dvh, 250px);
     margin: 0;
-    padding: 0 0.1rem 0.25rem 0;
+    padding: 0 0.1rem 0.45rem 0;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    scroll-padding-block: 0.45rem 0.8rem;
   }
 
   .reader-topbar .nav-actions .article-tools.is-mobile-docked .toc-card ol::-webkit-scrollbar {
@@ -94,6 +96,10 @@
   .reader-topbar .nav-actions .article-tools.is-mobile-docked .toc-card li {
     gap: 0.34rem;
     margin-bottom: 0.38rem;
+  }
+
+  .reader-topbar .nav-actions .article-tools.is-mobile-docked .toc-card li:last-child {
+    margin-bottom: 0.18rem;
   }
 
   .reader-topbar .nav-actions .article-tools.is-mobile-docked .toc-card li::before {
