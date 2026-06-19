@@ -1,0 +1,233 @@
+:root {
+  --reader-font-family: var(--font-serif);
+  --reader-font-size: 1.08rem;
+  --reader-line-height: 1.74;
+  --reader-paragraph-gap: 1.1em;
+  --reader-shell-width: 1080px;
+  --reader-text-align: left;
+}
+
+.reader-settings-host {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.reader-settings-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 2.28rem;
+  min-width: 2.28rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface), transparent 6%);
+  color: var(--muted);
+  cursor: pointer;
+  transition: var(--theme-transition), background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.reader-settings-toggle svg {
+  display: block;
+  width: 1.08rem;
+  height: 1.08rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.reader-settings-toggle:hover,
+.reader-settings-toggle.active,
+.reader-settings-toggle:focus-visible {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent), var(--line) 45%);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.reader-settings-panel {
+  position: absolute;
+  top: calc(100% + 0.58rem);
+  right: 0;
+  z-index: 1900;
+  display: grid;
+  gap: 0.72rem;
+  width: min(390px, calc(100vw - 2rem));
+  max-height: min(72vh, 640px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.82rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface), transparent 1%);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  transition: var(--theme-transition);
+}
+
+.reader-settings-panel::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.reader-settings-panel[hidden] {
+  display: none;
+}
+
+.reader-settings-panel header {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.reader-settings-panel h2 {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 1.28rem;
+  letter-spacing: -0.02em;
+}
+
+.reader-settings-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.reader-settings-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.reader-settings-field label,
+.reader-settings-group-title {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.reader-settings-panel select,
+.reader-settings-panel input[type="range"] {
+  min-height: 2.15rem;
+  padding: 0.42rem 0.55rem;
+  font-size: 0.9rem;
+}
+
+.reader-settings-range-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.reader-settings-value {
+  min-width: 3.25rem;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: right;
+}
+
+.reader-settings-presets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.38rem;
+}
+
+.reader-settings-preset,
+.reader-settings-reset {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface-2), transparent 4%);
+  color: var(--text);
+  font: 800 0.82rem var(--font-sans);
+  cursor: pointer;
+  min-height: 2.15rem;
+  padding: 0.4rem 0.55rem;
+  transition: var(--theme-transition), background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.reader-settings-preset:hover,
+.reader-settings-preset.active,
+.reader-settings-reset:hover {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent), var(--line) 52%);
+  transform: translateY(-1px);
+}
+
+.reader-settings-reset {
+  width: fit-content;
+  color: var(--accent);
+}
+
+.article-layout:not(.is-standalone) .article-shell {
+  width: min(100%, var(--reader-shell-width));
+  max-width: var(--reader-shell-width);
+}
+
+.article-body {
+  font-family: var(--reader-font-family);
+  font-size: var(--reader-font-size);
+  line-height: var(--reader-line-height);
+  text-align: var(--reader-text-align);
+}
+
+.article-body p,
+.article-body li {
+  line-height: var(--reader-line-height);
+}
+
+.article-body p {
+  margin-top: 0;
+  margin-bottom: var(--reader-paragraph-gap);
+}
+
+.article-body :is(h2, h3, h4) {
+  text-align: left;
+}
+
+.static-page {
+  width: min(100%, var(--reader-shell-width));
+  max-width: var(--reader-shell-width);
+}
+
+.static-page p,
+.static-page li {
+  font-size: var(--reader-font-size);
+  line-height: var(--reader-line-height);
+}
+
+@media (max-width: 760px) {
+  .topbar .nav-actions .reader-settings-host {
+    width: 100%;
+    display: grid;
+  }
+
+  .reader-settings-toggle {
+    width: 100%;
+    min-height: 2.35rem;
+  }
+
+  .reader-settings-panel {
+    position: static;
+    width: 100%;
+    max-height: min(70dvh, 560px);
+    margin-top: 0.15rem;
+  }
+
+  .reader-settings-presets {
+    grid-template-columns: 1fr;
+  }
+
+  .article-layout:not(.is-standalone) .article-shell,
+  .static-page {
+    max-width: none;
+  }
+}
