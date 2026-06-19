@@ -1,4 +1,4 @@
-import { initTemporalTheme } from './theme.js';
+import { initTemporalTheme } from './theme.js?v=202606-theme-diagnostics';
 import { initMobileMenu } from './mobile-menu.js';
 
 const themeToggle = document.querySelector('#themeToggle');
