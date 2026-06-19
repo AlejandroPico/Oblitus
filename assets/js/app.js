@@ -6,7 +6,7 @@ let cardTagPress = null;
 
 const state = {
   posts: [],
-  activeTag: 'Todos',
+  activeTags: [],
   query: '',
   tagQuery: '',
   sort: 'newest',
@@ -62,6 +62,7 @@ async function init() {
 function bindEvents() {
   els.search?.addEventListener('input', event => {
     state.query = normaliseSearchText(event.target.value);
+    renderTagPanel();
     renderPosts();
   });
   els.sort?.addEventListener('change', event => {
@@ -123,7 +124,7 @@ function handleCardTagPointerUp(event) {
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation?.();
-  setActiveTag(press.tag, { showActiveSummary: true });
+  toggleActiveTag(press.tag, { showActiveSummary: true });
 }
 
 function clearCardTagPress() {
@@ -139,7 +140,7 @@ function handleGridClick(event) {
 
   event.preventDefault();
   event.stopPropagation();
-  setActiveTag(tag.dataset.cardTag, { showActiveSummary: true });
+  toggleActiveTag(tag.dataset.cardTag, { showActiveSummary: true });
 }
 
 function handleGridKeydown(event) {
@@ -148,12 +149,13 @@ function handleGridKeydown(event) {
   if (!tag) return;
   event.preventDefault();
   event.stopPropagation();
-  setActiveTag(tag.dataset.cardTag, { showActiveSummary: true });
+  toggleActiveTag(tag.dataset.cardTag, { showActiveSummary: true });
 }
 
-function setActiveTag(tag, options = {}) {
-  const resolvedTag = resolveKnownTag(tag) || tag || 'Todos';
-  state.activeTag = resolvedTag;
+function setActiveTags(tags = [], options = {}) {
+  state.activeTags = uniqueTags(tags)
+    .map(tag => resolveKnownTag(tag) || tag)
+    .filter(tag => tag && tag !== 'Todos');
   renderTags();
   renderTagPanel();
   renderPosts();
@@ -163,11 +165,49 @@ function setActiveTag(tag, options = {}) {
   }
 }
 
+function toggleActiveTag(tag, options = {}) {
+  if (!tag || tag === 'Todos') {
+    setActiveTags([], options);
+    return;
+  }
+
+  const resolvedTag = resolveKnownTag(tag) || tag;
+  const activeTags = getActiveTags();
+  const exists = activeTags.some(item => normaliseTag(item) === normaliseTag(resolvedTag));
+  const nextTags = exists
+    ? activeTags.filter(item => normaliseTag(item) !== normaliseTag(resolvedTag))
+    : [...activeTags, resolvedTag];
+
+  setActiveTags(nextTags, options);
+}
+
+function getActiveTags() {
+  return uniqueTags(state.activeTags ?? []);
+}
+
+function hasActiveTag(tag) {
+  return getActiveTags().some(item => normaliseTag(item) === normaliseTag(tag));
+}
+
+function uniqueTags(tags = []) {
+  const seen = new Set();
+  const result = [];
+  tags.forEach(tag => {
+    const clean = String(tag ?? '').trim();
+    if (!clean || clean === 'Todos') return;
+    const key = normaliseTag(clean);
+    if (seen.has(key)) return;
+    seen.add(key);
+    result.push(clean);
+  });
+  return result;
+}
+
 function resolveKnownTag(tag) {
   if (!tag) return null;
   if (tag === 'Todos') return 'Todos';
   const target = normaliseTag(tag);
-  const knownTags = [...getTagCounts().keys()];
+  const knownTags = getAllTags();
   return knownTags.find(item => normaliseTag(item) === target) || null;
 }
 
@@ -250,6 +290,7 @@ async function hydrateContentSearchIndex() {
 
   await Promise.allSettled(jobs);
   state.contentIndexReady = true;
+  renderTagPanel();
   if (state.query) renderPosts();
 }
 
@@ -279,39 +320,41 @@ function renderTopics(topics) {
 
 function renderTags() {
   if (!els.tags) return;
+  const activeTags = getActiveTags();
 
-  if (state.activeTag === 'Todos') {
+  if (!activeTags.length) {
     els.tags.hidden = true;
     els.tags.innerHTML = '';
     return;
   }
 
-  const count = getTagCounts().get(resolveKnownTag(state.activeTag) || state.activeTag) ?? 0;
+  const resultCount = getFilteredPosts().length;
   els.tags.hidden = false;
   els.tags.innerHTML = `
     <div class="active-tag-summary" role="status">
-      <span>Filtro activo:</span>
-      <button class="tag-button active" type="button" data-tag="${escapeAttr(state.activeTag)}">${escapeHtml(state.activeTag)} (${count})</button>
-      <button class="tag-clear-button" type="button" data-clear-tag>Quitar filtro</button>
+      <span>Filtros activos:</span>
+      ${activeTags.map(tag => `<button class="tag-button active tag-active-chip" type="button" data-remove-tag="${escapeAttr(tag)}" title="Quitar filtro ${escapeAttr(tag)}">${escapeHtml(tag)}</button>`).join('')}
+      <strong class="active-tag-count">${resultCount}</strong>
+      <button class="tag-clear-button" type="button" data-clear-tag>Quitar filtros</button>
     </div>
   `;
 
-  els.tags.querySelector('[data-clear-tag]')?.addEventListener('click', () => setActiveTag('Todos'));
+  els.tags.querySelectorAll('[data-remove-tag]').forEach(button => {
+    button.addEventListener('click', () => toggleActiveTag(button.dataset.removeTag));
+  });
+  els.tags.querySelector('[data-clear-tag]')?.addEventListener('click', () => setActiveTags([]));
 }
 
 function renderTagPanel() {
   if (!els.tagList) return;
 
-  const tagCounts = getTagCounts();
-  const total = state.posts.length;
-  const tags = [...tagCounts.entries()]
-    .sort((a, b) => a[0].localeCompare(b[0], 'es'))
-    .filter(([tag]) => !state.tagQuery || normaliseTag(tag).includes(state.tagQuery));
-
+  const options = getFacetTagOptions()
+    .filter(option => !state.tagQuery || normaliseTag(option.tag).includes(state.tagQuery));
+  const allCount = getPostsMatchingQuery().length;
   const allMatches = !state.tagQuery || normaliseTag('Todos').includes(state.tagQuery);
-  const allButton = allMatches ? renderTagPanelButton('Todos', total, state.activeTag === 'Todos') : '';
+  const allButton = allMatches ? renderTagPanelButton('Todos', allCount, !getActiveTags().length) : '';
 
-  els.tagList.innerHTML = `${allButton}${tags.map(([tag, count]) => renderTagPanelButton(tag, count, normaliseTag(tag) === normaliseTag(state.activeTag))).join('')}`;
+  els.tagList.innerHTML = `${allButton}${options.map(option => renderTagPanelButton(option.tag, option.count, option.active)).join('')}`;
 
   if (!els.tagList.innerHTML.trim()) {
     els.tagList.innerHTML = '<p class="tag-panel-empty">No hay etiquetas que coincidan.</p>';
@@ -320,8 +363,7 @@ function renderTagPanel() {
 
   els.tagList.querySelectorAll('[data-panel-tag]').forEach(button => {
     button.addEventListener('click', () => {
-      setActiveTag(button.dataset.panelTag, { showActiveSummary: true });
-      closeTagPanel();
+      toggleActiveTag(button.dataset.panelTag, { showActiveSummary: true });
     });
   });
 }
@@ -335,21 +377,45 @@ function renderTagPanelButton(tag, count, active) {
   `;
 }
 
-function getTagCounts() {
-  const counts = new Map();
-  state.posts.forEach(post => {
-    [...new Set(post.tags ?? [])].forEach(tag => {
-      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+function getFacetTagOptions() {
+  const activeTags = getActiveTags();
+  const currentCount = getFilteredPosts().length;
+  return getAllTags()
+    .map(tag => {
+      const active = hasActiveTag(tag);
+      const tagsToTest = active ? activeTags : [...activeTags, tag];
+      const count = active
+        ? currentCount
+        : getPostsMatchingTags(tagsToTest).filter(matchesQuery).length;
+      return { tag, count, active };
+    })
+    .filter(option => option.active || option.count > 0)
+    .sort((a, b) => {
+      if (a.active !== b.active) return a.active ? -1 : 1;
+      return a.tag.localeCompare(b.tag, 'es');
     });
-  });
-  return counts;
+}
+
+function getAllTags() {
+  return [...new Set(state.posts.flatMap(post => post.tags ?? []))].sort((a, b) => a.localeCompare(b, 'es'));
+}
+
+function getPostsMatchingQuery() {
+  return state.posts.filter(matchesQuery);
+}
+
+function getPostsMatchingTags(tags = getActiveTags()) {
+  return state.posts.filter(post => postMatchesAllTags(post, tags));
+}
+
+function getFilteredPosts() {
+  return state.posts
+    .filter(matchesTag)
+    .filter(matchesQuery);
 }
 
 function renderPosts() {
-  const filtered = state.posts
-    .filter(matchesTag)
-    .filter(matchesQuery)
-    .sort(sortPosts);
+  const filtered = getFilteredPosts().sort(sortPosts);
 
   if (els.count) {
     const suffix = state.contentIndexReady ? '' : ' · indexando contenido interno';
@@ -374,7 +440,7 @@ function renderPosts() {
         <p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
       </a>
       <div class="post-badges post-badges-scroll" aria-label="Etiquetas del artículo" data-drag-scroll="true">
-        ${(post.tags ?? []).map(tag => `<button class="badge tag-inline-filter" type="button" data-card-tag="${escapeAttr(tag)}" aria-label="Filtrar por ${escapeAttr(tag)}" title="Filtrar por ${escapeAttr(tag)}">${escapeHtml(tag)}</button>`).join('')}
+        ${(post.tags ?? []).map(tag => `<button class="badge tag-inline-filter${hasActiveTag(tag) ? ' active' : ''}" type="button" data-card-tag="${escapeAttr(tag)}" aria-label="Filtrar por ${escapeAttr(tag)}" title="Filtrar por ${escapeAttr(tag)}">${escapeHtml(tag)}</button>`).join('')}
       </div>
     </article>
   `).join('');
@@ -390,7 +456,7 @@ function bindCardTagButtons() {
       if (rail?.dataset.suppressClick === 'true') return;
       event.preventDefault();
       event.stopPropagation();
-      setActiveTag(button.dataset.cardTag, { showActiveSummary: true });
+      toggleActiveTag(button.dataset.cardTag, { showActiveSummary: true });
     });
   });
 }
@@ -459,7 +525,13 @@ function initDragScrollRails() {
 }
 
 function matchesTag(post) {
-  return state.activeTag === 'Todos' || (post.tags ?? []).some(tag => normaliseTag(tag) === normaliseTag(state.activeTag));
+  return postMatchesAllTags(post, getActiveTags());
+}
+
+function postMatchesAllTags(post, tags = []) {
+  if (!tags.length) return true;
+  const postTags = (post.tags ?? []).map(normaliseTag);
+  return tags.every(tag => postTags.includes(normaliseTag(tag)));
 }
 
 function matchesQuery(post) {
