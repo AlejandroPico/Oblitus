@@ -18,96 +18,105 @@ const DEFAULT_SOLAR_LOCATION = {
 
 const manualPalettes = {
   day: {
-    colorScheme: 'light',
-    bg: '#f3eee5',
-    bgStrong: '#e6dac8',
-    surface: '#fffaf1',
-    surface2: '#f8f0e2',
-    text: '#151412',
-    muted: '#60594e',
-    accent: '#7c2d12',
-    accent2: '#1f4d4f',
-    shadow: 'rgba(34, 25, 14, 0.12)',
-    lineAlpha: 0.16,
-    accentAlpha: 0.12
+    phase: 'Día', colorScheme: 'light', bg: '#f3eee5', bgStrong: '#e6dac8', surface: '#fffaf1', surface2: '#f8f0e2', text: '#151412', muted: '#60594e', accent: '#7c2d12', accent2: '#1f4d4f', shadow: 'rgba(34, 25, 14, 0.12)', lineAlpha: 0.16, accentAlpha: 0.12
   },
   evening: {
-    colorScheme: 'light',
-    bg: '#e4c8a6',
-    bgStrong: '#c79e72',
-    surface: '#fff0d6',
-    surface2: '#edd4ad',
-    text: '#100b08',
-    muted: '#463426',
-    accent: '#934113',
-    accent2: '#1f5156',
-    shadow: 'rgba(43, 27, 13, 0.2)',
-    lineAlpha: 0.24,
-    accentAlpha: 0.17
+    phase: 'Tarde', colorScheme: 'light', bg: '#e4c8a6', bgStrong: '#c79e72', surface: '#fff0d6', surface2: '#edd4ad', text: '#100b08', muted: '#463426', accent: '#934113', accent2: '#1f5156', shadow: 'rgba(43, 27, 13, 0.2)', lineAlpha: 0.24, accentAlpha: 0.17
   },
   night: {
-    colorScheme: 'dark',
-    bg: '#0f1115',
-    bgStrong: '#171a21',
-    surface: '#161a22',
-    surface2: '#1d232c',
-    text: '#f8f0e8',
-    muted: '#d7c9ba',
-    accent: '#e0a46f',
-    accent2: '#88d1d1',
-    shadow: 'rgba(0, 0, 0, 0.34)',
-    lineAlpha: 0.14,
-    accentAlpha: 0.14
+    phase: 'Noche', colorScheme: 'dark', bg: '#0f1115', bgStrong: '#171a21', surface: '#161a22', surface2: '#1d232c', text: '#f8f0e8', muted: '#d7c9ba', accent: '#e0a46f', accent2: '#88d1d1', shadow: 'rgba(0, 0, 0, 0.34)', lineAlpha: 0.14, accentAlpha: 0.14
   }
 };
 
 const solarPalettes = {
   deepNight: manualPalettes.night,
   preDawn: {
-    colorScheme: 'dark', bg: '#141821', bgStrong: '#202431', surface: '#1a202a', surface2: '#232b36', text: '#f4ecdf', muted: '#d7c8b8', accent: '#d79563', accent2: '#85c8ce', shadow: 'rgba(0, 0, 0, 0.34)', lineAlpha: 0.14, accentAlpha: 0.14
+    phase: 'Madrugada', colorScheme: 'dark', bg: '#141821', bgStrong: '#202431', surface: '#1a202a', surface2: '#232b36', text: '#f4ecdf', muted: '#d7c8b8', accent: '#d79563', accent2: '#85c8ce', shadow: 'rgba(0, 0, 0, 0.34)', lineAlpha: 0.14, accentAlpha: 0.14
   },
   dawn: {
-    colorScheme: 'light', bg: '#d8bfa3', bgStrong: '#b98f68', surface: '#f3dfc2', surface2: '#dfc49f', text: '#18110d', muted: '#4d392b', accent: '#9b4718', accent2: '#24545a', shadow: 'rgba(43, 27, 13, 0.21)', lineAlpha: 0.24, accentAlpha: 0.18
+    phase: 'Amanecer', colorScheme: 'light', bg: '#d8bfa3', bgStrong: '#b98f68', surface: '#f3dfc2', surface2: '#dfc49f', text: '#18110d', muted: '#4d392b', accent: '#9b4718', accent2: '#24545a', shadow: 'rgba(43, 27, 13, 0.21)', lineAlpha: 0.24, accentAlpha: 0.18
   },
   day: manualPalettes.day,
   lateDay: {
-    colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#554233', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.2, accentAlpha: 0.14
+    phase: 'Día bajo', colorScheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4', text: '#18130f', muted: '#554233', accent: '#884018', accent2: '#29565a', shadow: 'rgba(43, 27, 13, 0.15)', lineAlpha: 0.2, accentAlpha: 0.14
   },
   golden: manualPalettes.evening,
   dusk: {
-    colorScheme: 'light', bg: '#dcc09c', bgStrong: '#b98a5e', surface: '#ffe9c9', surface2: '#e8c99f', text: '#0f0a07', muted: '#3f2e21', accent: '#9b4c1c', accent2: '#1f4e54', shadow: 'rgba(38, 23, 13, 0.24)', lineAlpha: 0.3, accentAlpha: 0.18
+    phase: 'Anochecer', colorScheme: 'light', bg: '#dcc09c', bgStrong: '#b98a5e', surface: '#ffe9c9', surface2: '#e8c99f', text: '#0f0a07', muted: '#3f2e21', accent: '#9b4c1c', accent2: '#1f4e54', shadow: 'rgba(38, 23, 13, 0.24)', lineAlpha: 0.3, accentAlpha: 0.18
   },
   blueHour: {
-    colorScheme: 'dark', bg: '#151922', bgStrong: '#202634', surface: '#1b212b', surface2: '#242c38', text: '#fff6ed', muted: '#e7d8c8', accent: '#e0a066', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.36)', lineAlpha: 0.17, accentAlpha: 0.18
+    phase: 'Hora azul', colorScheme: 'dark', bg: '#151922', bgStrong: '#202634', surface: '#1b212b', surface2: '#242c38', text: '#fff6ed', muted: '#e7d8c8', accent: '#e0a066', accent2: '#8bd3d2', shadow: 'rgba(0, 0, 0, 0.36)', lineAlpha: 0.17, accentAlpha: 0.18
   }
 };
 
 let temporalTimer = null;
 let animationFrame = null;
 let currentPalette = null;
+let activeToggleButton = null;
+let previewActive = false;
+let suppressNextClick = false;
+let longPressTimer = null;
 
 export function initTemporalTheme(toggleButton) {
+  activeToggleButton = toggleButton ?? activeToggleButton;
   const safeMode = MODES.includes(localStorage.getItem(STORAGE_KEY))
     ? localStorage.getItem(STORAGE_KEY)
     : 'auto';
 
   document.documentElement.dataset.themeMode = safeMode;
   applyMode(safeMode, { animate: false });
-  updateButton(toggleButton, safeMode);
 
-  toggleButton?.addEventListener('click', () => {
+  if (!toggleButton) return;
+
+  toggleButton.addEventListener('click', event => {
+    if (suppressNextClick) {
+      suppressNextClick = false;
+      event.preventDefault();
+      return;
+    }
+
+    if (event.altKey || event.shiftKey) {
+      event.preventDefault();
+      openThemePreviewPanel();
+      return;
+    }
+
+    if (previewActive) {
+      clearPreview({ animate: true });
+      return;
+    }
+
     const current = document.documentElement.dataset.themeMode || 'auto';
     const next = MODES[(MODES.indexOf(current) + 1) % MODES.length];
     localStorage.setItem(STORAGE_KEY, next);
     document.documentElement.dataset.themeMode = next;
     applyMode(next, { animate: true });
-    updateButton(toggleButton, next);
+  });
+
+  toggleButton.addEventListener('contextmenu', event => {
+    event.preventDefault();
+    openThemePreviewPanel();
+  });
+
+  toggleButton.addEventListener('pointerdown', event => {
+    if (event.button !== undefined && event.button !== 0) return;
+    window.clearTimeout(longPressTimer);
+    longPressTimer = window.setTimeout(() => {
+      suppressNextClick = true;
+      openThemePreviewPanel();
+    }, 650);
+  });
+
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(type => {
+    toggleButton.addEventListener(type, () => window.clearTimeout(longPressTimer));
   });
 }
 
 function applyMode(mode, options = {}) {
   clearTemporalTimer();
   cancelPaletteAnimation();
+  previewActive = false;
+  document.documentElement.removeAttribute('data-theme-preview');
 
   if (mode === 'auto') {
     applyTemporalPalette(options.animate ? MANUAL_TRANSITION_MS : 0);
@@ -117,11 +126,13 @@ function applyMode(mode, options = {}) {
 
   const target = manualPalettes[mode] ?? manualPalettes.day;
   applyOrAnimatePalette(target, mode, options.animate ? MANUAL_TRANSITION_MS : 0);
+  updateButton(activeToggleButton, mode, target);
 }
 
 function applyTemporalPalette(duration = AUTO_TRANSITION_MS) {
   const target = getTemporalPalette(new Date());
   applyOrAnimatePalette(target, target.colorScheme === 'dark' ? 'dark' : 'light', duration);
+  updateButton(activeToggleButton, 'auto', target);
 }
 
 function getTemporalPalette(date) {
@@ -132,7 +143,10 @@ function getTemporalPalette(date) {
   const next = findAnchorAfter(minuteOfDay, anchors);
   const span = Math.max(1, next.minute - current.minute);
   const progress = clamp((minuteOfDay - current.minute) / span, 0, 1);
-  return mixPalettes(current.palette, next.palette, smoothstep(progress));
+  const palette = mixPalettes(current.palette, next.palette, smoothstep(progress));
+  palette.phase = progress < 0.5 ? current.palette.phase : next.palette.phase;
+  palette.previewMinute = minuteOfDay;
+  return palette;
 }
 
 function getSolarAnchors({ sunrise, sunset, solarNoon }) {
@@ -154,31 +168,149 @@ function getSolarAnchors({ sunrise, sunset, solarNoon }) {
   ].sort((a, b) => a.minute - b.minute || 0.001);
 }
 
+function openThemePreviewPanel() {
+  installThemePreviewStyles();
+  let panel = document.querySelector('#themePreviewPanel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'themePreviewPanel';
+    panel.className = 'theme-preview-backdrop';
+    panel.innerHTML = `
+      <section class="theme-preview-panel" role="dialog" aria-modal="true" aria-labelledby="themePreviewTitle">
+        <header>
+          <h2 id="themePreviewTitle">Simular hora del tema</h2>
+          <button type="button" class="theme-preview-close" data-theme-preview-close aria-label="Cerrar">×</button>
+        </header>
+        <p>Prueba el modo automático sin esperar a la franja horaria real.</p>
+        <label>
+          Hora local
+          <input id="themePreviewTime" type="time" step="60">
+        </label>
+        <output id="themePreviewOutput" aria-live="polite"></output>
+        <div class="theme-preview-actions">
+          <button type="button" data-theme-preview-now>Volver a ahora</button>
+          <button type="button" data-theme-preview-close>Cerrar</button>
+        </div>
+      </section>
+    `;
+    document.body.append(panel);
+    panel.addEventListener('click', event => {
+      if (event.target === panel || event.target.closest('[data-theme-preview-close]')) closeThemePreviewPanel();
+      if (event.target.closest('[data-theme-preview-now]')) clearPreview({ animate: true, closePanel: true });
+    });
+    panel.querySelector('#themePreviewTime')?.addEventListener('input', event => applyPreviewTime(event.target.value));
+  }
+
+  const input = panel.querySelector('#themePreviewTime');
+  if (input && !input.value) input.value = formatTimeInput(new Date());
+  panel.hidden = false;
+  panel.dataset.open = 'true';
+  applyPreviewTime(input?.value || formatTimeInput(new Date()));
+  input?.focus();
+}
+
+function closeThemePreviewPanel() {
+  const panel = document.querySelector('#themePreviewPanel');
+  if (!panel) return;
+  panel.dataset.open = 'false';
+  panel.hidden = true;
+}
+
+function applyPreviewTime(value) {
+  const [hours, minutes] = String(value || '').split(':').map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return;
+
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+  clearTemporalTimer();
+  cancelPaletteAnimation();
+
+  const target = getTemporalPalette(date);
+  previewActive = true;
+  document.documentElement.dataset.themePreview = 'true';
+  applyOrAnimatePalette(target, target.colorScheme === 'dark' ? 'dark' : 'light', 0);
+  updateButton(activeToggleButton, 'preview', target, value);
+
+  const output = document.querySelector('#themePreviewOutput');
+  if (output) output.textContent = `${value} · ${target.phase} · ${target.colorScheme === 'dark' ? 'oscuro' : 'claro'}`;
+}
+
+function clearPreview({ animate = false, closePanel = false } = {}) {
+  previewActive = false;
+  document.documentElement.removeAttribute('data-theme-preview');
+  const mode = document.documentElement.dataset.themeMode || 'auto';
+  applyMode(mode, { animate });
+  if (closePanel) closeThemePreviewPanel();
+}
+
+function formatTimeInput(date) {
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+function installThemePreviewStyles() {
+  if (document.querySelector('#themePreviewStyles')) return;
+  const style = document.createElement('style');
+  style.id = 'themePreviewStyles';
+  style.textContent = `
+    .theme-preview-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(2px);
+    }
+    .theme-preview-backdrop[hidden] { display: none; }
+    .theme-preview-panel {
+      display: grid;
+      gap: 0.75rem;
+      width: min(92vw, 390px);
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      font-family: var(--font-sans);
+    }
+    .theme-preview-panel header,
+    .theme-preview-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .theme-preview-panel h2,
+    .theme-preview-panel p { margin: 0; }
+    .theme-preview-panel p,
+    .theme-preview-panel output { color: var(--muted); }
+    .theme-preview-panel label { display: grid; gap: 0.35rem; font-weight: 800; }
+    .theme-preview-panel input,
+    .theme-preview-panel button {
+      min-height: 2.25rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+    }
+    .theme-preview-panel input { padding: 0.4rem 0.55rem; }
+    .theme-preview-panel button { padding: 0.4rem 0.68rem; cursor: pointer; }
+    .theme-preview-close { width: 2.25rem; padding: 0 !important; font-weight: 900; }
+  `;
+  document.head.append(style);
+}
+
 function getSolarDay(date, location) {
   const day = dayOfYear(date);
   const gamma = (2 * Math.PI / 365) * (day - 1);
-  const equationOfTime = 229.18 * (
-    0.000075
-    + 0.001868 * Math.cos(gamma)
-    - 0.032077 * Math.sin(gamma)
-    - 0.014615 * Math.cos(2 * gamma)
-    - 0.040849 * Math.sin(2 * gamma)
-  );
-  const declination = 0.006918
-    - 0.399912 * Math.cos(gamma)
-    + 0.070257 * Math.sin(gamma)
-    - 0.006758 * Math.cos(2 * gamma)
-    + 0.000907 * Math.sin(2 * gamma)
-    - 0.002697 * Math.cos(3 * gamma)
-    + 0.00148 * Math.sin(3 * gamma);
-
+  const equationOfTime = 229.18 * (0.000075 + 0.001868 * Math.cos(gamma) - 0.032077 * Math.sin(gamma) - 0.014615 * Math.cos(2 * gamma) - 0.040849 * Math.sin(2 * gamma));
+  const declination = 0.006918 - 0.399912 * Math.cos(gamma) + 0.070257 * Math.sin(gamma) - 0.006758 * Math.cos(2 * gamma) + 0.000907 * Math.sin(2 * gamma) - 0.002697 * Math.cos(3 * gamma) + 0.00148 * Math.sin(3 * gamma);
   const latitude = toRadians(location.latitude);
   const zenith = toRadians(SOLAR_ZENITH);
-  const hourAngle = Math.acos(clamp(
-    (Math.cos(zenith) / (Math.cos(latitude) * Math.cos(declination))) - Math.tan(latitude) * Math.tan(declination),
-    -1,
-    1
-  ));
+  const hourAngle = Math.acos(clamp((Math.cos(zenith) / (Math.cos(latitude) * Math.cos(declination))) - Math.tan(latitude) * Math.tan(declination), -1, 1));
   const hourAngleDegrees = toDegrees(hourAngle);
   const timezoneOffsetHours = -date.getTimezoneOffset() / 60;
   const solarNoon = 720 - (4 * location.longitude) - equationOfTime + (timezoneOffsetHours * 60);
@@ -218,7 +350,6 @@ function applyOrAnimatePalette(target, renderedMode, duration) {
     currentPalette = clonePalette(target);
     return;
   }
-
   animatePalette(currentPalette, target, renderedMode, duration);
 }
 
@@ -227,24 +358,20 @@ function animatePalette(from, to, renderedMode, duration) {
   const startedAt = performance.now();
   const start = clonePalette(from);
   const end = clonePalette(to);
-
   const tick = now => {
     const progress = clamp((now - startedAt) / duration, 0, 1);
     const eased = smoothstep(progress);
     const frame = mixPalettes(start, end, eased);
     applyPalette(frame, progress < 1 ? frame.colorScheme : renderedMode);
     currentPalette = clonePalette(frame);
-
     if (progress < 1) {
       animationFrame = requestAnimationFrame(tick);
       return;
     }
-
     applyPalette(end, renderedMode);
     currentPalette = clonePalette(end);
     animationFrame = null;
   };
-
   animationFrame = requestAnimationFrame(tick);
 }
 
@@ -252,7 +379,6 @@ function applyPalette(palette, renderedMode) {
   const root = document.documentElement;
   const lineRgb = hexToRgb(palette.text);
   const accentRgb = hexToRgb(palette.accent);
-
   root.dataset.theme = renderedMode;
   root.style.colorScheme = palette.colorScheme;
   root.style.setProperty('--bg', palette.bg);
@@ -280,8 +406,21 @@ function cancelPaletteAnimation() {
   animationFrame = null;
 }
 
-function updateButton(button, mode) {
+function updateButton(button, mode, palette = null, previewTime = '') {
   if (!button) return;
+  if (mode === 'preview') {
+    button.textContent = `◐ Prueba ${previewTime}`;
+    button.title = `Simulación activa: ${previewTime} · ${palette?.phase ?? 'tema automático'}. Pulsa una vez para volver a la hora real.`;
+    button.setAttribute('aria-label', button.title);
+    return;
+  }
+  if (mode === 'auto') {
+    const phase = palette?.phase ? ` · ${palette.phase}` : '';
+    button.textContent = `${MODE_LABELS.auto}${phase}`;
+    button.title = 'Modo automático. Alt+clic, clic derecho o pulsación larga para simular una hora concreta.';
+    button.setAttribute('aria-label', `Modo visual actual: automático${phase}. Pulsar para cambiar. Alt+clic o pulsación larga para simular hora.`);
+    return;
+  }
   button.textContent = MODE_LABELS[mode] ?? MODE_LABELS.auto;
   button.title = 'Cambiar modo: automático, día, tarde o noche';
   button.setAttribute('aria-label', `Modo visual actual: ${MODE_LABELS[mode] ?? MODE_LABELS.auto}. Pulsar para cambiar.`);
@@ -289,6 +428,7 @@ function updateButton(button, mode) {
 
 function mixPalettes(a, b, amount) {
   return {
+    phase: amount < 0.5 ? a.phase : b.phase,
     colorScheme: amount < 0.5 ? a.colorScheme : b.colorScheme,
     bg: mixHex(a.bg, b.bg, amount),
     bgStrong: mixHex(a.bgStrong, b.bgStrong, amount),
@@ -311,11 +451,7 @@ function clonePalette(palette) {
 function mixHex(a, b, amount) {
   const first = hexToRgb(a);
   const second = hexToRgb(b);
-  return rgbToHex({
-    r: Math.round(lerp(first.r, second.r, amount)),
-    g: Math.round(lerp(first.g, second.g, amount)),
-    b: Math.round(lerp(first.b, second.b, amount))
-  });
+  return rgbToHex({ r: Math.round(lerp(first.r, second.r, amount)), g: Math.round(lerp(first.g, second.g, amount)), b: Math.round(lerp(first.b, second.b, amount)) });
 }
 
 function mixRgba(a, b, amount) {
@@ -326,11 +462,7 @@ function mixRgba(a, b, amount) {
 
 function hexToRgb(hex) {
   const clean = hex.replace('#', '');
-  return {
-    r: parseInt(clean.slice(0, 2), 16),
-    g: parseInt(clean.slice(2, 4), 16),
-    b: parseInt(clean.slice(4, 6), 16)
-  };
+  return { r: parseInt(clean.slice(0, 2), 16), g: parseInt(clean.slice(2, 4), 16), b: parseInt(clean.slice(4, 6), 16) };
 }
 
 function rgbToHex({ r, g, b }) {
@@ -340,31 +472,11 @@ function rgbToHex({ r, g, b }) {
 function parseRgba(value) {
   const match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/i);
   if (!match) return { r: 0, g: 0, b: 0, a: 0.2 };
-  return {
-    r: Number(match[1]),
-    g: Number(match[2]),
-    b: Number(match[3]),
-    a: Number(match[4] ?? 1)
-  };
+  return { r: Number(match[1]), g: Number(match[2]), b: Number(match[3]), a: Number(match[4] ?? 1) };
 }
 
-function toRadians(value) {
-  return value * Math.PI / 180;
-}
-
-function toDegrees(value) {
-  return value * 180 / Math.PI;
-}
-
-function lerp(a, b, amount) {
-  return a + (b - a) * amount;
-}
-
-function smoothstep(value) {
-  const amount = clamp(value, 0, 1);
-  return amount * amount * (3 - 2 * amount);
-}
-
-function clamp(value, min, max) {
-  return Math.min(max, Math.max(min, value));
-}
+function toRadians(value) { return value * Math.PI / 180; }
+function toDegrees(value) { return value * 180 / Math.PI; }
+function lerp(a, b, amount) { return a + (b - a) * amount; }
+function smoothstep(value) { const amount = clamp(value, 0, 1); return amount * amount * (3 - 2 * amount); }
+function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
