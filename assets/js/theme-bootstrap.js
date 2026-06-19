@@ -14,23 +14,23 @@
     },
     lateDay: {
       scheme: 'light', bg: '#eadcc8', bgStrong: '#d7bd99', surface: '#fff1dd', surface2: '#f1dfc4',
-      text: '#18130f', muted: '#5f4d3e', accent: '#884018', accent2: '#29565a',
-      line: 'rgba(24, 19, 15, 0.19)', accentSoft: 'rgba(136, 64, 24, 0.14)', shadow: '0 20px 50px rgba(43, 27, 13, 0.15)'
+      text: '#18130f', muted: '#554233', accent: '#884018', accent2: '#29565a',
+      line: 'rgba(24, 19, 15, 0.20)', accentSoft: 'rgba(136, 64, 24, 0.14)', shadow: '0 20px 50px rgba(43, 27, 13, 0.15)'
     },
     evening: {
-      scheme: 'light', bg: '#dac3a5', bgStrong: '#bd9a72', surface: '#f7e5ca', surface2: '#e7cfad',
-      text: '#17110d', muted: '#4f3e31', accent: '#8e3f16', accent2: '#214d52',
-      line: 'rgba(23, 17, 13, 0.24)', accentSoft: 'rgba(142, 63, 22, 0.17)', shadow: '0 20px 50px rgba(45, 29, 16, 0.2)'
+      scheme: 'light', bg: '#e4c8a6', bgStrong: '#c79e72', surface: '#fff0d6', surface2: '#edd4ad',
+      text: '#100b08', muted: '#463426', accent: '#934113', accent2: '#1f5156',
+      line: 'rgba(16, 11, 8, 0.24)', accentSoft: 'rgba(147, 65, 19, 0.17)', shadow: '0 20px 50px rgba(43, 27, 13, 0.2)'
     },
     blueHour: {
-      scheme: 'dark', bg: '#211d27', bgStrong: '#352633', surface: '#27232c', surface2: '#332b35',
-      text: '#f8eee4', muted: '#ddcbb9', accent: '#d78957', accent2: '#8bd3d2',
-      line: 'rgba(248, 238, 228, 0.17)', accentSoft: 'rgba(215, 137, 87, 0.17)', shadow: '0 20px 50px rgba(0, 0, 0, 0.32)'
+      scheme: 'dark', bg: '#151922', bgStrong: '#202634', surface: '#1b212b', surface2: '#242c38',
+      text: '#fff6ed', muted: '#e7d8c8', accent: '#e0a066', accent2: '#8bd3d2',
+      line: 'rgba(255, 246, 237, 0.17)', accentSoft: 'rgba(224, 160, 102, 0.18)', shadow: '0 20px 50px rgba(0, 0, 0, 0.36)'
     },
     night: {
       scheme: 'dark', bg: '#0f1115', bgStrong: '#171a21', surface: '#161a22', surface2: '#1d232c',
-      text: '#f5efe6', muted: '#c6b9aa', accent: '#e0a46f', accent2: '#88d1d1',
-      line: 'rgba(245, 239, 230, 0.12)', accentSoft: 'rgba(224, 164, 111, 0.14)', shadow: '0 20px 50px rgba(0, 0, 0, 0.34)'
+      text: '#f8f0e8', muted: '#d7c9ba', accent: '#e0a46f', accent2: '#88d1d1',
+      line: 'rgba(248, 240, 232, 0.14)', accentSoft: 'rgba(224, 164, 111, 0.14)', shadow: '0 20px 50px rgba(0, 0, 0, 0.34)'
     }
   };
 
@@ -80,12 +80,13 @@
     const minute = now.getHours() * 60 + now.getMinutes();
     const solar = getSolarDay(now);
 
-    if (minute < solar.sunrise - 60 || minute >= solar.sunset + 150) return palettes.night;
+    if (minute < solar.sunrise - 60 || minute >= solar.sunset + 145) return palettes.night;
     if (minute < solar.sunrise + 60) return palettes.lateDay;
     if (minute < solar.sunset - 135) return palettes.day;
     if (minute < solar.sunset - 45) return palettes.lateDay;
-    if (minute < solar.sunset + 75) return palettes.evening;
-    return palettes.blueHour;
+    if (minute < solar.sunset + 38) return palettes.evening;
+    if (minute < solar.sunset + 115) return palettes.blueHour;
+    return palettes.night;
   }
 
   function getSolarDay(date) {
