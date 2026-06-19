@@ -8,13 +8,19 @@ const state = {
   posts: [],
   activeTag: 'Todos',
   query: '',
+  tagQuery: '',
   sort: 'newest',
+  tagPanelOpen: false,
   contentIndexReady: false
 };
 
 const els = {
   grid: document.querySelector('#postsGrid'),
   tags: document.querySelector('#tagFilters'),
+  tagPanelToggle: document.querySelector('#tagPanelToggle'),
+  tagPanel: document.querySelector('#tagPanel'),
+  tagSearch: document.querySelector('#tagSearchInput'),
+  tagList: document.querySelector('#tagList'),
   search: document.querySelector('#searchInput'),
   sort: document.querySelector('#sortSelect'),
   empty: document.querySelector('#emptyState'),
@@ -43,6 +49,7 @@ async function init() {
     state.posts = normalisePosts(data.articles ?? []);
     renderTopics(data.topics ?? []);
     renderTags();
+    renderTagPanel();
     renderPosts();
     hydrateContentSearchIndex();
   } catch (error) {
@@ -61,6 +68,15 @@ function bindEvents() {
     state.sort = event.target.value;
     renderPosts();
   });
+  els.tagSearch?.addEventListener('input', event => {
+    state.tagQuery = normaliseSearchText(event.target.value);
+    renderTagPanel();
+  });
+  els.tagPanelToggle?.addEventListener('click', event => {
+    event.stopPropagation();
+    toggleTagPanel();
+  });
+  els.tagPanel?.addEventListener('click', event => event.stopPropagation());
   els.searchToggle?.addEventListener('click', event => {
     event.stopPropagation();
     toggleSearchPanel();
@@ -71,9 +87,15 @@ function bindEvents() {
   els.grid?.addEventListener('pointercancel', clearCardTagPress, true);
   els.grid?.addEventListener('click', handleGridClick);
   els.grid?.addEventListener('keydown', handleGridKeydown);
-  document.addEventListener('click', () => closeSearchPanel());
+  document.addEventListener('click', () => {
+    closeTagPanel();
+    closeSearchPanel();
+  });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') closeSearchPanel();
+    if (event.key === 'Escape') {
+      closeTagPanel();
+      closeSearchPanel();
+    }
   });
 }
 
@@ -101,7 +123,7 @@ function handleCardTagPointerUp(event) {
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation?.();
-  setActiveTag(press.tag, { scrollToFilters: true, focusActive: true });
+  setActiveTag(press.tag, { showActiveSummary: true });
 }
 
 function clearCardTagPress() {
@@ -117,7 +139,7 @@ function handleGridClick(event) {
 
   event.preventDefault();
   event.stopPropagation();
-  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true, focusActive: true });
+  setActiveTag(tag.dataset.cardTag, { showActiveSummary: true });
 }
 
 function handleGridKeydown(event) {
@@ -126,24 +148,18 @@ function handleGridKeydown(event) {
   if (!tag) return;
   event.preventDefault();
   event.stopPropagation();
-  setActiveTag(tag.dataset.cardTag, { scrollToFilters: true, focusActive: true });
+  setActiveTag(tag.dataset.cardTag, { showActiveSummary: true });
 }
 
 function setActiveTag(tag, options = {}) {
   const resolvedTag = resolveKnownTag(tag) || tag || 'Todos';
   state.activeTag = resolvedTag;
   renderTags();
+  renderTagPanel();
   renderPosts();
 
-  if (options.scrollToFilters && els.tags) {
+  if (options.showActiveSummary && els.tags && !els.tags.hidden) {
     els.tags.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  if (options.focusActive && els.tags) {
-    requestAnimationFrame(() => {
-      const activeButton = els.tags.querySelector('.tag-button.active');
-      activeButton?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    });
   }
 }
 
@@ -151,7 +167,7 @@ function resolveKnownTag(tag) {
   if (!tag) return null;
   if (tag === 'Todos') return 'Todos';
   const target = normaliseTag(tag);
-  const knownTags = [...new Set(state.posts.flatMap(post => post.tags ?? []))];
+  const knownTags = [...getTagCounts().keys()];
   return knownTags.find(item => normaliseTag(item) === target) || null;
 }
 
@@ -167,6 +183,8 @@ function toggleSearchPanel(forceOpen = null) {
   els.searchPanel.setAttribute('aria-hidden', String(!shouldOpen));
   els.searchToggle.setAttribute('aria-expanded', String(shouldOpen));
   els.searchToggle.setAttribute('aria-label', shouldOpen ? 'Cerrar buscador' : 'Abrir buscador');
+
+  if (!shouldOpen) closeTagPanel();
   if (shouldOpen) requestAnimationFrame(() => els.search?.focus());
 }
 
@@ -176,6 +194,26 @@ function closeSearchPanel() {
   els.searchPanel?.setAttribute('aria-hidden', 'true');
   els.searchToggle?.setAttribute('aria-expanded', 'false');
   els.searchToggle?.setAttribute('aria-label', 'Abrir buscador');
+  closeTagPanel();
+}
+
+function toggleTagPanel(forceOpen = null) {
+  if (!els.tagPanel || !els.tagPanelToggle) return;
+  const shouldOpen = forceOpen ?? !state.tagPanelOpen;
+  state.tagPanelOpen = shouldOpen;
+  els.tagPanel.hidden = !shouldOpen;
+  els.tagPanelToggle.setAttribute('aria-expanded', String(shouldOpen));
+  els.tagPanelToggle.classList.toggle('active', shouldOpen);
+
+  if (shouldOpen) {
+    renderTagPanel();
+    requestAnimationFrame(() => els.tagSearch?.focus());
+  }
+}
+
+function closeTagPanel() {
+  if (!state.tagPanelOpen) return;
+  toggleTagPanel(false);
 }
 
 function normalisePosts(posts) {
@@ -240,21 +278,71 @@ function renderTopics(topics) {
 }
 
 function renderTags() {
-  const tags = ['Todos', ...new Set(state.posts.flatMap(post => post.tags ?? []))].sort((a, b) => {
-    if (a === 'Todos') return -1;
-    if (b === 'Todos') return 1;
-    return a.localeCompare(b, 'es');
-  });
+  if (!els.tags) return;
 
-  els.tags.innerHTML = tags.map(tag => `
-    <button class="tag-button${normaliseTag(tag) === normaliseTag(state.activeTag) ? ' active' : ''}" type="button" data-tag="${escapeAttr(tag)}">
-      ${escapeHtml(tag)}
+  if (state.activeTag === 'Todos') {
+    els.tags.hidden = true;
+    els.tags.innerHTML = '';
+    return;
+  }
+
+  const count = getTagCounts().get(resolveKnownTag(state.activeTag) || state.activeTag) ?? 0;
+  els.tags.hidden = false;
+  els.tags.innerHTML = `
+    <div class="active-tag-summary" role="status">
+      <span>Filtro activo:</span>
+      <button class="tag-button active" type="button" data-tag="${escapeAttr(state.activeTag)}">${escapeHtml(state.activeTag)} (${count})</button>
+      <button class="tag-clear-button" type="button" data-clear-tag>Quitar filtro</button>
+    </div>
+  `;
+
+  els.tags.querySelector('[data-clear-tag]')?.addEventListener('click', () => setActiveTag('Todos'));
+}
+
+function renderTagPanel() {
+  if (!els.tagList) return;
+
+  const tagCounts = getTagCounts();
+  const total = state.posts.length;
+  const tags = [...tagCounts.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0], 'es'))
+    .filter(([tag]) => !state.tagQuery || normaliseTag(tag).includes(state.tagQuery));
+
+  const allMatches = !state.tagQuery || normaliseTag('Todos').includes(state.tagQuery);
+  const allButton = allMatches ? renderTagPanelButton('Todos', total, state.activeTag === 'Todos') : '';
+
+  els.tagList.innerHTML = `${allButton}${tags.map(([tag, count]) => renderTagPanelButton(tag, count, normaliseTag(tag) === normaliseTag(state.activeTag))).join('')}`;
+
+  if (!els.tagList.innerHTML.trim()) {
+    els.tagList.innerHTML = '<p class="tag-panel-empty">No hay etiquetas que coincidan.</p>';
+    return;
+  }
+
+  els.tagList.querySelectorAll('[data-panel-tag]').forEach(button => {
+    button.addEventListener('click', () => {
+      setActiveTag(button.dataset.panelTag, { showActiveSummary: true });
+      closeTagPanel();
+    });
+  });
+}
+
+function renderTagPanelButton(tag, count, active) {
+  return `
+    <button class="tag-panel-option${active ? ' active' : ''}" type="button" data-panel-tag="${escapeAttr(tag)}" role="option" aria-selected="${active ? 'true' : 'false'}">
+      <span>${escapeHtml(tag)}</span>
+      <strong>${count}</strong>
     </button>
-  `).join('');
+  `;
+}
 
-  els.tags.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', () => setActiveTag(button.dataset.tag));
+function getTagCounts() {
+  const counts = new Map();
+  state.posts.forEach(post => {
+    [...new Set(post.tags ?? [])].forEach(tag => {
+      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    });
   });
+  return counts;
 }
 
 function renderPosts() {
@@ -302,7 +390,7 @@ function bindCardTagButtons() {
       if (rail?.dataset.suppressClick === 'true') return;
       event.preventDefault();
       event.stopPropagation();
-      setActiveTag(button.dataset.cardTag, { scrollToFilters: true, focusActive: true });
+      setActiveTag(button.dataset.cardTag, { showActiveSummary: true });
     });
   });
 }
