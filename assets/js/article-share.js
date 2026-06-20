@@ -29,6 +29,8 @@ const SHARE_NETWORKS = [
   }
 ];
 
+const PRINT_ICON = '<path d="M6 8V2h12v6"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M8 17h8"></path>';
+
 initArticleShare();
 
 function initArticleShare() {
@@ -45,22 +47,58 @@ function initArticleShare() {
   const share = document.createElement('nav');
   share.id = 'articleShare';
   share.className = 'article-share';
-  share.setAttribute('aria-label', 'Compartir artículo');
+  share.setAttribute('aria-label', 'Compartir e imprimir artículo');
   row.append(share);
 
-  const render = () => renderShareLinks(share, title.textContent);
+  let articleData = null;
+  const render = () => renderShareLinks(share, title.textContent, articleData);
   render();
+  resolveCurrentArticle().then(article => {
+    articleData = article;
+    render();
+  });
+
+  share.addEventListener('click', event => {
+    const button = event.target.closest('[data-print-article]');
+    if (!button) return;
+    event.preventDefault();
+    printArticle(articleData);
+  });
 
   const observer = new MutationObserver(render);
   observer.observe(title, { childList: true, characterData: true, subtree: true });
 }
 
-function renderShareLinks(container, title) {
+async function resolveCurrentArticle() {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) return null;
+
+  try {
+    const response = await fetch('assets/data/articles.generated.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`No se pudo cargar índice (${response.status})`);
+    const data = await response.json();
+    return (data.articles ?? []).find(article => article.id === id) ?? null;
+  } catch (error) {
+    console.warn(error);
+    return null;
+  }
+}
+
+function renderShareLinks(container, title, article = null) {
   const url = getCanonicalArticleUrl();
   const cleanTitle = String(title || document.title || 'Oblitus est scientia').replace(/\s+/g, ' ').trim();
   const text = cleanTitle.includes('Oblitus est scientia') ? cleanTitle : `${cleanTitle} · Oblitus est scientia`;
+  const printLabel = article?.printLabel ? `Imprimir: ${article.printLabel}` : 'Imprimir artículo';
 
-  container.innerHTML = SHARE_NETWORKS.map(network => {
+  const printButton = `
+    <button class="share-button share-button-print" type="button" data-print-article aria-label="${escapeAttr(printLabel)}" title="${escapeAttr(printLabel)}">
+      <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+        ${PRINT_ICON}
+      </svg>
+    </button>
+  `;
+
+  const shareButtons = SHARE_NETWORKS.map(network => {
     const href = network.buildUrl({ url, text });
     return `
       <a class="share-button share-button-${network.id}" href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(network.title)}" title="${escapeAttr(network.title)}">
@@ -70,6 +108,52 @@ function renderShareLinks(container, title) {
       </a>
     `;
   }).join('');
+
+  container.innerHTML = `${printButton}${shareButtons}`;
+}
+
+function printArticle(article) {
+  const printUrl = article?.printUrl || null;
+  const printKind = article?.printKind || 'html';
+
+  if (!printUrl || printKind === 'html') {
+    window.print();
+    return;
+  }
+
+  if (printKind === 'pdf') {
+    printExternalDocument(printUrl);
+    return;
+  }
+
+  window.open(printUrl, '_blank', 'noopener,noreferrer');
+}
+
+function printExternalDocument(url) {
+  const absoluteUrl = new URL(url, window.location.href).toString();
+  const iframe = document.createElement('iframe');
+  iframe.className = 'print-source-frame';
+  iframe.setAttribute('aria-hidden', 'true');
+  iframe.src = absoluteUrl;
+  document.body.append(iframe);
+
+  const fallback = window.setTimeout(() => {
+    window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
+    iframe.remove();
+  }, 2600);
+
+  iframe.addEventListener('load', () => {
+    window.clearTimeout(fallback);
+    try {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      window.setTimeout(() => iframe.remove(), 1800);
+    } catch (error) {
+      console.warn(error);
+      window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
+      iframe.remove();
+    }
+  }, { once: true });
 }
 
 function getCanonicalArticleUrl() {
