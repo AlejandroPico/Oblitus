@@ -1,0 +1,29 @@
+.reader-settings-toggle {
+  width: 2rem;
+  min-width: 2rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.reader-settings-toggle:hover,
+.reader-settings-toggle.active,
+.reader-settings-toggle:focus-visible {
+  color: var(--text);
+  background: transparent;
+  border-color: transparent;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.reader-settings-toggle svg {
+  width: 1.12rem;
+  height: 1.12rem;
+}
+
+@media (max-width: 760px) {
+  .reader-settings-toggle {
+    min-height: 2.35rem;
+    background: transparent;
+  }
+}
