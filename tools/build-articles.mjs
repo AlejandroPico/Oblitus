@@ -13,6 +13,7 @@ const root = process.cwd();
 const articlesDir = path.join(root, 'articulos');
 const generatedDir = path.join(root, 'assets', 'generated');
 const dataFile = path.join(root, 'assets', 'data', 'articles.generated.json');
+const printableExtensions = new Set(['.pdf', '.docx', '.doc']);
 
 const siteTopics = [
   'Física y cosmología',
@@ -174,6 +175,7 @@ async function convertArticle(entry) {
   const rawCover = frontmatter.cover || extractCover(html) || (frontmatter.interactive || standalone ? 'assets/media/images/interactive-cover.svg' : 'assets/media/images/default-cover.svg');
   const cover = copiedAssets ? rewriteLocalAssetUrl(rawCover, `assets/generated/${id}`) : rawCover;
   const generatedFile = path.join(generatedDir, `${id}.html`);
+  const printSource = await copyPrintableSource(entry, id);
 
   await fs.writeFile(generatedFile, html, 'utf8');
 
@@ -188,6 +190,9 @@ async function convertArticle(entry) {
     cover,
     url: `articulo.html?id=${encodeURIComponent(id)}`,
     contentUrl: `assets/generated/${id}.html`,
+    printUrl: printSource?.url || `assets/generated/${id}.html`,
+    printKind: printSource?.kind || 'html',
+    printLabel: printSource?.label || 'HTML generado',
     readingTime: readingTime(html),
     format,
     sourceFile: entry.relativePath,
@@ -225,6 +230,89 @@ async function copyArticleAssets(entry, id) {
   }
 
   return true;
+}
+
+async function copyPrintableSource(entry, id) {
+  const candidate = await findPrintableSource(entry);
+  if (!candidate) return null;
+
+  const sourceRoot = entry.type === 'html-folder' ? path.dirname(entry.fullPath) : path.dirname(entry.fullPath);
+  const relativeFromSource = path.relative(sourceRoot, candidate.fullPath).replaceAll(path.sep, '/');
+  const safeRelative = relativeFromSource.split('/').map(segment => slugifyFilename(segment)).join('/');
+  const destDir = path.join(generatedDir, id, '__print__');
+  const destPath = path.join(destDir, safeRelative);
+
+  await fs.mkdir(path.dirname(destPath), { recursive: true });
+  await fs.copyFile(candidate.fullPath, destPath);
+
+  return {
+    url: `assets/generated/${id}/__print__/${safeRelative}`,
+    kind: candidate.ext.replace('.', ''),
+    label: candidate.name
+  };
+}
+
+async function findPrintableSource(entry) {
+  const ext = path.extname(entry.fullPath).toLowerCase();
+  if (printableExtensions.has(ext)) {
+    return { fullPath: entry.fullPath, ext, name: path.basename(entry.fullPath) };
+  }
+
+  if (entry.type !== 'html-folder') return null;
+
+  const sourceDir = path.dirname(entry.fullPath);
+  const candidates = await findPrintableCandidates(sourceDir);
+  return candidates
+    .filter(candidate => path.basename(candidate.fullPath).toLowerCase() !== 'index.html')
+    .sort(comparePrintableCandidates)[0] || null;
+}
+
+async function findPrintableCandidates(dir) {
+  const items = await fs.readdir(dir, { withFileTypes: true });
+  const candidates = [];
+
+  for (const item of items) {
+    if (item.name.startsWith('.') || item.name.toLowerCase() === 'node_modules') continue;
+    const fullPath = path.join(dir, item.name);
+    if (item.isDirectory()) {
+      candidates.push(...await findPrintableCandidates(fullPath));
+      continue;
+    }
+
+    const ext = path.extname(item.name).toLowerCase();
+    if (printableExtensions.has(ext)) {
+      candidates.push({ fullPath, ext, name: item.name });
+    }
+  }
+
+  return candidates;
+}
+
+function comparePrintableCandidates(a, b) {
+  const priority = new Map([['.pdf', 0], ['.docx', 1], ['.doc', 2]]);
+  const byType = (priority.get(a.ext) ?? 99) - (priority.get(b.ext) ?? 99);
+  if (byType !== 0) return byType;
+
+  const aScore = printableNameScore(a.name);
+  const bScore = printableNameScore(b.name);
+  if (aScore !== bScore) return bScore - aScore;
+
+  return a.name.localeCompare(b.name, 'es');
+}
+
+function printableNameScore(name = '') {
+  const normalised = name.toLowerCase();
+  let score = 0;
+  if (/print|imprimir|pdf|documento|original|fuente/.test(normalised)) score += 3;
+  if (/draft|borrador|old|viejo|backup|copia/.test(normalised)) score -= 2;
+  return score;
+}
+
+function slugifyFilename(value = '') {
+  const ext = path.extname(value);
+  const base = path.basename(value, ext);
+  const safeBase = slugify(base) || 'archivo';
+  return `${safeBase}${ext.toLowerCase()}`;
 }
 
 function rewriteLocalAssetUrls(html, assetBase) {
