@@ -1,0 +1,143 @@
+@media print {
+  @page {
+    margin: 18mm 16mm;
+  }
+
+  :root {
+    --reader-font-size: 11pt;
+    --reader-line-height: 1.42;
+    --reader-paragraph-gap: 0.85em;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .reader-top,
+  .site-header,
+  .site-footer,
+  .back-link,
+  .chapter-actions,
+  .chapter-toggle,
+  .article-share,
+  .article-meta-row .article-share,
+  .post-badges,
+  .reader-settings-host,
+  .embedded-article-frame,
+  .interactive-block,
+  .reader-generated {
+    display: none !important;
+  }
+
+  .article-layout {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .article-shell {
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    background: #fff !important;
+  }
+
+  .article-tools {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 0 10mm !important;
+    margin: 0 0 10mm !important;
+    border-bottom: 1px solid #bbb;
+    background: transparent !important;
+    box-shadow: none !important;
+    page-break-after: avoid;
+  }
+
+  .toc-card {
+    display: block !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  .toc-card h2 {
+    margin: 0 0 5mm !important;
+    color: #111 !important;
+  }
+
+  .toc-card ol {
+    display: block !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .toc-card li {
+    display: grid !important;
+    grid-template-columns: 20mm 1fr;
+    gap: 4mm;
+    margin: 0 0 2.5mm !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .toc-card li::before {
+    content: attr(data-toc-number);
+    color: #333 !important;
+    font-weight: 700;
+  }
+
+  .toc-card a {
+    color: #111 !important;
+    text-decoration: none !important;
+    padding: 0 !important;
+  }
+
+  .article-body,
+  .article-body p,
+  .article-body li {
+    color: #111 !important;
+  }
+
+  .article-body .chapter-collapsed {
+    display: block !important;
+  }
+
+  .article-body a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.82em;
+    color: #444;
+  }
+
+  .article-body :is(h2, h3, h4) {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .article-body figure,
+  .article-body table,
+  .article-body pre,
+  .article-body blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .article-body img,
+  .article-body svg,
+  .article-body canvas,
+  .article-body video {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
