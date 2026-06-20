@@ -1,0 +1,7 @@
+html:not([data-about-extended="true"]) .static-page section[aria-labelledby="tematicasBase"],
+html:not([data-about-extended="true"]) .static-page section[aria-labelledby="etiquetas"],
+html:not([data-about-extended="true"]) .static-page section[aria-labelledby="publicacion"],
+html:not([data-about-extended="true"]) .static-page section[aria-labelledby="formatos"],
+html:not([data-about-extended="true"]) .static-page section[aria-labelledby="promptMaestro"] {
+  display: none;
+}
