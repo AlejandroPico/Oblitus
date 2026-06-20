@@ -30,6 +30,9 @@
   background: color-mix(in srgb, var(--surface-2), transparent 4%);
   color: var(--muted);
   text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
   transition: var(--theme-transition), transform 160ms ease, color 160ms ease, border-color 160ms ease, background-color 160ms ease;
 }
 
@@ -40,6 +43,14 @@
   fill: currentColor;
 }
 
+.share-button-print svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .share-button:hover,
 .share-button:focus-visible {
   color: var(--text);
@@ -47,6 +58,17 @@
   border-color: color-mix(in srgb, var(--accent), var(--line) 45%);
   outline: none;
   transform: translateY(-1px);
+}
+
+.print-source-frame {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (max-width: 760px) {
